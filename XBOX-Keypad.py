@@ -266,7 +266,7 @@ background-color: #2D1A1A; /* Тёмно-красный фон */
 }
 """
 
-PROJECT_NAME = "K-Gamepad"
+PROJECT_NAME = "XBOX-Keypad"
 VERSION = "v1.0"
 
 # --- PROFILES SETTINGS ---
@@ -1115,7 +1115,7 @@ class MainWindow(QMainWindow):
         title_layout = QHBoxLayout(title_container)
         title_layout.setContentsMargins(0, 5, 0, 5)
 
-        self.title_label = QLabel("K-Gamepad")
+        self.title_label = QLabel("XBOX-Keypad")
         self.title_label.setStyleSheet(
             """
             QLabel {
