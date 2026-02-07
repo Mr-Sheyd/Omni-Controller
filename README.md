@@ -33,7 +33,6 @@ This project uses the following resources and libraries:
 * **Emulation Engine:** [vgamepad](https://github.com/yannb94/vgamepad).
 * **UI Framework:** PySide6 (Qt for Python).
 
----
 
 ## ⚖️ License
 Distributed under the **MIT License**. Feel free to use, modify, and distribute this software.
