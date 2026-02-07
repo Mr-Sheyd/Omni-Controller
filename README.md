@@ -1,11 +1,10 @@
 # ENG:
----
+
 # 🟦 XBOX-Keypad
 Gamepad emulator with block keys.
 
 **XBOX-Keypad** is a lightweight and stylish Xbox controller (XInput) emulator for your keyboard. It allows you to remap keyboard keys to controller buttons, providing a smooth experience in games that only support gamepad input.
 
----
 
 ## ✨ Key Features
 * **Full XInput Emulation**: The system recognizes a full Xbox 360 controller.
@@ -16,7 +15,6 @@ Gamepad emulator with block keys.
 * **Portability**: A single standalone `.exe` file—no Python or extra libraries required on the host PC.
 * **Low Latency**: Powered by the Interception driver for the fastest possible response time.
 
----
 
 ## 🛠 Installation & Usage
 1.  Download the latest archive from the [Releases](https://github.com/Mr-Sheyd/XBOX-Keypad/releases) section.
@@ -26,7 +24,6 @@ Gamepad emulator with block keys.
 
 > **Note:** The **Interception** driver must be installed on your system for the program to function.
 
----
 
 ## 📜 Credits
 This project uses the following resources and libraries:
@@ -42,16 +39,15 @@ This project uses the following resources and libraries:
 Distributed under the **MIT License**. Feel free to use, modify, and distribute this software.
 
 
+---
 
 # RU:
----
 
 # 🟦 XBOX-Keypad
 Эмулятор геймпада с блокировкой клавиш.
 
 **XBOX-Keypad** — это лёгкий и стильный эмулятор геймпада Xbox (XInput) для клавиатуры. Программа позволяет переназначить клавиши клавиатуры на кнопки контроллера, обеспечивая комфортную игру в проектах, поддерживающих только геймпад.
 
----
 
 ## ✨ Основные возможности
 * **Полная эмуляция XInput**: Система видит устройство как полноценный контроллер Xbox 360.
@@ -62,7 +58,6 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 * **Портативность**: Один автономный `.exe` файл — не требует установки Python или библиотек на компьютер.
 * **Минимальная задержка**: Работает на базе драйвера Interception для максимально быстрого отклика.
 
----
 
 ## 🛠 Установка и использование
 1.  Скачайте последний архив из раздела [Releases](https://github.com/Mr-Sheyd/XBOX-Keypad/releases).
@@ -72,7 +67,6 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 
 > **Примечание:** Для работы программы в системе должен быть установлен драйвер **Interception**.
 
----
 
 ## 📜 Благодарности
 В проекте использованы следующие ресурсы и библиотеки:
@@ -82,7 +76,6 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 * **Движок эмуляции:** [vgamepad](https://github.com/yannb94/vgamepad).
 * **UI фреймворк:** PySide6 (Qt for Python).
 
----
 
 ## ⚖️ Лицензия
 Распространяется под лицензией **MIT**. Вы можете свободно использовать, изменять и распространять данное ПО.
