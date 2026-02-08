@@ -981,6 +981,7 @@ class MainWindow(QMainWindow):
             self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_ComputerIcon))
         else:
             self.tray_icon.setIcon(current_icon)
+            self.tray_icon.setIcon(QIcon(APP_ICON))
 
         tray_menu = QMenu()
         tray_menu.setStyleSheet("""
