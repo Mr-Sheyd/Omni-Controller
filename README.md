@@ -37,7 +37,8 @@ This project uses the following resources and libraries:
 ## ⚖️ License
 Distributed under the **MIT License**. Feel free to use, modify, and distribute this software.
 
-
+---
+<img width="925" height="900" alt="XBOX-Keypad" src="https://github.com/user-attachments/assets/88f7e625-89a4-4cc1-bae0-64355afc06ca" />
 ---
 
 # RU:
