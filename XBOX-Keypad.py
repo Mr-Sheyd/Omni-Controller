@@ -266,7 +266,7 @@ background-color: #2D1A1A; /* Тёмно-красный фон */
 }
 """
 
-PROJECT_NAME = "XBOX-Kepad"
+PROJECT_NAME = "XBOX-Keypad"
 VERSION = "v1.0"
 
 # --- PROFILES SETTINGS ---
