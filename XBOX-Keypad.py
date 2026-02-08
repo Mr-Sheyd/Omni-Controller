@@ -40,6 +40,8 @@ from PySide6.QtWidgets import (
     QDialog,
     QLineEdit,
     QSizeGrip,
+    QMenu,
+    QSystemTrayIcon,
 )
 
 STYLE_SHEET = """
@@ -267,7 +269,8 @@ background-color: #2D1A1A; /* Тёмно-красный фон */
 """
 
 PROJECT_NAME = "XBOX-Keypad"
-VERSION = "v1.0"
+VERSION = "v1.1"
+APP_ICON = resource_path("XBOX-Keypad.ico")
 
 # --- PROFILES SETTINGS ---
 GLOBAL_CONFIG = "System_Config.ini"
@@ -899,13 +902,23 @@ class InterceptionThread(QThread):
                     self.lib.interception_send(
                         self.context, device, ctypes.byref(stroke), 1
                     )
-
+    
+    def stop(self):
+        """Принудительная остановка потока"""
+        self.is_running = False
+        self.enabled = False
+        if self.context:
+            # Это «выбивает» блокировку interception_wait
+            self.lib.interception_destroy_context(self.context)
+            self.context = None
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # Официальное название в заголовке 
-        self.setWindowTitle("Keyboard2Xinput UI")
+        self.setWindowTitle(PROJECT_NAME)
+        if os.path.exists(APP_ICON):
+            self.setWindowIcon(QIcon(APP_ICON))
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
@@ -953,6 +966,56 @@ class MainWindow(QMainWindow):
             self.toggle()
 
         self.thread.start()
+
+        # --- НАСТРОЙКА ТРЕЯ ---
+        self.tray_icon = QSystemTrayIcon(self)
+        
+        # Сначала пробуем иконку окна, если она пустая — лезем за файлом напрямую
+        current_icon = self.windowIcon()
+        if current_icon.isNull() and os.path.exists(APP_ICON):
+            current_icon = QIcon(APP_ICON)
+
+        # Если и файл не помог (например, его нет), ставим системную заглушку
+        if current_icon.isNull():
+            from PySide6.QtWidgets import QStyle
+            self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_ComputerIcon))
+        else:
+            self.tray_icon.setIcon(current_icon)
+
+        tray_menu = QMenu()
+        tray_menu.setStyleSheet("""
+            QMenu {
+                background-color: #1a1a1a;
+                color: white;
+                border: 1px solid #0078d7;
+                padding: 5px;
+            }
+            QMenu::item {
+                padding: 8px 25px;
+                background-color: transparent;
+            }
+            QMenu::item:selected {
+                background-color: #0078d7;
+                color: white;
+            }
+            QMenu::separator {
+                height: 1px;
+                background: #333333;
+                margin: 5px 10px;
+            }
+        """)
+        
+        show_action = tray_menu.addAction("Show app")
+        show_action.triggered.connect(self.showNormal)
+        
+        tray_menu.addSeparator() # Можно добавить разделитель для красоты
+        
+        quit_action = tray_menu.addAction("Exit")
+        quit_action.triggered.connect(self.manual_exit)
+
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
+        self.tray_icon.activated.connect(self.on_tray_icon_activated)
 
     def enable_child_tracking(self, widget):
         """Рекурсивно заставляем всех детей сообщать о движении мыши"""
@@ -1097,6 +1160,39 @@ class MainWindow(QMainWindow):
                 self.height() - self.sizegrip.height() - 5,
             )
 
+    def on_tray_icon_activated(self, reason):
+        """Разворачивание окна при клике по иконке в трее"""
+        if reason == QSystemTrayIcon.ActivationReason.Trigger:
+            if self.isVisible():
+                self.hide()
+            else:
+                self.showNormal()
+                self.activateWindow()
+
+    def force_minimize(self):
+        """Принудительное сворачивание для безрамочного окна"""
+        self.setWindowState(Qt.WindowMinimized)
+    
+    def changeEvent(self, event):
+        """Ловим сворачивание и прячем в трей"""
+        if event.type() == QEvent.Type.WindowStateChange:
+            # Используем проверку через windowState для надёжности
+            if self.windowState() & Qt.WindowMinimized:
+                # Прячем окно с панели задач
+                self.hide()
+                
+                # Показываем уведомление
+                if hasattr(self, 'tray_icon'):
+                    self.tray_icon.showMessage(
+                        PROJECT_NAME, 
+                        "Программа свёрнута в трей",
+                        QSystemTrayIcon.MessageIcon.Information,
+                        2000
+                    )
+                event.ignore()
+                return # Выходим, чтобы базовый метод не перехватил
+        super().changeEvent(event)
+    
     def setup_ui(self):
         self.setStyleSheet(STYLE_SHEET)
 
@@ -1115,7 +1211,7 @@ class MainWindow(QMainWindow):
         title_layout = QHBoxLayout(title_container)
         title_layout.setContentsMargins(0, 5, 0, 5)
 
-        self.title_label = QLabel("XBOX-Keypad")
+        self.title_label = QLabel(PROJECT_NAME)
         self.title_label.setStyleSheet(
             """
             QLabel {
@@ -1198,8 +1294,8 @@ class MainWindow(QMainWindow):
             btn.setFocusPolicy(Qt.NoFocus)
             wc_layout.addWidget(btn)
 
-        self.min_btn.clicked.connect(self.showMinimized)
-        self.close_btn.clicked.connect(self.close)
+        self.min_btn.clicked.connect(self.force_minimize)
+        self.close_btn.clicked.connect(self.manual_exit)
 
         h_layout.addWidget(window_controls, alignment=Qt.AlignRight | Qt.AlignTop)
 
@@ -1478,20 +1574,41 @@ class MainWindow(QMainWindow):
     def import_profile(self):
         """Копирование внешнего .ini файла в папку программы"""
         file_path, _ = QFileDialog.getOpenFileName(
-            self, "Выбрать конфиг", "", "INI Files (*.ini)"
+            self, "Select profile", "", "INI Files (*.ini)"
         )
         if file_path:
             shutil.copy(file_path, os.getcwd())  # Копируем в рабочую директорию
             self.scan_profiles()
 
     def export_profile(self):
-        """Сохранение текущего профиля в выбранное место"""
+        """Сохранение текущего выбранного профиля в любое место на диске"""
         current = self.profile_combo.currentText()
+        if not current:
+            return
+
+        # Убеждаемся, что расширение .ini присутствует для поиска файла
+        filename = current if current.lower().endswith(".ini") else f"{current}.ini"
+        source_path = os.path.join(PROFILES_DIR, filename)
+
+        # Проверяем, существует ли файл в папке Profiles
+        if not os.path.exists(source_path):
+            print(f"[ERROR] Source profile not found: {source_path}")
+            return
+
+        # Открываем диалог сохранения
         save_path, _ = QFileDialog.getSaveFileName(
-            self, "Экспорт профиля", current, "INI Files (*.ini)"
+            self, 
+            "Export profile", 
+            filename, 
+            "INI Files (*.ini)"
         )
+
         if save_path:
-            shutil.copy(current, save_path)
+            try:
+                shutil.copy(source_path, save_path)
+                print(f"[SYSTEM] Profile exported to: {save_path}")
+            except Exception as e:
+                print(f"[ERROR] Failed to export: {e}")
 
     def clear_slot(self, gp_btn, idx, obj):
         """Очистка слота по правому клику мыши"""
@@ -1509,46 +1626,87 @@ class MainWindow(QMainWindow):
             self.active_slot = None
 
     def closeEvent(self, event):
-        # 1. СРАЗУ ГАСИМ ДРАЙВЕР 
-        self.thread.enabled = False
-        print("[SYSTEM] Driver disabled immediately.")
+        # 1. СРАЗУ ГАСИМ ДРАЙВЕР (Мгновенная деактивация)
+        if hasattr(self, 'thread'):
+            # Вызываем стоп, который уничтожает контекст и разблокирует wait
+            self.thread.stop()
+        
+        # Заставляем Qt обработать отключение драйвера ПЕРЕД скрытием окна
+        from PySide6.QtWidgets import QApplication
+        QApplication.processEvents()
+        
+        # Микро-пауза (50мс), чтобы драйвер гарантированно отпустил систему
+        import time
+        time.sleep(0.05)
+        
+        print("[SYSTEM] Driver context destroyed. Starting save...")
 
-        # 2. Теперь сохраняем системные настройки в config.ini (вместо Default.ini) 
-        GLOBAL_CONFIG = "System_Config.ini"
+        # 2. Сохраняем системные настройки
+        target_config = "System_Config.ini" 
         config = configparser.ConfigParser()
+        
+        if os.path.exists(target_config):
+            config.read(target_config, encoding="utf-8")
 
-        if os.path.exists(GLOBAL_CONFIG):
-            sys_config = configparser.ConfigParser()
-            sys_config.read(GLOBAL_CONFIG, encoding="utf-8")
+        if "Settings" not in config: config.add_section("Settings")
+        if "Window" not in config: config.add_section("Window")
 
-        if "Settings" not in config:
-            config.add_section("Settings")
-        if "Window" not in config:
-            config.add_section("Window")
-
-        # Записываем системные данные 
-        config.set(
-            "Settings", "last_profile", self.profile_combo.currentText() + ".ini"
-        )
+        current_prof_name = self.profile_combo.currentText()
+        config.set("Settings", "last_profile", f"{current_prof_name}.ini")
         config.set("Settings", "autostart", str(self.autostart_cb.isChecked()))
         config.set("Window", "geometry", self.saveGeometry().toHex().data().decode())
 
-        # Биндинги текущего профиля (дублируем в config.ini для сохранности) 
+        # Биндинги
         config["Bindings"] = {k: ",".join(v) for k, v in self.bindings.items()}
 
-        # СОХРАНЯЕМ В КОРНЕВОЙ config.ini 
-        with open(GLOBAL_CONFIG, "w", encoding="utf-8") as f:
+        # Сохраняем основной конфиг
+        with open(target_config, "w", encoding="utf-8") as f:
             config.write(f)
 
-        # 3. Дополнительно сохраняем в файл профиля внутри папки Profiles 
-        # Чтобы изменения не пропали из самой папки профилей
-        current_profile = self.profile_combo.currentText()
-        if current_profile:
-            self.save_config(current_profile)
+        # 3. Сохраняем текущий профиль
+        if current_prof_name:
+            self.save_config(current_prof_name)
 
-        print(f"[SYSTEM] Settings saved to {GLOBAL_CONFIG}. Exiting...")
-        super().closeEvent(event)
+        print(f"[SYSTEM] Settings saved to {target_config}. Goodbye!")
+        
+        # 4. ФИНАЛ: Окно закрывается только когда всё остальное уже сделано
+        event.accept()
+    
+    # 2. А вот этот метод мы вызываем ИЗ ТРЕЯ
+    def manual_exit(self):
+        """Метод 'Ядерная кнопка' — гасит всё в любом состоянии"""
+        print("\n[SYSTEM] Force shut down initiated...")
+              
+        # 1. СРАЗУ гасим поток драйвера
+        if hasattr(self, 'thread'):
+            print("[SYSTEM] Stopping interception thread...")
+            # Наш новый метод, который уничтожает контекст и снимает блок wait()
+            self.thread.stop() 
+            
+            # На всякий случай даём пинка, если поток всё ещё жив
+            if self.thread.isRunning():
+                self.thread.terminate()
+                self.thread.wait(500) 
+        
+        # Небольшая пауза, чтобы драйвер успел "отпустить" систему до закрытия окна
+        import time
+        time.sleep(0.05)
+            
+        # 2. Вызываем стандартную процедуру сохранения (closeEvent)
+        try:
+            self.close() 
+        except Exception as e:
+            print(f"[ERROR] Failed to close window normally: {e}")
 
+        # 3. ЧИСТИМ ТРЕЙ (Чтобы иконка не залипала)
+        if hasattr(self, 'tray_icon'):
+            self.tray_icon.hide()
+            print("[SYSTEM] Tray icon removed.")
+
+        # 4. ФИНАЛЬНЫЙ ВЫСТРЕЛ
+        print("[SYSTEM] Killing process. Goodbye!")
+        import os
+        os._exit(0)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
