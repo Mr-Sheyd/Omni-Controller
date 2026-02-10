@@ -30,7 +30,7 @@ This project uses the following resources and libraries:
 
 * **Icons (Assets):** [Free Input Prompts](https://juliocacko.itch.io/free-input-prompts) by **JulioCacko**. Special thanks for the high-quality visual assets.
 * **Driver:** [Interception](https://github.com/oblitum/Interception) by Francisco Lopes.
-* **Emulation Engine:** [vgamepad](https://github.com/yannb94/vgamepad).
+* **Emulation Engine:** [vgamepad](https://github.com/yannbouteiller/vgamepad).
 * **UI Framework:** PySide6 (Qt for Python).
 
 
@@ -74,7 +74,7 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 
 * **Иконки (Assets):** [Free Input Prompts](https://juliocacko.itch.io/free-input-prompts) от **JulioCacko**. Огромное спасибо автору за качественные ассеты.
 * **Драйвер:** [Interception](https://github.com/oblitum/Interception) за авторством Francisco Lopes.
-* **Движок эмуляции:** [vgamepad](https://github.com/yannb94/vgamepad).
+* **Движок эмуляции:** [vgamepad](https://github.com/yannbouteiller/vgamepad).
 * **UI фреймворк:** PySide6 (Qt for Python).
 
 
