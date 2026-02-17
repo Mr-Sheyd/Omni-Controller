@@ -37,10 +37,12 @@ This project uses the following resources and libraries:
 ## ⚖️ License
 Distributed under the **MIT License**. Feel free to use, modify, and distribute this software.
 
----
-<img width="925" height="900" alt="XBOX-Keypad" src="https://github.com/user-attachments/assets/88f7e625-89a4-4cc1-bae0-64355afc06ca" />
 
 ---
+<img width="1031" height="900" alt="XBOX-Keypad v2 0" src="https://github.com/user-attachments/assets/f6b71266-1e24-4683-bc6d-12091fd196a3" />
+
+---
+
 
 # RU:
 
