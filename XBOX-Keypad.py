@@ -309,7 +309,7 @@ QPushButton[objectName^="Slot_"][capturing="true"] {{
     color: {s_hover};            
 }}
 
-QPushButton[objectName^="ToggleBtn_"], QPushButton[objectName^="TurboBtn_"] {{
+QPushButton[objectName^="ToggleBtn_"], QPushButton[objectName^="TurboBtn_"], QPushButton[objectName^="DelayBtn_"] {{
     background-color: #1A1A1A;
     color: #bababa;
     border: 1px solid #333;
@@ -319,7 +319,7 @@ QPushButton[objectName^="ToggleBtn_"], QPushButton[objectName^="TurboBtn_"] {{
     padding: 2px;
 }}
 
-QPushButton[objectName^="ToggleBtn_"]:disabled, QPushButton[objectName^="TurboBtn_"]:disabled {{
+QPushButton[objectName^="ToggleBtn_"]:disabled, QPushButton[objectName^="TurboBtn_"]:disabled, QPushButton[objectName^="DelayBtn_"]:disabled {{
     background-color: #0d0d0d;
     color: #444;
     border: 1px solid #222;
@@ -327,7 +327,8 @@ QPushButton[objectName^="ToggleBtn_"]:disabled, QPushButton[objectName^="TurboBt
 
 /* Hover эффект для неактивных кнопок */
 QPushButton[objectName^="ToggleBtn_"]:hover:!checked, 
-QPushButton[objectName^="TurboBtn_"]:hover:!checked {{
+QPushButton[objectName^="TurboBtn_"]:hover:!checked,
+QPushButton[objectName^="DelayBtn_"]:hover:!checked {{
     border-color: {primary};
     background-color: #252525;
     color: {p_hover};
@@ -335,7 +336,8 @@ QPushButton[objectName^="TurboBtn_"]:hover:!checked {{
 
 /* Hover эффект для активных кнопок (checked) */
 QPushButton[objectName^="ToggleBtn_"]:hover:checked,
-QPushButton[objectName^="TurboBtn_"]:hover:checked {{
+QPushButton[objectName^="TurboBtn_"]:hover:checked,
+QPushButton[objectName^="DelayBtn_"]:hover:checked {{
     background-color: {p_checked_hover};
     border-color: {p_hover};
     color: #ffffff;
@@ -343,7 +345,8 @@ QPushButton[objectName^="TurboBtn_"]:hover:checked {{
 
 /* Pressed эффект */
 QPushButton[objectName^="ToggleBtn_"]:pressed,
-QPushButton[objectName^="TurboBtn_"]:pressed {{
+QPushButton[objectName^="TurboBtn_"]:pressed,
+QPushButton[objectName^="DelayBtn_"]:pressed {{
     background-color: {primary};
     color: #FFFFFF;
 }}
@@ -362,8 +365,15 @@ QPushButton[objectName^="TurboBtn_"]:checked {{
     border: 1px solid {p_hover};
 }}
 
-/* Текстовые поля Turbo */
-QLineEdit[objectName^="TurboInput_"] {{
+/* Активный Delay */
+QPushButton[objectName^="DelayBtn_"]:checked {{
+    background-color: {p_active_bg};
+    color: {p_hover};
+    border: 1px solid {p_hover};
+}}
+
+/* Текстовые поля Turbo и Delay */
+QLineEdit[objectName^="TurboInput_"], QLineEdit[objectName^="DelayInput_"] {{
     background-color: #0d0d0d;
     color: #444;
     border: 1px solid #222;
@@ -372,19 +382,19 @@ QLineEdit[objectName^="TurboInput_"] {{
     padding: 2px;
 }}
 
-QLineEdit[objectName^="TurboInput_"]:enabled {{
+QLineEdit[objectName^="TurboInput_"]:enabled, QLineEdit[objectName^="DelayInput_"]:enabled {{
     background-color: #1A1A1A;
     color: #888;
     border: 1px solid #333;
 }}
 
-QLineEdit[objectName^="TurboInput_"]:focus {{
+QLineEdit[objectName^="TurboInput_"]:focus, QLineEdit[objectName^="DelayInput_"]:focus {{
     border: 1px solid {p_hover};
     color: #ffffff;
 }}
 
-/* Активное состояние (когда турбо включен) */
-QLineEdit[objectName^="TurboInput_"][active="true"] {{
+/* Активное состояние (когда режим включен) */
+QLineEdit[objectName^="TurboInput_"][active="true"], QLineEdit[objectName^="DelayInput_"][active="true"] {{
     background-color: {p_active_bg};
     border: 1px solid {p_hover};
     color: {p_hover};
@@ -490,7 +500,7 @@ QColorDialog QPushButton {{
 
 
 PROJECT_NAME = "XBOX-Keypad"
-VERSION = "v2.0"
+VERSION = "v2.2"
 APP_ICON = resource_path("XBOX-Keypad.ico")
 
 # --- PROFILES SETTINGS ---
@@ -947,6 +957,7 @@ class InterceptionThread(QThread):
     sig_turbo_active = Signal(
         str, bool, int
     )  # Сигнал для активации/деактивации турбо в Main: btn, active, slot_idx
+    sig_delay_request = Signal(str, int, bool)
 
     def __init__(self):
         super().__init__()
@@ -957,6 +968,7 @@ class InterceptionThread(QThread):
         self.bindings = {k: ["NONE"] * 6 for k in GP_MAP_KEYS}
         self.toggles = {k: [False] * 6 for k in GP_MAP_KEYS}
         self.turbos = {k: [False] * 6 for k in GP_MAP_KEYS}
+        self.delays = {k: [False] * 6 for k in GP_MAP_KEYS}
         self.turbo_active_state = {}  # {(gp_btn, slot_idx): bool} - активен ли турбо
         self.lock = threading.Lock()
         self.context = None
@@ -1007,6 +1019,67 @@ class InterceptionThread(QThread):
         except Exception as e:
             print(f"[CRITICAL] Driver Error: {e}")
 
+    def trigger_logical_action(self, gp_btn, slot_idx, is_down):
+        is_toggle = self.toggles[gp_btn][slot_idx]
+        is_turbo = self.turbos[gp_btn][slot_idx]
+        should_press = False
+
+        if is_turbo:
+            if is_down:
+                turbo_key = (gp_btn, slot_idx)
+                current_state = self.turbo_active_state.get(turbo_key, False)
+                new_state = not current_state
+                self.turbo_active_state[turbo_key] = new_state
+                self.sig_turbo_active.emit(gp_btn, new_state, slot_idx)
+                if not new_state:
+                    with self.lock:
+                        if gp_btn in GP_BUTTON_MAP:
+                            self.gamepad.release_button(button=GP_BUTTON_MAP[gp_btn])
+                        elif gp_btn in ["LT", "RT"]:
+                            if gp_btn == "LT":
+                                self.gamepad.left_trigger(value=0)
+                            else:
+                                self.gamepad.right_trigger(value=0)
+                        self.gamepad.update()
+            return
+        elif is_toggle:
+            if is_down:
+                self.gp_state[gp_btn] = not self.gp_state[gp_btn]
+                should_press = self.gp_state[gp_btn]
+            else:
+                should_press = self.gp_state[gp_btn]
+        else:
+            should_press = is_down
+            self.gp_state[gp_btn] = is_down
+
+        if gp_btn in GP_BUTTON_MAP:
+            btn_val = GP_BUTTON_MAP[gp_btn]
+            with self.lock:
+                if should_press:
+                    self.gamepad.press_button(button=btn_val)
+                else:
+                    self.gamepad.release_button(button=btn_val)
+        elif gp_btn == "LT":
+            with self.lock:
+                self.gamepad.left_trigger(value=255 if should_press else 0)
+        elif gp_btn == "RT":
+            with self.lock:
+                self.gamepad.right_trigger(value=255 if should_press else 0)
+        elif gp_btn.startswith("LS_") or gp_btn.startswith("RS_"):
+            val = 1 if should_press else 0
+            self.axes[gp_btn] = val
+            ls_x = (self.axes["LS_RIGHT"] - self.axes["LS_LEFT"]) * 32767
+            ls_y = (self.axes["LS_UP"] - self.axes["LS_DOWN"]) * 32767
+            with self.lock:
+                self.gamepad.left_joystick(x_value=int(ls_x), y_value=int(ls_y))
+            rs_x = (self.axes["RS_RIGHT"] - self.axes["RS_LEFT"]) * 32767
+            rs_y = (self.axes["RS_UP"] - self.axes["RS_DOWN"]) * 32767
+            with self.lock:
+                self.gamepad.right_joystick(x_value=int(rs_x), y_value=int(rs_y))
+                
+        with self.lock:
+            self.gamepad.update()
+
     def run(self):
         if not self.context:
             return
@@ -1020,7 +1093,7 @@ class InterceptionThread(QThread):
             return
 
         # Храним состояние осей
-        axes = {
+        self.axes = {
             "LS_UP": 0,
             "LS_DOWN": 0,
             "LS_LEFT": 0,
@@ -1033,7 +1106,7 @@ class InterceptionThread(QThread):
 
         # Храним ФИЗИЧЕСКОЕ состояние кнопок геймпада (для Toggle Mode)
         # True = кнопка сейчас нажата (виртуально)
-        gp_state = {k: False for k in GP_MAP_KEYS}
+        self.gp_state = {k: False for k in GP_MAP_KEYS}
 
         while self.is_running:
             device = self.lib.interception_wait(self.context)
@@ -1073,106 +1146,15 @@ class InterceptionThread(QThread):
                             # Определяем индекс слота для текущей клавиши
                             try:
                                 slot_idx = keys.index(name)
-                                is_toggle = self.toggles[gp_btn][slot_idx]
-                                is_turbo = self.turbos[gp_btn][slot_idx]
+                                is_delay = self.delays[gp_btn][slot_idx]
                             except ValueError:
-                                is_toggle = False
-                                is_turbo = False
-
-                            # ЛОГИКА MODES
-                            should_press = False
-
-                            # 1. TURBO MODE (Приоритет над Toggle)
-                            if is_turbo:
-                                # Реагируем только на НАЖАТИЕ (игнорируем отпускание)
-                                if is_down:
-                                    # Создаём ключ для отслеживания состояния
-                                    turbo_key = (gp_btn, slot_idx)
-
-                                    # Переключаем состояние
-                                    current_state = self.turbo_active_state.get(
-                                        turbo_key, False
-                                    )
-                                    new_state = not current_state
-                                    self.turbo_active_state[turbo_key] = new_state
-
-                                    # Отправляем сигнал в MainWindow
-                                    self.sig_turbo_active.emit(
-                                        gp_btn, new_state, slot_idx
-                                    )
-
-                                    # Если выключаем - сразу отпускаем кнопку
-                                    if not new_state:
-                                        with self.lock:
-                                            if gp_btn in GP_BUTTON_MAP:
-                                                self.gamepad.release_button(
-                                                    button=GP_BUTTON_MAP[gp_btn]
-                                                )
-                                            elif gp_btn in ["LT", "RT"]:
-                                                if gp_btn == "LT":
-                                                    self.gamepad.left_trigger(value=0)
-                                                else:
-                                                    self.gamepad.right_trigger(value=0)
-                                            self.gamepad.update()
                                 continue
 
-                            # 2. TOGGLE MODE
-                            elif is_toggle:
-                                if is_down:
-                                    gp_state[gp_btn] = not gp_state[gp_btn]
-                                    should_press = gp_state[gp_btn]
-                                else:
-                                    should_press = gp_state[gp_btn]
+                            if is_delay:
+                                self.sig_delay_request.emit(gp_btn, slot_idx, is_down)
+                                continue
 
-                            # 3. STANDARD MODE
-                            else:
-                                should_press = is_down
-                                gp_state[gp_btn] = is_down
-
-                            # ПРИМЕНЕНИЕ СОСТОЯНИЯ (should_press)
-                            # Обработка кнопок
-                            if gp_btn in GP_BUTTON_MAP:
-                                btn_val = GP_BUTTON_MAP[gp_btn]
-                                with self.lock:
-                                    if should_press:
-                                        self.gamepad.press_button(button=btn_val)
-                                    else:
-                                        self.gamepad.release_button(button=btn_val)
-
-                            # Обработка триггеров
-                            elif gp_btn == "LT":
-                                with self.lock:
-                                    self.gamepad.left_trigger(
-                                        value=255 if should_press else 0
-                                    )
-                            elif gp_btn == "RT":
-                                with self.lock:
-                                    self.gamepad.right_trigger(
-                                        value=255 if should_press else 0
-                                    )
-
-                            # Обработка стиков
-                            elif gp_btn.startswith("LS_") or gp_btn.startswith("RS_"):
-                                val = 1 if should_press else 0
-                                axes[gp_btn] = val
-
-                                ls_x = (axes["LS_RIGHT"] - axes["LS_LEFT"]) * 32767
-                                ls_y = (axes["LS_UP"] - axes["LS_DOWN"]) * 32767
-                                with self.lock:
-                                    self.gamepad.left_joystick(
-                                        x_value=int(ls_x), y_value=int(ls_y)
-                                    )
-
-                                rs_x = (axes["RS_RIGHT"] - axes["RS_LEFT"]) * 32767
-                                rs_y = (axes["RS_UP"] - axes["RS_DOWN"]) * 32767
-                                with self.lock:
-                                    self.gamepad.right_joystick(
-                                        x_value=int(rs_x), y_value=int(rs_y)
-                                    )
-
-                    if mapped:
-                        with self.lock:
-                            self.gamepad.update()
+                            self.trigger_logical_action(gp_btn, slot_idx, is_down)
 
                 # Если нажатие не было замаплено, отправляем его дальше в систему
                 if not mapped:
@@ -1242,6 +1224,9 @@ class MainWindow(QMainWindow):
         self.turbo_intervals_map = {
             k: [0.1] * 6 for k in GP_MAP_KEYS
         }  # Интервалы (сек)
+        
+        self.delays = {k: [False] * 6 for k in GP_MAP_KEYS}
+        self.delay_intervals_map = {k: [0.1] * 6 for k in GP_MAP_KEYS}
 
         # --- ЦВЕТОВАЯ СХЕМА (v2.0) ---
         self.primary_color = "#0078D7"
@@ -1251,6 +1236,10 @@ class MainWindow(QMainWindow):
         self.ui_toggles = {k: [] for k in GP_MAP_KEYS}
         self.ui_turbos = {k: [] for k in GP_MAP_KEYS}
         self.ui_turbo_inputs = {k: [] for k in GP_MAP_KEYS}  # Поля ввода скорости
+        self.ui_delays = {k: [] for k in GP_MAP_KEYS}
+        self.ui_delay_inputs = {k: [] for k in GP_MAP_KEYS}
+        self.delay_timers = {}
+        self.delay_fired_state = {}
 
         self.active_t_session = {}
         self.turbo_timer = QTimer(self)
@@ -1268,6 +1257,7 @@ class MainWindow(QMainWindow):
         self.thread = InterceptionThread()
         self.thread.key_signal.connect(self.on_key)
         self.thread.sig_turbo_active.connect(self.on_turbo_active)
+        self.thread.sig_delay_request.connect(self.on_delay_request)
 
         self.setup_ui()
         self.enable_child_tracking(self.centralWidget())
@@ -1343,6 +1333,27 @@ class MainWindow(QMainWindow):
             }
         """
         )
+
+        from PySide6.QtWidgets import QWidgetAction
+        
+        self.tray_action_toggle = QWidgetAction(self)
+        self.tray_btn_toggle = QPushButton("START EMULATION")
+        self.tray_btn_toggle.setObjectName("run_btn_inactive")
+        self.tray_btn_toggle.setCursor(Qt.PointingHandCursor)
+        self.tray_btn_toggle.setMinimumSize(140, 40)
+        # Применяем общий стиль + отступы, чтобы кнопка реагировала на темы
+        self.tray_btn_toggle.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color) + "\nQPushButton { margin: 4px 10px; padding: 0 10px; }")
+        
+        def on_tray_btn_click():
+            if self.toggle_btn:
+                self.toggle_btn.click()
+            tray_menu.hide()
+            
+        self.tray_btn_toggle.clicked.connect(on_tray_btn_click)
+        self.tray_action_toggle.setDefaultWidget(self.tray_btn_toggle)
+        tray_menu.addAction(self.tray_action_toggle)
+
+        tray_menu.addSeparator()
 
         show_action = tray_menu.addAction("Show app")
         show_action.triggered.connect(self.showNormal)
@@ -1755,6 +1766,36 @@ class MainWindow(QMainWindow):
                 turbo_layout.addWidget(turbo_btn)
                 turbo_layout.addWidget(turbo_input)
 
+                # DELAY PANEL
+                delay_container = QWidget()
+                delay_layout = QHBoxLayout(delay_container)
+                delay_layout.setContentsMargins(0, 0, 0, 0)
+                delay_layout.setSpacing(2)
+                delay_layout.setAlignment(Qt.AlignLeft)
+
+                delay_btn = QPushButton("DELAY")
+                delay_btn.setObjectName(f"DelayBtn_{btn_name}_{col}")
+                delay_btn.setCheckable(True)
+                delay_btn.setFocusPolicy(Qt.NoFocus)
+                delay_btn.setFixedSize(79, 24)
+                delay_btn.clicked.connect(
+                    lambda checked, b=btn_name, i=col: self.update_delay_state(
+                        b, i, checked
+                    )
+                )
+
+                delay_input = QLineEdit("0.1")
+                delay_input.setObjectName(f"DelayInput_{btn_name}_{col}")
+                delay_input.setFixedSize(40, 24)
+                delay_input.setAlignment(Qt.AlignCenter)
+                delay_input.setEnabled(False)
+                delay_input.editingFinished.connect(
+                    lambda b=btn_name, i=col: self.update_delay_interval(b, i)
+                )
+
+                delay_layout.addWidget(delay_btn)
+                delay_layout.addWidget(delay_input)
+
                 # 2. Основная кнопка слота
                 slot_btn = QPushButton("NONE")
                 slot_btn.setObjectName(f"Slot_{btn_name}_{col}")
@@ -1794,6 +1835,7 @@ class MainWindow(QMainWindow):
                 # Добавляем виджеты в вертикальный layout с отступами
                 slot_layout.setSpacing(6)  # Увеличили отступ для четкого разделения
                 slot_layout.addWidget(turbo_container)
+                slot_layout.addWidget(delay_container)
                 slot_layout.addWidget(slot_btn)
                 slot_layout.addWidget(toggle_container)
 
@@ -1803,6 +1845,8 @@ class MainWindow(QMainWindow):
                 self.ui_toggles[btn_name].append(toggle_btn)
                 self.ui_turbos[btn_name].append(turbo_btn)
                 self.ui_turbo_inputs[btn_name].append(turbo_input)
+                self.ui_delays[btn_name].append(delay_btn)
+                self.ui_delay_inputs[btn_name].append(delay_input)
 
             self.scroll_layout.addWidget(row_frame)
 
@@ -1861,6 +1905,15 @@ class MainWindow(QMainWindow):
             "run_btn_active" if is_active else "run_btn_inactive"
         )
         self.toggle_btn.setText("STOP EMULATION" if is_active else "START EMULATION")
+        
+        if hasattr(self, "tray_btn_toggle"):
+            self.tray_btn_toggle.setObjectName(
+                "run_btn_active" if is_active else "run_btn_inactive"
+            )
+            self.tray_btn_toggle.setText("STOP EMULATION" if is_active else "START EMULATION")
+            self.tray_btn_toggle.style().unpolish(self.tray_btn_toggle)
+            self.tray_btn_toggle.style().polish(self.tray_btn_toggle)
+            
         self.toggle_btn.style().unpolish(self.toggle_btn)  # Форсим перерисовку стиля
         self.toggle_btn.style().polish(self.toggle_btn)
 
@@ -1953,6 +2006,22 @@ class MainWindow(QMainWindow):
                 t_input.style().unpolish(t_input)
                 t_input.style().polish(t_input)
 
+                self.delays[gp_btn][i] = False
+                self.delay_intervals_map[gp_btn][i] = 0.1
+
+                d_btn = self.ui_delays[gp_btn][i]
+                d_btn.blockSignals(True)
+                d_btn.setChecked(False)
+                d_btn.setStyleSheet("")
+                d_btn.blockSignals(False)
+
+                d_input = self.ui_delay_inputs[gp_btn][i]
+                d_input.setEnabled(False)
+                d_input.setText("0.1")
+                d_input.setProperty("active", "false")
+                d_input.style().unpolish(d_input)
+                d_input.style().polish(d_input)
+
         # 1. Сначала подгружаем геометрию окна из GLOBAL_CONFIG (config.ini)
         if os.path.exists(GLOBAL_CONFIG):
             sys_config = configparser.ConfigParser()
@@ -2020,24 +2089,52 @@ class MainWindow(QMainWindow):
                             self.turbo_intervals_map[gp_btn_up][i] = vals[i]
                             self.ui_turbo_inputs[gp_btn_up][i].setText(str(vals[i]))
 
-                            # Активируем поле только если турбо активен
+                             # Активируем поле только если турбо активен
                             is_active = self.turbos[gp_btn_up][i]
                             self.ui_turbo_inputs[gp_btn_up][i].setEnabled(is_active)
                             self.ui_turbo_inputs[gp_btn_up][i].setProperty(
                                 "active", "true" if is_active else "false"
                             )
 
+            if "Delay" in config:
+                for gp_btn, val in config["Delay"].items():
+                    gp_btn_up = gp_btn.upper()
+                    if gp_btn_up in self.delays:
+                        states = [bool(int(x)) for x in val.split(",")]
+                        for i in range(min(len(states), 6)):
+                            self.delays[gp_btn_up][i] = states[i]
+                            self.ui_delays[gp_btn_up][i].blockSignals(True)
+                            self.ui_delays[gp_btn_up][i].setChecked(states[i])
+                            if states[i]:
+                                self.ui_delays[gp_btn_up][i].setStyleSheet(f"background-color: {self.primary_color}; color: white;")
+                            self.ui_delays[gp_btn_up][i].blockSignals(False)
+
+            if "DelayIntervals" in config:
+                for gp_btn, val in config["DelayIntervals"].items():
+                    gp_btn_up = gp_btn.upper()
+                    if gp_btn_up in self.delay_intervals_map:
+                        vals = [float(x) for x in val.split(",")]
+                        for i in range(min(len(vals), 6)):
+                            self.delay_intervals_map[gp_btn_up][i] = vals[i]
+                            self.ui_delay_inputs[gp_btn_up][i].setText(str(vals[i]))
+                            is_active = self.delays[gp_btn_up][i]
+                            self.ui_delay_inputs[gp_btn_up][i].setEnabled(is_active)
+                            self.ui_delay_inputs[gp_btn_up][i].setProperty("active", "true" if is_active else "false")
+
             self.thread.bindings = {k: v[:] for k, v in self.bindings.items()}
             self.thread.toggles = {k: v[:] for k, v in self.toggles.items()}
             self.thread.turbos = {k: v[:] for k, v in self.turbos.items()}
+            self.thread.delays = {k: v[:] for k, v in self.delays.items()}
 
             # Обновляем состояние блокировок
             for gp_btn in GP_MAP_KEYS:
                 for i in range(6):
                     is_toggle = self.toggles[gp_btn][i]
                     is_turbo = self.turbos[gp_btn][i]
-                    self.ui_turbos[gp_btn][i].setEnabled(not is_toggle)
-                    self.ui_toggles[gp_btn][i].setEnabled(not is_turbo)
+                    is_delay = self.delays[gp_btn][i]
+                    self.ui_turbos[gp_btn][i].setEnabled(not is_toggle and not is_delay)
+                    self.ui_toggles[gp_btn][i].setEnabled(not is_turbo and not is_delay)
+                    self.ui_delays[gp_btn][i].setEnabled(not is_toggle and not is_turbo)
             print(f"[SYSTEM] Profile loaded: {full_path}")
 
     def save_config(self, filename=None):
@@ -2069,6 +2166,15 @@ class MainWindow(QMainWindow):
         config["TurboIntervals"] = {
             k: ",".join([str(x) for x in v])
             for k, v in self.turbo_intervals_map.items()
+        }
+        # Сохраняем Delay
+        config["Delay"] = {
+            k: ",".join(["1" if x else "0" for x in v]) for k, v in self.delays.items()
+        }
+        # Сохраняем интервалы Delay
+        config["DelayIntervals"] = {
+            k: ",".join([str(x) for x in v])
+            for k, v in self.delay_intervals_map.items()
         }
 
         try:
@@ -2222,8 +2328,9 @@ class MainWindow(QMainWindow):
         self.toggles[gp_btn][idx] = checked
         self.thread.toggles = {k: v[:] for k, v in self.toggles.items()}
 
-        # Блокируем Turbo если Toggle активен
+        # Блокируем Turbo и Delay если Toggle активен
         self.ui_turbos[gp_btn][idx].setEnabled(not checked)
+        self.ui_delays[gp_btn][idx].setEnabled(not checked)
 
         self.save_config()
 
@@ -2232,8 +2339,9 @@ class MainWindow(QMainWindow):
         self.turbos[gp_btn][idx] = checked
         self.thread.turbos = {k: v[:] for k, v in self.turbos.items()}
 
-        # Блокируем Toggle если Turbo активен
+        # Блокируем Toggle и Delay если Turbo активен
         self.ui_toggles[gp_btn][idx].setEnabled(not checked)
+        self.ui_delays[gp_btn][idx].setEnabled(not checked)
 
         # Включаем/выключаем текстовое поле (всегда видимо)
         turbo_input = self.ui_turbo_inputs[gp_btn][idx]
@@ -2259,6 +2367,73 @@ class MainWindow(QMainWindow):
         except ValueError:
             inp.setText(str(self.turbo_intervals_map[gp_btn][idx]))
         self.save_config()
+
+    def update_delay_state(self, gp_btn, idx, checked):
+        """Обновление состояния чекбокса Delay"""
+        self.delays[gp_btn][idx] = checked
+        self.thread.delays = {k: v[:] for k, v in self.delays.items()}
+        
+        # Блокируем Toggle и Turbo если Delay активен
+        self.ui_toggles[gp_btn][idx].setEnabled(not checked)
+        self.ui_turbos[gp_btn][idx].setEnabled(not checked)
+        
+        delay_input = self.ui_delay_inputs[gp_btn][idx]
+        delay_input.setEnabled(checked)
+        if checked:
+            delay_input.setProperty("active", "true")
+        else:
+            delay_input.setProperty("active", "false")
+        delay_input.style().unpolish(delay_input)
+        delay_input.style().polish(delay_input)
+        
+        btn = self.ui_delays[gp_btn][idx]
+        if checked:
+            btn.setStyleSheet(f"background-color: {self.primary_color}; color: white;")
+        else:
+            btn.setStyleSheet("")
+
+        self.save_config()
+
+    def update_delay_interval(self, gp_btn, idx):
+        """Обновление интервала из текстового поля Delay"""
+        inp = self.ui_delay_inputs[gp_btn][idx]
+        text = inp.text().replace(",", ".")
+        try:
+            val = float(text)
+            if val < 0.0:
+                val = 0.0
+            self.delay_intervals_map[gp_btn][idx] = val
+        except ValueError:
+            inp.setText(str(self.delay_intervals_map[gp_btn][idx]))
+        self.save_config()
+
+    def on_delay_request(self, gp_btn, slot_idx, is_down):
+        """Слот для сигнала Delay из InterceptionThread (нажатие/отпускание)"""
+        key = (gp_btn, slot_idx)
+        if is_down:
+            if key in self.delay_timers:
+                # Игнорируем автоповторы нажатия от системы, если таймер уже запущен
+                return
+            delay_sec = self.delay_intervals_map[gp_btn][slot_idx]
+            timer = QTimer(self)
+            timer.setSingleShot(True)
+            timer.timeout.connect(lambda b=gp_btn, i=slot_idx: self.on_delay_fired(b, i))
+            self.delay_timers[key] = timer
+            self.delay_fired_state[key] = False
+            timer.start(int(delay_sec * 1000))
+        else:
+            if key in self.delay_timers:
+                timer = self.delay_timers.pop(key)
+                timer.stop()
+                has_fired = self.delay_fired_state.get(key, False)
+                if has_fired:
+                    # Раз запущен, нужно его корректно "отпустить"
+                    self.thread.trigger_logical_action(gp_btn, slot_idx, False)
+
+    def on_delay_fired(self, gp_btn, slot_idx):
+        key = (gp_btn, slot_idx)
+        self.delay_fired_state[key] = True
+        self.thread.trigger_logical_action(gp_btn, slot_idx, True)
 
     def on_turbo_active(self, gp_btn, is_active, slot_idx):
         """Слот для сигнала из потока Interception"""
@@ -2610,6 +2785,11 @@ class MainWindow(QMainWindow):
         """
         if hasattr(self, "tray_icon") and self.tray_icon.contextMenu():
             self.tray_icon.contextMenu().setStyleSheet(style)
+            
+        if hasattr(self, "tray_btn_toggle"):
+            self.tray_btn_toggle.setStyleSheet(
+                get_stylesheet(self.primary_color, self.secondary_color) + "\nQPushButton { margin: 4px 10px; padding: 0 10px; }"
+            )
 
     def save_appearance(self):
         """Сохраняет цвета в System_Config.ini"""
@@ -2629,7 +2809,41 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    import multiprocessing
+    # 1. Freeze Support: Обязательно для корректной работы PyInstaller с мультипроцессами (onefile)
+    multiprocessing.freeze_support()
+
+    # 2. App ID Integration: Группировка на панели задач
+    try:
+        import ctypes
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('XBOX-Keypad')
+    except Exception as e:
+        print(f"AppID Error: {e}")
+
     app = QApplication(sys.argv)
+
+    # 3. Single Instance Check: Блокировка повторного запуска
+    from PySide6.QtCore import QLockFile, QDir
+    import os
+    lock_file_path = os.path.join(QDir.tempPath(), "xbox_keypad_v2.lock")
+    lock_file = QLockFile(lock_file_path)
+
+    if not lock_file.tryLock(100):
+        # Если файл заблокирован, значит программа уже запущена
+        print("[SYSTEM] Application is already running. Exiting.")
+        # Можно использовать нативный MessageBox Windows перед выходом
+        try:
+            import ctypes
+            ctypes.windll.user32.MessageBoxW(0, "XBOX-Keypad is already running.", "Already Running", 0x10)
+        except:
+            pass
+        sys.exit(1)
+
     ex = MainWindow()
     ex.show()
-    sys.exit(app.exec())
+    
+    # 4. Cleanup: lock_file освободится автоматически при закрытии приложения (sys.exit), 
+    # так как объект живет в области видимости до завершения скрипта.
+    exit_code = app.exec()
+    lock_file.unlock()
+    sys.exit(exit_code)
