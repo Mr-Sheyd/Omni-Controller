@@ -14,8 +14,7 @@ Gamepad emulator with block keys.
 * **Profile System**: Automatic settings backup in `System_Config.ini` and support for a `Profiles` folder.
 * **Portability**: A single standalone `.exe` file—no Python or extra libraries required on the host PC.
 * **Low Latency**: Powered by the Interception driver for the fastest possible response time.
-* **Smart Tray Integration**: Full control via the system tray icon, including a dynamic START/STOP emulation toggle with a custom neon design.
-* **Hide to Tray**: Keep your workspace clean by completely hiding the taskbar icon when the app is minimized.
+* **Smart Tray Integration & Hide to Tray**: Full control via the system tray icon, including a dynamic START/STOP emulation toggle with a custom neon design Keeps your workspace clean by completely hiding the taskbar icon when the app is minimized.
 
 ## 🎮 Button Operation Modes
 * **TURBO**: Press once to start a continuous rapid-fire loop; press again to stop. No need to hold the key.
@@ -66,8 +65,7 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 * **Система профилей**: Автоматическое сохранение настроек в `System_Config.ini` и поддержка папки `Profiles`.
 * **Портативность**: Один автономный `.exe` файл — не требует установки Python или библиотек на компьютер.
 * **Минимальная задержка**: Работает на базе драйвера Interception для максимально быстрого отклика.
-* **Интеграция с панелью задач**: Полное управление через иконку в системном трее, включая динамическое переключение эмуляции START/STOP с пользовательским неоновым дизайном.
-* **Скрытие в трей**: Очищает рабочее пространство, полностью скрывая иконку на панели задач, когда программа свернуто.
+* **Интеграция с панелью задач & Скрытие в трей**: Полное управление через иконку в системном трее, включая динамическое переключение эмуляции START/STOP с пользовательским неоновым дизайном. Очищает рабочее пространство, полностью скрывая иконку на панели задач, когда программа свернуто.
 
 ## 🎮 Режимы работы кнопок
 * **TURBO**: Нажал — активировал постоянный повтор нажатий; нажал ещё раз — остановил. Удерживать клавишу не нужно.
