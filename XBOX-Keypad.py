@@ -1284,6 +1284,13 @@ class MainWindow(QMainWindow):
         is_autostart = config.getboolean("Settings", "autostart", fallback=False)
         self.autostart_cb.setChecked(is_autostart)
 
+        # Загружаем настройку сворачивания
+        if os.path.exists(GLOBAL_CONFIG):
+            app_cfg = configparser.ConfigParser()
+            app_cfg.read(GLOBAL_CONFIG, encoding="utf-8")
+            is_hide_to_tray = app_cfg.getboolean("Appearance", "hide_to_tray", fallback=False)
+            self.hide_to_tray_cb.setChecked(is_hide_to_tray)
+
         if is_autostart:
             self.toggle_btn.setChecked(True)
             self.toggle()
@@ -1552,36 +1559,47 @@ class MainWindow(QMainWindow):
             )
 
     def on_tray_icon_activated(self, reason):
-        """Разворачивание окна при клике по иконке в трее"""
+        """Разворачивание/сворачивание окна при клике по иконке в трее"""
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
-            if self.isVisible():
-                self.hide()
-            else:
+            if self.isMinimized() or not self.isVisible():
                 self.showNormal()
                 self.activateWindow()
+                try:
+                    import ctypes
+                    ctypes.windll.user32.SetForegroundWindow(int(self.winId()))
+                except Exception:
+                    pass
+            else:
+                self.setWindowState(Qt.WindowMinimized)
 
     def force_minimize(self):
         """Принудительное сворачивание для безрамочного окна"""
         self.setWindowState(Qt.WindowMinimized)
 
     def changeEvent(self, event):
-        """Ловим сворачивание и прячем в трей"""
+        """Ловим сворачивание — оставляем в таскбаре для нативного превью"""
         if event.type() == QEvent.Type.WindowStateChange:
-            # Используем проверку через windowState для надёжности
             if self.windowState() & Qt.WindowMinimized:
-                # Прячем окно с панели задач
-                self.hide()
-
-                # Показываем уведомление
-                if hasattr(self, "tray_icon"):
-                    self.tray_icon.showMessage(
-                        PROJECT_NAME,
-                        "Программа свёрнута в трей",
-                        QSystemTrayIcon.MessageIcon.Information,
-                        2000,
-                    )
-                event.ignore()
-                return  # Выходим, чтобы базовый метод не перехватил
+                hide_to_tray = hasattr(self, "hide_to_tray_cb") and self.hide_to_tray_cb.isChecked()
+                if hide_to_tray:
+                    # Полностью скрываем окно из таскбара (трей-онли)
+                    self.hide()
+                    if hasattr(self, "tray_icon"):
+                        self.tray_icon.showMessage(
+                            PROJECT_NAME,
+                            "Программа свёрнута в трей",
+                            QSystemTrayIcon.MessageIcon.Information,
+                            1500,
+                        )
+                else:
+                    # Остаёмся в таскбаре, DWM-превью работает
+                    if hasattr(self, "tray_icon"):
+                        self.tray_icon.showMessage(
+                            PROJECT_NAME,
+                            "Программа свёрнута",
+                            QSystemTrayIcon.MessageIcon.Information,
+                            1500,
+                        )
         super().changeEvent(event)
 
     def setup_ui(self):
@@ -1663,11 +1681,26 @@ class MainWindow(QMainWindow):
 
         h_layout.addWidget(prof_section, stretch=1)
 
-        # Автостарт
+        # Блок AUTO-START + HIDE TO TRAY — вертикально
+        checks_frame = QFrame()
+        checks_layout = QVBoxLayout(checks_frame)
+        checks_layout.setContentsMargins(0, 0, 0, 0)
+        checks_layout.setSpacing(2)
+
         self.autostart_cb = QCheckBox("AUTO-START")
         self.autostart_cb.setObjectName("AutostartCheck")
         self.autostart_cb.setFocusPolicy(Qt.NoFocus)
-        h_layout.addWidget(self.autostart_cb)
+        checks_layout.addWidget(self.autostart_cb)
+
+        # Сворачивать в трей или в таскбар
+        self.hide_to_tray_cb = QCheckBox("HIDE TO TRAY")
+        self.hide_to_tray_cb.setObjectName("HideToTrayCheck")
+        self.hide_to_tray_cb.setFocusPolicy(Qt.NoFocus)
+        self.hide_to_tray_cb.setToolTip("При сворачивании: скрывать окно в трей (без превью) или оставлять в таскбаре (с превью)")
+        self.hide_to_tray_cb.stateChanged.connect(self.save_appearance)
+        checks_layout.addWidget(self.hide_to_tray_cb)
+
+        h_layout.addWidget(checks_frame)
 
         # Кнопка НАСТРОЙКИ (Settings)
         self.settings_btn = QPushButton("SETTINGS")
@@ -2802,6 +2835,8 @@ class MainWindow(QMainWindow):
 
         config["Appearance"]["primary_color"] = self.primary_color
         config["Appearance"]["secondary_color"] = self.secondary_color
+        if hasattr(self, "hide_to_tray_cb"):
+            config["Appearance"]["hide_to_tray"] = "true" if self.hide_to_tray_cb.isChecked() else "false"
 
         with open(GLOBAL_CONFIG, "w", encoding="utf-8") as f:
             config.write(f)
@@ -2813,37 +2848,61 @@ if __name__ == "__main__":
     # 1. Freeze Support: Обязательно для корректной работы PyInstaller с мультипроцессами (onefile)
     multiprocessing.freeze_support()
 
-    # 2. App ID Integration: Группировка на панели задач
-    try:
-        import ctypes
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('XBOX-Keypad')
-    except Exception as e:
-        print(f"AppID Error: {e}")
+    # 2. App ID Integration: Удалено, так как явное задание AppID ломает группировку ярлыка в EXE.
+    # Windows автоматически сгруппирует процесс с ярлыком на таскбаре по пути к исполняемому файлу.
 
     app = QApplication(sys.argv)
+    
+    # Глобальная иконка приложения для таскбара
+    from PySide6.QtGui import QIcon
+    if os.path.exists("XBOX-Keypad.ico"):
+        app.setWindowIcon(QIcon("XBOX-Keypad.ico"))
 
-    # 3. Single Instance Check: Блокировка повторного запуска
-    from PySide6.QtCore import QLockFile, QDir
-    import os
-    lock_file_path = os.path.join(QDir.tempPath(), "xbox_keypad_v2.lock")
-    lock_file = QLockFile(lock_file_path)
+    # 3. Single Instance / Window Restore Communication
+    from PySide6.QtNetwork import QLocalSocket, QLocalServer
+    server_name = "XBOX_KEYPAD_V2_INSTANCE"
+    
+    # Пытаемся подключиться к уже запущенному приложению
+    socket = QLocalSocket()
+    socket.connectToServer(server_name)
+    if socket.waitForConnected(500):
+        # Если удалось — шлём команду развернуть окно и тихо выходим
+        socket.write(b"WAKEUP")
+        socket.waitForBytesWritten(500)
+        sys.exit(0)
 
-    if not lock_file.tryLock(100):
-        # Если файл заблокирован, значит программа уже запущена
-        print("[SYSTEM] Application is already running. Exiting.")
-        # Можно использовать нативный MessageBox Windows перед выходом
-        try:
-            import ctypes
-            ctypes.windll.user32.MessageBoxW(0, "XBOX-Keypad is already running.", "Already Running", 0x10)
-        except:
-            pass
-        sys.exit(1)
+    # Если мы здесь, значит мы первые. Удаляем старый сокет (если был краш) и слушаем.
+    QLocalServer.removeServer(server_name)
+    server = QLocalServer()
+    server.listen(server_name)
 
     ex = MainWindow()
+    
+    def on_new_connection():
+        client = server.nextPendingConnection()
+        if client:
+            if client.waitForReadyRead(200):
+                msg = client.readAll()
+                if msg == b"WAKEUP":
+                    ex.showNormal()
+                    ex.raise_()
+                    ex.activateWindow()
+                    # SetForegroundWindow принудительно поднимает окно,
+                    # даже если Windows заблокировала обычный захват фокуса
+                    try:
+                        import ctypes
+                        hwnd = int(ex.winId())
+                        ctypes.windll.user32.SetForegroundWindow(hwnd)
+                    except Exception:
+                        pass
+            client.disconnectFromServer()
+            client.deleteLater()
+            
+    server.newConnection.connect(on_new_connection)
+
     ex.show()
     
-    # 4. Cleanup: lock_file освободится автоматически при закрытии приложения (sys.exit), 
-    # так как объект живет в области видимости до завершения скрипта.
+    # 4. Cleanup
     exit_code = app.exec()
-    lock_file.unlock()
+    server.close()
     sys.exit(exit_code)
