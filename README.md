@@ -14,8 +14,8 @@ Gamepad emulator with block keys.
 * **Profile System**: Automatic settings backup in `System_Config.ini` and support for a `Profiles` folder.
 * **Portability**: A single standalone `.exe` file—no Python or extra libraries required on the host PC.
 * **Low Latency**: Powered by the Interception driver for the fastest possible response time.
-* **Hide to Tray**: Keep your workspace clean by completely hiding the taskbar icon when the app is minimized.
 * **Smart Tray Integration**: Full control via the system tray icon, including a dynamic START/STOP emulation toggle with a custom neon design.
+* **Hide to Tray**: Keep your workspace clean by completely hiding the taskbar icon when the app is minimized.
 
 ## 🎮 Button Operation Modes
 * **TURBO**: Press once to start a continuous rapid-fire loop; press again to stop. No need to hold the key.
