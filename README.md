@@ -17,7 +17,7 @@ Gamepad emulator with block keys.
 * **Hide to Tray**: Keep your workspace clean by completely hiding the taskbar icon when the app is minimized.
 * **Smart Tray Integration**: Full control via the system tray icon, including a dynamic START/STOP emulation toggle with a custom neon design.
 
-## 🕹 Button Operation Modes
+## 🎮 Button Operation Modes
 * **TURBO**: Press once to start a continuous rapid-fire loop; press again to stop. No need to hold the key.
 * **TOGGLE**: Press once to keep the button held down; press again to release.
 * **DELAY**: Press and hold to trigger an action after a set delay (0.1s+). Releasing the key early cancels the action.
@@ -69,7 +69,7 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 * **Скрытие в трей**: Очищает рабочее пространства, полностью скрывая иконку на панели задач, когда программа свернуто.
 * **Интеграция с панелью управления**: Полное управление через иконку в системном трее, включая динамическое переключение эмуляции START/STOP с пользовательским неоновым дизайном.
 
-## 🕹 Режимы работы кнопок
+## 🎮 Режимы работы кнопок
 * **TURBO**: Нажал — активировал постоянный повтор нажатий; нажал ещё раз — остановил. Удерживать клавишу не нужно.
 * **TOGGLE**: Нажал — кнопка «залипла» в нажатом состоянии; нажал второй раз — отпустил.
 * **DELAY**: Нажал и удерживаешь для срабатывания через заданное время (от 0.1 сек). Если отпустить раньше — действие отменится.
