@@ -14,7 +14,13 @@ Gamepad emulator with block keys.
 * **Profile System**: Automatic settings backup in `System_Config.ini` and support for a `Profiles` folder.
 * **Portability**: A single standalone `.exe` file—no Python or extra libraries required on the host PC.
 * **Low Latency**: Powered by the Interception driver for the fastest possible response time.
+* **Hide to Tray**: Keep your workspace clean by completely hiding the taskbar icon when the app is minimized.
+* **Smart Tray Integration**: Full control via the system tray icon, including a dynamic START/STOP emulation toggle with a custom neon design.
 
+## 🕹 Button Operation Modes
+* **TURBO**: Press once to start a continuous rapid-fire loop; press again to stop. No need to hold the key.
+* **TOGGLE**: Press once to keep the button held down; press again to release.
+* **DELAY**: Press and hold to trigger an action after a set delay (0.1s+). Releasing the key early cancels the action.
 
 ## 🛠 Installation & Usage
 1.  Download the latest archive from the [Releases](https://github.com/Mr-Sheyd/XBOX-Keypad/releases) section.
@@ -39,7 +45,7 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 
 
 ---
-<img width="1031" height="900" alt="XBOX-Keypad v2 0" src="https://github.com/user-attachments/assets/f6b71266-1e24-4683-bc6d-12091fd196a3" />
+<img width="1038" height="1076" alt="XBOX-Keypad v2 2" src="https://github.com/user-attachments/assets/e1682bdd-fc09-4f59-841d-4894bc2b1465" />
 
 ---
 
@@ -60,7 +66,13 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 * **Система профилей**: Автоматическое сохранение настроек в `System_Config.ini` и поддержка папки `Profiles`.
 * **Портативность**: Один автономный `.exe` файл — не требует установки Python или библиотек на компьютер.
 * **Минимальная задержка**: Работает на базе драйвера Interception для максимально быстрого отклика.
+* **Скрытие в трей**: поддерживайте чистоту рабочего пространства, полностью скрывая значок на панели задач, когда приложение свернуто.
+* **Интеграция с панелью управления**: Полное управление через иконку в системном трее, включая динамическое переключение эмуляции START/STOP с пользовательским неоновым дизайном.
 
+## 🕹 Режимы работы кнопок
+* **TURBO**: Нажал — активировал постоянный повтор нажатий; нажал ещё раз — остановил. Удерживать клавишу не нужно.
+* **TOGGLE**: Нажал — кнопка «залипла» в нажатом состоянии; нажал второй раз — отпустил.
+* **DELAY**: Нажал и удерживаешь для срабатывания через заданное время (от 0.1 сек). Если отпустить раньше — действие отменится.
 
 ## 🛠 Установка и использование
 1.  Скачайте последний архив из раздела [Releases](https://github.com/Mr-Sheyd/XBOX-Keypad/releases).
