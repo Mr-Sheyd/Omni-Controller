@@ -1233,8 +1233,7 @@ NAME_TO_CODE = {
     "RALT": 0xB8,
     "LWIN": 0xDB,
     "RWIN": 0xDC,
-    "APPS": 0xDD,
-    "APPS": 93,
+    "APPS": 0x5D,
     # NumPad (Цифровая клавиатура)
     "NUM0": 0x52,
     "NUM1": 0x4F,
@@ -1314,6 +1313,7 @@ EXTENDED_KEYS = {
     0x35: "NUM_DIVIDE",
     0x5B: "LWIN",
     0x5C: "RWIN",
+    0x5D: "APPS",  # APPS key is extended
 }
 
 # --- GAMEPAD MAPPING DATABASE ---
@@ -1615,6 +1615,7 @@ class MacroRowWidget(QFrame):
     bind_requested = Signal(int)
     delete_requested = Signal(int)
     steps_changed = Signal(int, list) # Сигнал при изменении шагов внутри строки
+    bind_cleared = Signal(int) # Сигнал для очистки макроса по правому клику
 
     def __init__(self, idx: int, name: str, bind: str, steps: list = None, is_active: bool = False, p_color="#0078D7", s_color="#E74C3C", parent=None):
         super().__init__(parent)
@@ -1652,6 +1653,7 @@ class MacroRowWidget(QFrame):
         self.bind_btn.setFocusPolicy(Qt.NoFocus)
         self.bind_btn.setFixedSize(94, 34)
         self.bind_btn.clicked.connect(lambda: self.bind_requested.emit(self.idx))
+        self.bind_btn.installEventFilter(self)
         self.main_lay.addWidget(self.bind_btn)
 
         # 4. Таймлайн (Scroll Area)
@@ -1704,6 +1706,21 @@ class MacroRowWidget(QFrame):
 
         self._load_steps()
         self.update_style()
+
+    def eventFilter(self, obj, event):
+        if obj == self.bind_btn and event.type() == QEvent.Type.MouseButtonPress:
+            if event.button() == Qt.MouseButton.RightButton:
+                # 1. Меняем текст визуально мгновенно
+                self.bind_btn.setText("NONE")
+                
+                # 2. Эмитим сигнал для родителя (MacrosEditorWidget), чтобы он очистил словарь
+                self.bind_cleared.emit(self.idx)
+                
+                # Возвращаем True, чтобы событие считалось обработанным и не пошло дальше
+                return True
+                
+        # Прокидываем все остальные события стандарту
+        return super().eventFilter(obj, event)
 
     def _clear_all_steps(self):
         """
@@ -2861,6 +2878,7 @@ class MacrosEditorWidget(QWidget):
             row.name_changed.connect(self._on_macro_name_changed)
             row.bind_requested.connect(self._start_capture_bind)
             row.steps_changed.connect(self._on_macro_steps_changed)
+            row.bind_cleared.connect(self._clear_macro_bind)
             self.macro_vbox.addWidget(row)
             self.macro_widgets.append(row)
 
@@ -2939,6 +2957,7 @@ class MacrosEditorWidget(QWidget):
         row.name_changed.connect(self._on_macro_name_changed)
         row.bind_requested.connect(self._start_capture_bind)
         row.steps_changed.connect(self._on_macro_steps_changed)
+        row.bind_cleared.connect(self._clear_macro_bind)
 
         # Вставляем его в лейаут ПЕРЕД кнопкой ADD (она последняя, индекс count-1)
         insert_pos = self.macro_vbox.count() - 1
@@ -2953,41 +2972,37 @@ class MacrosEditorWidget(QWidget):
 
     def _del_macro(self, idx):
         """Удаление макроса с хирургической точностью."""
-        if not (0 <= idx < len(self.macros)):
-            return
+        if 0 <= idx < len(self.macros):
+            # Отключаем захват, если он был активен на удаляемом макросе
+            if getattr(self, "_capturing_bind", False) and self.current_macro_idx == idx:
+                self._cancel_capture_bind()
 
-        # 1. Замораживаем отрисовку, чтобы избежать дёрганий при схлопывании
-        self.setUpdatesEnabled(False)
-
-        try:
-            # 2. Удаляем данные из основного списка
             self.macros.pop(idx)
             
-            # 3. Находим виджет в нашем списке ссылок и удаляем его из UI
-            if idx < len(self.macro_widgets):
-                widget_to_del = self.macro_widgets.pop(idx)
-                # Удаляем из лейаута и окончательно уничтожаем объект
-                self.macro_vbox.removeWidget(widget_to_del)
-                widget_to_del.deleteLater()
-
-            # 4. ВАЖНО: Сдвигаем индексы у всех макросов, которые были ниже
-            # Без этого при нажатии BIND на 3-м макросе (ставшем 2-м), поменяется не тот бинд.
-            for i in range(idx, len(self.macro_widgets)):
-                current_widget = self.macro_widgets[i]
-                current_widget.idx = i 
-
-            # 5. Корректируем индекс текущего выбранного макроса
-            if self.current_macro_idx >= len(self.macros):
-                self.current_macro_idx = len(self.macros) - 1
-            
+            # Корректируем current_macro_idx только если нужно
+            if self.current_macro_idx == idx:
+                self.current_macro_idx = min(idx, len(self.macros) - 1)
+            elif self.current_macro_idx > idx:
+                self.current_macro_idx -= 1
+                
+            self._refresh_macro_list()
             self._sync_header_combo()
             
-        finally:
-            # 6. Размораживаем и заставляем лейаут ровно подтянуть ряды
-            self.setUpdatesEnabled(True)
-            self.macro_vbox.activate()
+            # КРИТИЧЕСКИ ВАЖНО: Обновляем триггеры перехвата в драйвере!
+            if hasattr(self, "mw") and hasattr(self.mw, "update_macro_triggers"):
+                self.mw.update_macro_triggers()
 
-        print(f"[MacrosEditor] Macro {idx} removed. List shifted and indexed correctly.")
+    def _clear_macro_bind(self, idx):
+        """Обрабатывает сигнал bind_cleared от MacroRowWidget: очищает словарь и шлёт апдейты драйверу."""
+        if 0 <= idx < len(self.macros):
+            self.macros[idx]["bind"] = ""
+            
+            # Сохраняем и обновляем драйвер через MainWindow
+            if hasattr(self, "mw"):
+                if hasattr(self.mw, "update_macro_triggers"):
+                    self.mw.update_macro_triggers()
+                if hasattr(self.mw, "save_config"):
+                    self.mw.save_config()
 
     def _on_macro_selected(self, idx):
         self.current_macro_idx = idx
@@ -3124,6 +3139,10 @@ class MacrosEditorWidget(QWidget):
             return
         self.macros[self.current_macro_idx]["bind"] = key_name
         self._cancel_capture_bind()
+        
+        # КРИТИЧЕСКИ ВАЖНО: Обновляем триггеры перехвата в драйвере!
+        if hasattr(self, "mw") and hasattr(self.mw, "update_macro_triggers"):
+            self.mw.update_macro_triggers()
 
     # ── Load / Save (вызывается из MainWindow.load_config / save_config) ─────
 
@@ -3146,6 +3165,10 @@ class MacrosEditorWidget(QWidget):
 
         self._refresh_macro_list()
         self._sync_header_combo()
+        
+        # КРИТИЧЕСКИ ВАЖНО: Обновляем триггеры перехвата в драйвере!
+        if hasattr(self, "mw") and hasattr(self.mw, "update_macro_triggers"):
+            self.mw.update_macro_triggers()
 
     def save_to_config(self, config: "configparser.ConfigParser"):
         # Удаляем старые секции
@@ -3322,7 +3345,8 @@ class InterceptionThread(QThread):
 
                 # --- 1. ПРОВЕРКА МАКРОСОВ ---
                 if self.enabled and not self.is_typing and not self.is_capturing:
-                    if sc in self.macro_triggers:
+                    # v7.5 FIX: Используем имя клавиши для проверки макросов (поддерживает обычные и E0 клавиши)
+                    if name in self.macro_triggers:
                         self.macro_activated.emit(sc, is_down)
                         should_block_windows = True # Поглощаем клавишу
 
@@ -3347,13 +3371,12 @@ class InterceptionThread(QThread):
 
                 # --- 4. ФИНАЛЬНЫЙ ПРОБРОС В СИСТЕМУ ---
                 if should_block_windows:
-                    # КРИТИЧЕСКИ ВАЖНО: 
-                    # Если клавиша ОТПУЩЕНА — всегда шлём её в Windows, чтобы не было ЗАЛИПАНИЯ.
-                    # Если клавиша НАЖАТА — блокируем (не шлём), чтобы не мусорить в системе.
-                    if not is_down:
-                        self.lib.interception_send(self.context, device, ctypes.byref(stroke), 1)
-                    else:
-                        continue 
+                    # v7.6 FIX: Полностью поглощаем и DOWN, и UP события.
+                    # Раньше мы пропускали UP-событие в систему, чтобы избежать залипания,
+                    # но такие клавиши как APPS, LWIN, RWIN срабатывают именно на UP.
+                    # Так как мы поглотили DOWN, система не знает о нажатии,
+                    # поэтому залипания не будет, даже если мы удалим UP-событие.
+                    continue 
                 else:
                     # Обычная клавиша, не макрос и не маппер — просто шлём в Windows
                     self.lib.interception_send(self.context, device, ctypes.byref(stroke), 1)
@@ -3975,7 +3998,7 @@ class MainWindow(QMainWindow):
         self.main_layout.addWidget(header)
         self.main_layout.addSpacing(10)
 
-        # --- 2. ОБЛАСТЬ ТАБОВ (v2.5) ---
+        # --- 2. ОБЛАСТЬ ТАБОВ (v3.0) ---
         self.tabs = QTabWidget()
         self.tabs.setObjectName("MainTabs")
         self.tabs.setFocusPolicy(Qt.NoFocus)
@@ -3983,6 +4006,7 @@ class MainWindow(QMainWindow):
         # Tab "MAPPER"
         self.scroll = QScrollArea()
         self.scroll.setObjectName("ScrollArea")
+
         self.scroll.setWidgetResizable(True)
         self.scroll.setFocusPolicy(Qt.NoFocus)
         self.scroll.setVerticalScrollBarPolicy(
@@ -4156,12 +4180,25 @@ class MainWindow(QMainWindow):
 
         self.tabs.addTab(self.scroll, "MAPPER")
         
-        # Tab "MACROS"
+        # Tab "MACROS" (используем виджет редактора)
         self.tabs.addTab(self.macros_editor, "MACROS")
-        self.setStyleSheet(self.get_macro_engine_style())
 
-        self.main_layout.addWidget(self.tabs)
-        self.scan_profiles()
+        # Делаем табы видимыми по умолчанию (v7.4)
+        self.tabs.setStyleSheet("""
+            QTabWidget::pane { border: none; }
+            QTabBar::tab {
+                background: #1a1a1a; color: #bababa;
+                padding: 8px 20px; border-radius: 4px;
+                margin-right: 2px;
+                font-size: 11px; font-weight: bold;
+            }
+            QTabBar::tab:selected {
+                background: #0078d7; color: white;
+            }
+            QTabBar::tab:hover:!selected { background: #252525; }
+        """)
+
+        self.main_layout.addWidget(self.tabs, stretch=1)
 
     def changeEvent(self, event):
         """Отслеживание состояний окна: сворачивание и потеря фокуса"""
@@ -4336,11 +4373,11 @@ class MainWindow(QMainWindow):
         print(f"[SYSTEM] Profiles in '{PROFILES_DIR}': {profiles}")
 
     def update_macro_triggers(self):
-        """Собирает скан-коды всех макросов и передаёт их в поток InterceptionThread."""
+        """Собирает ИМЕНА всех макросов и передаёт их в поток InterceptionThread."""
         if not hasattr(self, "macros_editor"):
             return
             
-        codes = set()
+        names = set()
         for macro in self.macros_editor.macros:
             # ЗАЩИТА: Игнорируем всё, что не является словарем макроса
             if not isinstance(macro, dict):
@@ -4355,14 +4392,15 @@ class MainWindow(QMainWindow):
 
             if not bind:
                 continue
-
-            sc = NAME_TO_CODE.get(bind.upper())
-            if sc is not None:
-                codes.add(sc)
+            
+            # Добавляем в список триггеров именно ИМЯ кнопки, так как сканкоды
+            # могут быть общими для расширенных и обычных кнопок.
+            if bind.upper() != "NONE":
+                names.add(bind.upper())
 
         # Передаем в подтвержденный self.thread
         if hasattr(self, "thread"):
-            self.thread.macro_triggers = codes
+            self.thread.macro_triggers = names
     
     def load_config(self, profile_name=None):
         """Загрузка биндов из папки Profiles и системных настроек из корня"""
