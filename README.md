@@ -3,31 +3,68 @@
 # 🟦 XBOX-Keypad
 Gamepad emulator with block keys.
 
-**XBOX-Keypad** is a lightweight and stylish Xbox controller (XInput) emulator for your keyboard. It allows you to remap keyboard keys to controller buttons, providing a smooth experience in games that only support gamepad input.
+**XBOX-Keypad** is a powerful tool designed to transform your keyboard into a virtual Xbox controller. Unlike basic mappers, this project utilizes a low-level driver for complete input isolation, enabling complex macro sequences and specialized input modes that standard software cannot handle.
 
+---
 
 ## ✨ Key Features
-* **Full XInput Emulation**: The system recognizes a full Xbox 360 controller.
+* **Full XInput Emulation**: Identified as a genuine Xbox 360 controller for 100% game compatibility.
 * **Custom Mapping**: Freely assign any keyboard keys to ABXY, sticks, triggers, and D-pad.
-* **Neon UI**: A modern, minimalist interface featuring a deep blue neon aesthetic.
-* **Visual Feedback**: Interactive button icons to help you keep track of your layout.
-* **Profile System**: Automatic settings backup in `System_Config.ini` and support for a `Profiles` folder.
+* **Low Latency**: Powered by the `Interception` driver for the fastest possible response time at the kernel level.
+* **Neon UI**: A modern, minimalist interface featuring a deep blue neon aesthetic with real-time visual feedback.
+* **Smart Tray Integration**: Full control via the system tray, including a dynamic START/STOP toggle and "Hide to Tray" functionality.
 * **Portability**: A single standalone `.exe` file—no Python or extra libraries required on the host PC.
-* **Low Latency**: Powered by the Interception driver for the fastest possible response time.
-* **Smart Tray Integration & Hide to Tray**: Full control via the system tray icon, including a dynamic START/STOP emulation toggle with a custom neon design Keeps your workspace clean by completely hiding the taskbar icon when the app is minimized.
 
-## 🎮 Button Operation Modes
-* **TURBO**: Press once to start a continuous rapid-fire loop; press again to stop. No need to hold the key.
-* **TOGGLE**: Press once to keep the button held down; press again to release.
+---
+
+## ⚙️ Button Operation Modes
+Beyond simple mapping, you can assign specialized behaviors to any button:
+
+* **NORMAL**: Standard 1:1 mapping—the button is active only while the key is held down.
+* **TURBO**: Press once to start a continuous rapid-fire loop; press again to stop. Perfect for spamming actions without fatigue.
+* **TOGGLE**: Press once to keep the button held down (latched); press again to release.
 * **DELAY**: Press and hold to trigger an action after a set delay (0.1s+). Releasing the key early cancels the action.
 
-## 🛠 Installation & Usage
-1.  Download the latest archive from the [Releases](https://github.com/Mr-Sheyd/XBOX-Keypad/releases) section.
-2.  Extract the contents to any folder.
-3.  Run `XBOX-Keypad.exe`.
-4.  Configure your keys and press **Start Emulation**.
+---
 
-> **Note:** The **Interception** driver must be installed on your system for the program to function.
+### 🛠 Application Control
+- **One-Tap Clear**: Instant bind removal in both the mapper and macro editor via **Right-Click**.
+- **Geometry Memory**: The app remembers its window position and size across sessions.
+- **Safe Save**: Settings management is now isolated from window positioning to prevent config corruption.
+
+---
+
+## 🚀 What's New in v2.5 (Phase 1 Final)
+
+### 🧠 Advanced Macro Engine
+Create and execute sophisticated input chains with ease.
+- **Sticky Sequences**: Accumulated button presses that hold until the activator key is released.
+- **Input Suppression**: Full interception of physical keys to prevent "ghost typing" in Windows while a macro or bind is active. Even the notorious `APPS` key is now fully suppressed.
+- **Dynamic Sync**: Direct real-time synchronization between the UI timeline and emulation data.
+
+### 🎨 Neo-Style UI v2.0
+- **Dynamic Hover**: Automatic shade calculation for buttons and interactive elements.
+- **Custom Scrollbars**: Sleek 8px neon-style scrollbars for a modern look.
+- **Zero-Focus Logic**: Automatic focus clearing after interaction to prevent accidental double-inputs.
+
+---
+
+## 🛠 Technical Specs
+- **Driver**: `Interception` (Kernel-space filtering).
+- **Emulation**: `vgamepad` library.
+- **Standalone**: Compiled via PyInstaller (`onefile`) — all resources and DLLs are packed inside.
+
+## 📦 Installation & Quick Start
+1. Download the latest release.
+2. Ensure the **Interception driver** is installed on your system.
+3. Run `XBOX-Keypad.exe`. It works perfectly with a simple double-click or when run as Administrator.
+
+---
+
+## 🛠 Build Command (For Developers)
+```bash
+python -m PyInstaller --noconfirm --onefile --windowed --name "XBOX-Keypad" --icon="XBOX-Keypad.ico" --add-data "XBOX ICONS;XBOX ICONS" --add-data "interception.dll;." --collect-all vgamepad "XBOX-Keypad.py"
+```
 
 
 ## 📜 Credits
@@ -44,41 +81,82 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 
 
 ---
-<img width="1038" height="1076" alt="XBOX-Keypad v2 2" src="https://github.com/user-attachments/assets/e1682bdd-fc09-4f59-841d-4894bc2b1465" />
+<img width="1139" height="1185" alt="XBOX-Keypad v2 5 (Mapper)" src="https://github.com/user-attachments/assets/78852e61-64b8-4006-80e6-d3acbee8f346" />
+
+<img width="1139" height="1185" alt="XBOX-Keypad v2 5 (Macros)" src="https://github.com/user-attachments/assets/23c7787c-0294-4b00-947f-4f64a89c227d" />
+
+<img width="1139" height="1185" alt="XBOX-Keypad v2 5 (Support)" src="https://github.com/user-attachments/assets/be0209fe-c656-41bc-85e4-5a6e44ce005b" />
 
 ---
 
 
-# RU:
+# RUS:
 
 # 🟦 XBOX-Keypad
 Эмулятор геймпада с блокировкой клавиш.
 
-**XBOX-Keypad** — это лёгкий и стильный эмулятор геймпада Xbox (XInput) для клавиатуры. Программа позволяет переназначить клавиши клавиатуры на кнопки контроллера, обеспечивая комфортную игру в проектах, поддерживающих только геймпад.
+**XBOX-Keypad** — это мощный инструмент, предназначенный для превращения вашей клавиатуры в виртуальный контроллер Xbox. В отличие от простых мапперов, этот проект использует низкоуровневый драйвер для полной изоляции ввода, позволяя создавать сложные макросы и специализированные режимы нажатий, которые недоступны обычному софту.
 
+---
 
-## ✨ Основные возможности
-* **Полная эмуляция XInput**: Система видит устройство как полноценный контроллер Xbox 360.
-* **Кастомный маппинг**: Свободное назначение любых клавиш на ABXY, стики, триггеры и D-pad.
-* **Neon UI**: Современный минималистичный интерфейс в тёмно-синих неоновых тонах.
-* **Визуальный отклик**: Интерактивные иконки кнопок помогают быстро ориентироваться в раскладке.
-* **Система профилей**: Автоматическое сохранение настроек в `System_Config.ini` и поддержка папки `Profiles`.
-* **Портативность**: Один автономный `.exe` файл — не требует установки Python или библиотек на компьютер.
-* **Минимальная задержка**: Работает на базе драйвера Interception для максимально быстрого отклика.
-* **Интеграция с панелью задач & Скрытие в трей**: Полное управление через иконку в системном трее, включая динамическое переключение эмуляции START/STOP с пользовательским неоновым дизайном. Очищает рабочее пространство, полностью скрывая иконку на панели задач, когда программа свернуто.
+## ✨ Ключевые особенности
+* **Полная эмуляция XInput**: Система распознаёт устройство как настоящий контроллер Xbox 360, что гарантирует 100% совместимость с играми.
+* **Кастомный маппинг**: Свободно назначайте любые клавиши клавиатуры на кнопки ABXY, стики, триггеры и D-pad.
+* **Минимальная задержка**: Работает через драйвер `Interception`, обеспечивающий максимально быстрый отклик на уровне ядра системы.
+* **Neon UI**: Современный минималистичный интерфейс в глубоких неоновых тонах с визуальной обратной связью в реальном времени.
+* **Интеграция с треем**: Полное управление через иконку в системном трее, включая динамическое переключение START/STOP и функцию «Hide to Tray».
+* **Портативность**: Один автономный `.exe` файл — не требует установки Python или дополнительных библиотек на ПК пользователя.
 
-## 🎮 Режимы работы кнопок
-* **TURBO**: Нажал — активировал постоянный повтор нажатий; нажал ещё раз — остановил. Удерживать клавишу не нужно.
-* **TOGGLE**: Нажал — кнопка «залипла» в нажатом состоянии; нажал второй раз — отпустил.
-* **DELAY**: Нажал и удерживаешь для срабатывания через заданное время (от 0.1 сек). Если отпустить раньше — действие отменится.
+---
 
-## 🛠 Установка и использование
-1.  Скачайте последний архив из раздела [Releases](https://github.com/Mr-Sheyd/XBOX-Keypad/releases).
-2.  Распакуйте содержимое в любую папку.
-3.  Запустите `XBOX-Keypad.exe`.
-4.  Настройте клавиши и нажмите **Start Emulation**.
+### 🛠 Управление программоой.
+- **One-Tap Clear**: Мгновенное удаление бинда в маппере и редакторе макросов через **правый клик мыши**.
+- **Geometry Memory**: Программа запоминает положение и размер окна между сессиями.
+- **Safe Save**: Система сохранения настроек теперь изолирована от данных о положении окна, что исключает порчу конфига.
 
-> **Примечание:** Для работы программы в системе должен быть установлен драйвер **Interception**.
+---
+
+## ⚙️ Режимы работы кнопок
+Помимо обычного маппинга, вы можете назначать кнопкам особое поведение:
+
+* **NORMAL**: Стандартный режим 1:1 — кнопка активна только пока клавиша удерживается.
+* **TURBO**: Одно нажатие запускает цикл непрерывной стрельбы (rapid-fire); повторное нажатие останавливает его.
+* **TOGGLE**: Одно нажатие «зажимает» кнопку геймпада; второе — отпускает её.
+* **DELAY**: Нажатие срабатывает только после заданной задержки (от 0.1 сек). Если отпустить клавишу раньше, действие отменяется.
+
+---
+
+## 🚀 Что нового в v2.5 (Финал Фазы 1)
+
+### 🧠 Продвинутый Macro Engine
+Создавайте и исполняйте сложные цепочки команд с легкостью.
+- **Sticky Sequences**: Накопительные последовательности кнопок, которые удерживаются до тех пор, пока не будет отпущена клавиша-активатор.
+- **Input Suppression (Блокировка)**: Полный перехват физических клавиш. Буквы не печатаются в Windows, пока работает макрос или бинд. Даже «вредная» клавиша `APPS` теперь полностью блокируется.
+- **Dynamic Sync**: Прямая синхронизация таймлайна в интерфейсе с данными эмуляции в реальном времени.
+
+### 🎨 Neo-Style UI v2.0
+- **Dynamic Hover**: Автоматический расчет оттенков для кнопок и интерактивных элементов.
+- **Custom Scrollbars**: Элегантные неоновые полосы прокрутки шириной 8px.
+- **Zero-Focus Logic**: Автоматический сброс фокуса после взаимодействия, чтобы избежать случайных повторных вводов.
+
+---
+
+## 🛠 Технические характеристики
+- **Драйвер**: `Interception` (фильтрация в пространстве ядра).
+- **Эмуляция**: Библиотека `vgamepad`.
+- **Сборка**: Скомпилировано через PyInstaller (`onefile`) — все ресурсы и DLL упакованы внутри.
+
+## 📦 Установка и быстрый запуск
+1. Скачайте последний релиз.
+2. Убедитесь, что в вашей системе установлен драйвер **Interception**.
+3. Запустите `XBOX-Keypad.exe`. Программа отлично работает как при обычном запуске, так и от имени администратора.
+
+---
+
+## 🛠 Команда сборки (для разработчиков)
+```bash
+python -m PyInstaller --noconfirm --onefile --windowed --name "XBOX-Keypad" --icon="XBOX-Keypad.ico" --add-data "XBOX ICONS;XBOX ICONS" --add-data "interception.dll;." --collect-all vgamepad "XBOX-Keypad.py"
+```
 
 
 ## 📜 Благодарности
