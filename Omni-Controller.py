@@ -1073,9 +1073,9 @@ QPushButton#CloseDonateBtn:pressed {{
 }}
 """
 
-PROJECT_NAME = "XBOX-Keypad"
+PROJECT_NAME = "Omni-Controller"
 VERSION = "v2.5"
-APP_ICON = resource_path("XBOX-Keypad.ico")
+APP_ICON = resource_path("Omni-Controller.ico")
 
 # --- PROFILES SETTINGS ---
 GLOBAL_CONFIG = "System_Config.ini"
@@ -5399,8 +5399,8 @@ if __name__ == "__main__":
 
     # Глобальная иконка приложения
     from PySide6.QtGui import QIcon
-    if os.path.exists("XBOX-Keypad.ico"):
-        app.setWindowIcon(QIcon("XBOX-Keypad.ico"))
+    if os.path.exists("Omni-Controller.ico"):
+        app.setWindowIcon(QIcon("Omni-Controller.ico"))
 
     # 2. Single Instance / Window Restore (v2.1 Stable)
     from PySide6.QtNetwork import QLocalSocket, QLocalServer
