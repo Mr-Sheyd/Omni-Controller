@@ -1,9 +1,9 @@
 # ENG:
 
-# 🟦 XBOX-Keypad
+# 🟦 Omni-Controller
 Gamepad emulator with block keys.
 
-**XBOX-Keypad** is a powerful tool designed to transform your keyboard into a virtual Xbox controller. Unlike basic mappers, this project utilizes a low-level driver for complete input isolation, enabling complex macro sequences and specialized input modes that standard software cannot handle.
+**Omni-Controller** is a powerful tool designed to transform your keyboard into a virtual Xbox controller. Unlike basic mappers, this project utilizes a low-level driver for complete input isolation, enabling complex macro sequences and specialized input modes that standard software cannot handle.
 
 ---
 
@@ -57,13 +57,13 @@ Create and execute sophisticated input chains with ease.
 ## 📦 Installation & Quick Start
 1. Download the latest release.
 2. Ensure the **Interception driver** is installed on your system.
-3. Run `XBOX-Keypad.exe`. It works perfectly with a simple double-click or when run as Administrator.
+3. Run `Omni-Controller.exe`. It works perfectly with a simple double-click or when run as Administrator.
 
 ---
 
 ## 🛠 Build Command (For Developers)
 ```bash
-python -m PyInstaller --noconfirm --onefile --windowed --name "XBOX-Keypad" --icon="XBOX-Keypad.ico" --add-data "XBOX ICONS;XBOX ICONS" --add-data "interception.dll;." --collect-all vgamepad "XBOX-Keypad.py"
+python -m PyInstaller --noconfirm --onefile --windowed --name "Omni-Controller" --icon="Omni-Controller.ico" --add-data "XBOX ICONS;XBOX ICONS" --add-data "interception.dll;." --collect-all vgamepad "Omni-Controller.py"
 ```
 
 
@@ -81,21 +81,17 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 
 
 ---
-<img width="1139" height="1185" alt="XBOX-Keypad v2 5 (Mapper)" src="https://github.com/user-attachments/assets/78852e61-64b8-4006-80e6-d3acbee8f346" />
 
-<img width="1139" height="1185" alt="XBOX-Keypad v2 5 (Macros)" src="https://github.com/user-attachments/assets/23c7787c-0294-4b00-947f-4f64a89c227d" />
-
-<img width="1139" height="1185" alt="XBOX-Keypad v2 5 (Support)" src="https://github.com/user-attachments/assets/be0209fe-c656-41bc-85e4-5a6e44ce005b" />
 
 ---
 
 
 # RUS:
 
-# 🟦 XBOX-Keypad
+# 🟦 Omni-Controller
 Эмулятор геймпада с блокировкой клавиш.
 
-**XBOX-Keypad** — это мощный инструмент, предназначенный для превращения вашей клавиатуры в виртуальный контроллер Xbox. В отличие от простых мапперов, этот проект использует низкоуровневый драйвер для полной изоляции ввода, позволяя создавать сложные макросы и специализированные режимы нажатий, которые недоступны обычному софту.
+**Omni-Controller** — это мощный инструмент, предназначенный для превращения вашей клавиатуры в виртуальный контроллер Xbox. В отличие от простых мапперов, этот проект использует низкоуровневый драйвер для полной изоляции ввода, позволяя создавать сложные макросы и специализированные режимы нажатий, которые недоступны обычному софту.
 
 ---
 
@@ -149,13 +145,13 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 ## 📦 Установка и быстрый запуск
 1. Скачайте последний релиз.
 2. Убедитесь, что в вашей системе установлен драйвер **Interception**.
-3. Запустите `XBOX-Keypad.exe`. Программа отлично работает как при обычном запуске, так и от имени администратора.
+3. Запустите `Omni-Controller.exe`. Программа отлично работает как при обычном запуске, так и от имени администратора.
 
 ---
 
 ## 🛠 Команда сборки (для разработчиков)
 ```bash
-python -m PyInstaller --noconfirm --onefile --windowed --name "XBOX-Keypad" --icon="XBOX-Keypad.ico" --add-data "XBOX ICONS;XBOX ICONS" --add-data "interception.dll;." --collect-all vgamepad "XBOX-Keypad.py"
+python -m PyInstaller --noconfirm --onefile --windowed --name "Omni-Controller" --icon="Omni-Controller.ico" --add-data "XBOX ICONS;XBOX ICONS" --add-data "interception.dll;." --collect-all vgamepad "Omni-Controller.py"
 ```
 
 
