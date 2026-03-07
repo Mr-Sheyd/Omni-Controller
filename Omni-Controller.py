@@ -164,7 +164,7 @@ QScrollArea {{
     background-color: transparent;
     border: none;
     /* Создаёт зазор между контентом/скроллом и границей окна */
-    padding-right: 8px; 
+    padding-right: 8px;
 }}
 
 QFrame#Header {{
@@ -172,6 +172,15 @@ QFrame#Header {{
     border: none;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+}}
+
+/* ─── Title Label ───────────────────────────────────────────────────────────── */
+QLabel#TitleLabel {{
+    color: #B7C0C9;
+    font-family: 'Segoe UI';
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 2px;
 }}
 
 /* ─── Кнопки шапки ─────────────────────────────────────────────────────────── */
@@ -209,24 +218,23 @@ QScrollArea#MacroScroll {{
 }}
 
 QScrollBar:vertical {{
-    background: #0A0A0A;      /* Чуть темнее основного фона для контраста */
-    width: 12px;               /* Вернул 12px, чтобы было за что зацепиться */
-    margin: 0px 4px 0px 0px;  /* Увеличил просвет справа до 4px */
+    background: #0A0A0A;
+    width: 12px;
+    margin: 0px 4px 0px 0px;
     border: none;
 }}
 
 QScrollBar::handle:vertical {{
-    background: #222222;       /* Базовый цвет ползунка */
-    border: 1px solid #444;    /* Внешний контур */
+    background: #222222;
+    border: 1px solid #444;
     min-height: 30px;
     border-radius: 5px;
 }}
 
-/* Главная фишка: подсветка при наведении или активном использовании */
-QScrollBar::handle:vertical:hover, 
+QScrollBar::handle:vertical:hover,
 QScrollBar::handle:vertical:pressed {{
     background: #333333;
-    border: 1px solid {primary}; /* Появляется неоновый контур */
+    border: 1px solid {primary};
 }}
 
 QScrollBar:horizontal {{
@@ -236,7 +244,6 @@ QScrollBar:horizontal {{
     margin: 0px;
 }}
 
-/* РУЧКА (ГОРИЗОНТАЛЬНАЯ) */
 QScrollBar::handle:horizontal {{
     background: #333333;
     min-width: 20px;
@@ -246,7 +253,6 @@ QScrollBar::handle:horizontal:hover {{
     background: #444444;
 }}
 
-/* Убираем лишние элементы */
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
     height: 0px;
     background: none;
@@ -319,7 +325,7 @@ QComboBox:hover {{
 QComboBox QAbstractItemView {{
     background-color: #0d0d0d;
     color: #c2c2c2;
-    selection-background-color: {primary}; /* Убрали лишнее "adadad" */
+    selection-background-color: {primary};
     selection-color: #c2c2c2;
     border: 1px solid {primary};
     outline: none;
@@ -341,7 +347,7 @@ QComboBox::down-arrow {{
     image: none;
 }}
 
-/* ─── MacroRowWidget ───────────────────────────────────────────────────────── */
+/* ─── MacroRowWidget (обёртка строки — прозрачная) ─────────────────────────── */
 QFrame[objectName^="MacroRow_"] {{
     outline: none;
     background: transparent;
@@ -354,39 +360,44 @@ QFrame[objectName^="MacroRow_"]:focus {{
 
 /* ─── MacroStepWidget ──────────────────────────────────────────────────────── */
 QFrame[objectName^="MacroStep_"] {{
-    background-color: #111;
-    border: 1px solid #2a2a2a;
-    border-radius: 5px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
     outline: none;
+    margin: 0px;
 }}
 QFrame[objectName^="MacroStep_"]:hover {{
+    background-color: #111111;
     border: 1px solid {primary};
     outline: none;
 }}
-QFrame[objectName^="MacroStep_"]:focus {{
+QFrame[objectName^="MacroStep_"]:focus,
+QFrame[objectName^="MacroStep_"]:focus:hover {{
     outline: none;
-    border: 1px solid #2a2a2a;
+    border: 1px solid transparent;
+    background-color: transparent;
 }}
 QFrame[objectName^="MacroStep_"][highlighted="true"] {{
-    border: 2px solid {p_hover};
+    border: 1px solid {p_hover};
     background-color: {p_active_bg};
     outline: none;
 }}
 QFrame[objectName^="MacroStep_"][highlighted="true"]:focus {{
     outline: none;
     border: 2px solid {p_hover};
+    background-color: {p_active_bg};
 }}
 QFrame[objectName^="MacroStep_"][highlighted="false"] {{
-    border: 1px solid #2a2a2a;
-    background-color: #111;
+    border: 1px solid transparent;
+    background-color: transparent;
     outline: none;
 }}
 QFrame[objectName^="MacroStep_"][highlighted="false"]:focus {{
     outline: none;
-    border: 1px solid #2a2a2a;
+    border: 1px solid transparent;
 }}
 QFrame[objectName="MacroStep_drag_over"] {{
-    border: 2px solid {primary};
+    border: 1px solid {primary};
     background-color: {p_active_bg};
     outline: none;
 }}
@@ -398,7 +409,7 @@ QLineEdit#StepDelayInput {{
     border-bottom: 1px solid #2a2a2a;
     background: transparent;
     color: {primary};
-    font-size: 10px;
+    font-size: 15px;
     font-weight: bold;
     padding: 0 2px;
 }}
@@ -409,12 +420,9 @@ QLineEdit#StepDelayInput:hover {{
 QLineEdit#StepDelayInput:focus {{
     outline: none;
     border-bottom: 2px solid {p_hover};
-    color: #c2c2c2;
 }}
 
 /* ─── Run buttons (Neon Blackout Style) ────────────────────────────────────── */
-
-/* START / INACTIVE STATE */
 QPushButton#run_btn_inactive {{
     background-color: #121212;
     color: {primary};
@@ -422,17 +430,17 @@ QPushButton#run_btn_inactive {{
     font-size: 13px;
     border: 2px solid {primary};
     border-radius: 6px;
+    min-width: 140px;
+    min-height: 50px;
+    padding: 0 14px;
     outline: none;
 }}
-
 #run_btn_inactive:hover {{
-    /* Эффект: фон почти в ноль, текст и рамка — на максимум */
     background-color: {p_hover_bg};
-    border-color: {p_hover}; /* Используем твой яркий оттенок для свечения */
+    border-color: {p_hover};
     color: {p_hover};
 }}
 
-/* STOP / ACTIVE STATE */
 QPushButton#run_btn_active {{
     background-color: #121212;
     color: {secondary};
@@ -440,9 +448,11 @@ QPushButton#run_btn_active {{
     font-size: 13px;
     border: 2px solid {secondary};
     border-radius: 6px;
+    min-width: 140px;
+    min-height: 50px;
+    padding: 0 14px;
     outline: none;
 }}
-
 #run_btn_active:hover {{
     background-color: {s_hover_bg};
     border-color: {s_hover};
@@ -497,7 +507,7 @@ QCheckBox::indicator:focus {{
 /* ─── Строки биндинга (Row_) ───────────────────────────────────────────────── */
 QFrame[objectName^="Row_"] {{
     background-color: #121212;
-    border: 1px solid #1A1A1A;
+    border: 1px solid #333333;
     border-radius: 8px;
     margin: 2px 5px;
     outline: none;
@@ -683,8 +693,8 @@ QDialog QLineEdit:focus {{
 }}
 
 /* Кнопки выбора цветов (Специфичные) */
-QPushButton#PrimaryPickBtn:focus, 
-QPushButton#SecondaryPickBtn:focus, 
+QPushButton#PrimaryPickBtn:focus,
+QPushButton#SecondaryPickBtn:focus,
 QPushButton#SaveCloseBtn:focus {{
     outline: none;
 }}
@@ -763,12 +773,11 @@ QTabBar::tab:focus {{
     outline: none;
 }}
 QTabBar::tab:selected {{
-    background: #0d0d0d;
-    color: {primary};
-    border-top: 2px solid {primary};
-    outline: none;
-}}
-QTabBar::tab:selected:focus {{
+    background: {primary};
+    color: #ffffff;
+    border: 1px solid {primary};
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
     outline: none;
 }}
 QTabBar::tab:hover:!selected {{
@@ -836,7 +845,39 @@ QPushButton[objectName^="PaletteBtn_"]:pressed {{
     color: #fff;
 }}
 
-/* ─── MacroStepWidget (повтор в нижней части для DnD-состояний) ────────────── */
+/* ─── PalettePanel / PaletteTitle ──────────────────────────────────────────── */
+QFrame#PalettePanel {{
+    background: #161616;
+    border: 1px solid #252525;
+    border-radius: 8px;
+}}
+QLabel#PaletteTitle {{
+    color: #666;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    margin-left: 2px;
+    background: transparent;
+    border: none;
+}}
+
+/* ─── PaletteScroll (горизонтальный серый скроллбар) ──────────────────────── */
+QScrollArea#PaletteScroll {{
+    background: transparent;
+    border: none;
+    outline: none;
+}}
+QScrollArea#PaletteScroll QWidget {{
+    background: transparent;
+    border: none;
+    outline: none;
+}}
+QScrollArea#PaletteScroll QWidget#qt_scrollarea_viewport {{
+    background: transparent;
+    border: none;
+}}
+
+/* ─── DnD-состояние скролл-области ────────────────────────────────────────── */
 QScrollArea[drag_active="true"] {{
     border: 2px solid {primary};
     outline: none;
@@ -909,89 +950,205 @@ QScrollArea#PaletteScroll QScrollBar::sub-page:horizontal {{
     background: none;
 }}
 
-/* Стили для кнопок в MacroRow */
-QPushButton#MacroClearBtn {{
+/* ─── Macro Editor ───────────────────────────────────────────────────────────── */
+
+/* Строка макроса — единый цельный блок */
+QFrame#MacroRowFrame {{
+    background-color: #121212;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}}
+QFrame#MacroRowFrame:hover {{
+    border-color: #3a3a3a;
+}}
+
+/* Таймлайн — тёмная вставка внутри строки */
+QFrame#TimelineFrame {{
+    background-color: #0d0d0d;
+    border: 1px solid #1e1e1e;
+    border-radius: 4px;
+}}
+QFrame#TimelineFrame:focus {{
+    outline: none;
+    border: 1px solid #1e1e1e;
+}}
+
+/* Всё внутри таймлайна прозрачно */
+QScrollArea#TimelineScroll,
+QWidget#TimelineViewport,
+QWidget#TimelineContent {{
+    background: transparent;
+    border: none;
+    outline: none;
+}}
+QFrame#TimelineFrame QWidget {{
+    background: transparent;
+}}
+
+#MacroNameInput {{
+    background: transparent;
+    color: #cccccc;
+    font-weight: bold;
+    border: none;
+    padding-left: 10px;
+}}
+#MacroNameInput:focus {{
+    color: #c2c2c2;
+    background: #000000;
+    border-radius: 4px;
+}}
+
+/* ─── Timeline area — всё прозрачное, фон берётся от MacroRowFrame ─── */
+/* ─── Timeline: полная изоляция слоёв ────────────────────────────────── */
+
+/* ─── MacroBindBtn ──────────────────────────────────────────────────────────── */
+QPushButton#MacroBindBtn {{
+    background-color: #1A1A1A;
+    color: #FFF;
+    border: 1px solid #333;
+    border-radius: 4px;
+    font-size: 12px;
+    min-height: 30px;
+    outline: none;
+}}
+QPushButton#MacroBindBtn:focus {{
+    outline: none;
+    border: 1px solid #333;
+}}
+QPushButton#MacroBindBtn:hover {{
+    border: 2px solid {primary};
+    background-color: #252525;
+    color: {primary};
+}}
+QPushButton#MacroBindBtn:pressed {{
+    background-color: {primary};
+    color: #c2c2c2;
+}}
+QPushButton#MacroBindBtn[capturing="true"] {{
+    background-color: {primary};
+    border: 1px solid #c2c2c2;
+    color: #c2c2c2;
+}}
+QPushButton#MacroBindBtn[capturing="true"]:focus {{
+    outline: none;
+    border: 1px solid #c2c2c2;
+}}
+
+/* ─── MacroClearAllBtn ──────────────────────────────────────────────────────── */
+QPushButton#MacroClearAllBtn {{
     background-color: #0A0A0A;
     color: {primary};
     font-size: 10px;
     font-weight: bold;
-    /* Раздельная запись для надежности */
     border-width: 1px;
     border-style: solid;
     border-color: {primary};
     border-radius: 4px;
     outline: none;
 }}
-QPushButton#MacroClearBtn:hover {{
+QPushButton#MacroClearAllBtn:hover {{
     background-color: {p_active_bg};
     border-color: {p_hover};
     color: {p_hover};
 }}
+QPushButton#MacroClearAllBtn:pressed {{
+    background-color: {primary};
+    color: #c2c2c2;
+}}
 
-QPushButton#MacroDeleteBtn {{
+/* ─── MacroDelBtn ───────────────────────────────────────────────────────────── */
+QPushButton#MacroDelBtn {{
     background-color: #0A0A0A;
     color: {secondary};
     font-size: 10px;
     font-weight: bold;
-    /* Раздельная запись */
     border-width: 1px;
     border-style: solid;
     border-color: {secondary};
     border-radius: 4px;
     outline: none;
-    min-height: 28px; /* Добавим чуть высоты, чтобы рамка была видна */
+    min-height: 28px;
 }}
-QPushButton#MacroDeleteBtn:hover {{
-    background-color: {s_active_bg}; /* Используем готовый темный акцент */
-    border-color: {s_hover};         /* Рамка становится ещё ярче при наведении */
+QPushButton#MacroDelBtn:hover {{
+    background-color: {s_active_bg};
+    border-color: {s_hover};
     color: #c2c2c2;
+}}
+QPushButton#MacroDelBtn:pressed {{
+    background-color: {secondary};
+    color: #c2c2c2;
+}}
+
+/* ─── Иконки кнопок в MacroStepWidget ──────────────────────────────────────── */
+QLabel#BtnKeyIcon {{
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+}}
+QLabel#BtnKeyFallback {{
+    color: #00ffcc;
+    font-size: 10px;
+    font-weight: bold;
+    background: #1a1a1a;
+    border-radius: 4px;
+}}
+
+/* ─── AddMacroRow ───────────────────────────────────────────────────────────── */
+QFrame#AddMacroRow {{
+    background: #0d0d0d;
+    border: 2px dashed #222;
+    border-radius: 8px;
+    margin-top: 10px;
+}}
+QFrame#AddMacroRow:hover {{
+    border-color: #444;
+    background: #0f0f0f;
+}}
+QFrame#AddMacroRow QLabel {{
+    color: #333;
+    font-weight: bold;
+    font-size: 15px;
+    letter-spacing: 1px;
 }}
 
 /* ─── Macro Slot buttons (Neon Style) ─────────────────────────────────── */
 QPushButton[objectName^="Slot_Macro_"] {{
     background-color: #111111;
     color: #888888;
-    border: 1px solid #333333; /* В покое рамка тусклая */
+    border: 1px solid #333333;
     border-radius: 4px;
     font-size: 11px;
     font-weight: bold;
 }}
-
-/* Тот самый ховер: рамка и текст вспыхивают синим */
 QPushButton[objectName^="Slot_Macro_"]:hover {{
     background-color: #151515;
-    border: 2px solid {primary}; /* Яркая рамка при наведении */
-    color: {primary};            /* Яркий текст */
+    border: 2px solid {primary};
+    color: {primary};
 }}
-
-/* Когда идёт захват клавиши (Capturing) */
 QPushButton[objectName^="Slot_Macro_"][capturing="true"] {{
     background-color: {primary};
     color: #c2c2c2;
     border: 2px solid #c2c2c2;
 }}
-
-/* Используем ID конкретной кнопки, это самый высокий приоритет в CSS */
-QPushButton#Slot_Macro_0, QPushButton#Slot_Macro_1, 
+QPushButton#Slot_Macro_0, QPushButton#Slot_Macro_1,
 QPushButton#Slot_Macro_2, QPushButton#Slot_Macro_3,
 QPushButton#Slot_Macro_4, QPushButton#Slot_Macro_5 {{
     background-color: #111111;
     color: #888888;
-    border: 2px solid #444444; /* Сделали толще и светлее */
+    border: 2px solid #444444;
     border-radius: 4px;
     font-size: 11px;
     font-weight: bold;
 }}
-
-/* Ховер через универсальный селектор по имени (теперь он сработает) */
 QPushButton[objectName^="Slot_Macro_"]:hover {{
     background-color: #151515;
-    border: 2px solid {primary} !important; /* Форсируем цвет */
+    border: 2px solid {primary} !important;
     color: {primary} !important;
 }}
 
-/* Универсальные диалоговые окна*/
- QDialog {{
+/* ─── Универсальные диалоговые окна ─────────────────────────────────────────── */
+QDialog {{
     background-color: #0F0F0F;
     border: 2px solid {primary};
     border-radius: 12px;
@@ -1022,38 +1179,89 @@ QDialog QPushButton:hover {{
     border-color: white;
 }}
 
-/* --- ОКНО ДОНАТА --- */
+/* ─── QMenu / TrayMenu ─────────────────────────────────────────────── */
+QMenu {{
+    background-color: #0b0b0b;
+    border: 1px solid {primary};
+    border-radius: 4px;
+    padding: 4px;
+    color: white;
+}}
+QMenu::item {{
+    background-color: transparent;
+    padding: 6px 30px 6px 20px;
+    color: white;
+    border-radius: 2px;
+}}
+QMenu::item:selected {{
+    background-color: {primary};
+    color: white;
+}}
+QMenu::item:pressed {{
+    background-color: {primary};
+    color: white;
+}}
+QMenu::separator {{
+    height: 1px;
+    background: #333333;
+    margin: 4px 10px;
+}}
 
-/* Контейнер внутри диалога */
+/* ─── DonateBtn ──────────────────────────────────────────────────────────────── */
+QPushButton#DonateBtn {{
+    background-color: transparent;
+    color: {secondary};
+    border: 1px solid {secondary};
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}}
+QPushButton#DonateBtn:hover {{ background-color: {secondary}; color: white; }}
+
+/* ─── Окно доната ────────────────────────────────────────────────────────────── */
 QFrame#DonateContentFrame {{
     background-color: #0d0d0d;
-    border: 2px solid {secondary}; /* Используем твой вторичный цвет */
+    border: 2px solid {secondary};
     border-radius: 12px;
 }}
-/* Заголовки валют (маленькие QLabel) */
 QFrame#DonateContentFrame QLabel {{
-    color: #666666; /* Тусклый серый для подписей */
-    font-size: 10px;
+    color: #666666;
+    font-size: 20px;
     font-weight: bold;
     text-transform: uppercase;
     background: transparent;
     border: none;
 }}
-/* Поля с адресами (QLineEdit) */
+
+/* Исключения — заголовки не наследуют стиль QLabel внутри DonateContentFrame */
+QFrame#DonateContentFrame QLabel#DonateIcon {{
+    font-size: 32px;
+    color: inherit;
+}}
+QFrame#DonateContentFrame QLabel#DonateHeaderEn,
+QFrame#DonateContentFrame QLabel#DonateHeaderRu {{
+    font-size: 14px;
+    color: #adadad;
+    letter-spacing: 1px;
+}}
+QFrame#DonateContentFrame QLabel#DonateWalletLabel {{
+    font-size: 14px;
+    color: #666666;
+    letter-spacing: normal;
+}}
 QFrame#DonateContentFrame QLineEdit {{
-    background-color: #050505; /* Глубокий черный для контраста */
-    color: #adadad;           /* Твой основной серый текст */
+    background-color: #050505;
+    color: #adadad;
     border: 1px solid #222222;
     border-radius: 5px;
     padding: 8px;
-    font-family: 'Consolas', 'Monospace'; /* Шрифт для кошельков */
+    font-family: 'Consolas', 'Monospace';
     font-size: 12px;
 }}
 QFrame#DonateContentFrame QLineEdit:hover {{
     border: 1px solid {secondary};
     color: #ffffff;
 }}
-/* Та самая ВТОРИЧНАЯ кнопка закрытия */
 QPushButton#CloseDonateBtn {{
     background-color: #1a1a1a;
     color: #adadad;
@@ -1064,17 +1272,44 @@ QPushButton#CloseDonateBtn {{
     font-size: 11px;
 }}
 QPushButton#CloseDonateBtn:hover {{
-    background-color: #2e0000; /* Твой фирменный темно-красный */
-    color: #ffffff;
-    border: 1px solid #660000;
+    background-color: {s_active_bg}; 
+    color: {secondary};
+    border: 1px solid {secondary};
 }}
 QPushButton#CloseDonateBtn:pressed {{
-    background-color: #4a0000;
+    background-color: {s_active_bg};
 }}
+
+/* ─── Donate dialog labels ────────────────────────────────────────────────────── */
+QLabel#DonateIcon {{
+    font-size: 32px; 
+    background: transparent; 
+    border: none;
+}}
+QLabel#DonateHeaderEn,
+QLabel#DonateHeaderRu {{
+    font-weight: bold; 
+    font-size: 14px; 
+    color: #adadad; 
+    letter-spacing: 1px; 
+    border: none; 
+    background: transparent;
+}}
+
+/* ─── Прочее ─────────────────────────────────────────────────────────────────── */
+QLabel#SettingsInfo {{ color: #888; font-size: 11px; background: transparent; }}
+
+QLabel#DialogTitle, QLabel#SettingsTitle {{
+    color: {primary};
+    font-weight: bold;
+    font-size: 16px;
+}}
+QLabel#DialogInfo {{ color: #BBB; font-size: 13px; }}
 """
 
+
 PROJECT_NAME = "Omni-Controller"
-VERSION = "v2.5"
+VERSION = "v3.1"
 APP_ICON = resource_path("Omni-Controller.ico")
 
 # --- PROFILES SETTINGS ---
@@ -1304,7 +1539,7 @@ EXTENDED_KEYS = {
     0x4F: "END",
     0x53: "DELETE",
     0x49: "PAGEUP",
-    0x51: "PAGEDOWN",  # <- Добавили эти
+    0x51: "PAGEDOWN",
     0xD2: "INSERT",
     0xD3: "DELETE",
     0x1D: "RCTRL",
@@ -1313,7 +1548,7 @@ EXTENDED_KEYS = {
     0x35: "NUM_DIVIDE",
     0x5B: "LWIN",
     0x5C: "RWIN",
-    0x5D: "APPS",  # APPS key is extended
+    0x5D: "APPS",
 }
 
 # --- GAMEPAD MAPPING DATABASE ---
@@ -1398,6 +1633,7 @@ KEYBOARD_FILTER = (
 )
 
 
+# Стилизованный диалог ввода текста. Принимает цвета темы от родителя и применяет к себе глобальный QSS.
 class CustomInputDialog(QDialog):
     def __init__(self, title, label_text, parent=None):
         super().__init__(parent)
@@ -1405,7 +1641,6 @@ class CustomInputDialog(QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
         self.setFixedWidth(400)
 
-        # Получаем цвета от родителя или ставим дефолт
         p_color = (
             parent.primary_color if hasattr(parent, "primary_color") else "#0078D7"
         )
@@ -1413,22 +1648,18 @@ class CustomInputDialog(QDialog):
             parent.secondary_color if hasattr(parent, "secondary_color") else "#E72E2E"
         )
 
-        # Устанавливаем общий стиль
         self.setStyleSheet(get_stylesheet(p_color, s_color))
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(25, 25, 25, 25)
         layout.setSpacing(15)
 
-        # Заголовок
         title_lbl = QLabel(title.upper())
-        title_lbl.setStyleSheet(
-            f"font-weight: bold; color: {p_color}; font-size: 16px;"
-        )
+        title_lbl.setObjectName("DialogTitle")
         layout.addWidget(title_lbl, alignment=Qt.AlignCenter)
 
         self.label = QLabel(label_text)
-        self.label.setStyleSheet("font-size: 13px; color: #BBB;")
+        self.label.setObjectName("DialogInfo")
         layout.addWidget(self.label)
 
         self.input_field = QLineEdit()
@@ -1440,7 +1671,6 @@ class CustomInputDialog(QDialog):
         self.ok_btn = QPushButton("CONFIRM")
         self.cancel_btn = QPushButton("CANCEL")
 
-        # Кнопки наследуют стиль из get_stylesheet(p_color, s_color)
         self.ok_btn.setObjectName("ConfirmBtn")
 
         for b in [self.ok_btn, self.cancel_btn]:
@@ -1457,6 +1687,7 @@ class CustomInputDialog(QDialog):
         return self.input_field.text().strip()
 
 
+# Layout с автопереносом элементов при нехватке ширины. Используется в палитре кнопок макросов.
 class FlowLayout(QLayout):
     def __init__(self, parent=None, margin=0, spacing=-1):
         super().__init__(parent)
@@ -1528,11 +1759,7 @@ class FlowLayout(QLayout):
 
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# MACROS EDITOR — Auxiliary classes (Stages 3-8)
-# ─────────────────────────────────────────────────────────────────────────────
 
-# Конфликтующие пары (нельзя класть в один шаг одновременно)
 VECTOR_CONFLICTS = {
     "LS_UP": "LS_DOWN", "LS_DOWN": "LS_UP",
     "LS_LEFT": "LS_RIGHT", "LS_RIGHT": "LS_LEFT",
@@ -1553,7 +1780,6 @@ def parse_macro_seq(s: str) -> list:
     if not s:
         return result
 
-    # ── Новый формат: каждый блок [buttons;delay] ──────────────────────────
     if ";" in s:
         for m in re.finditer(r"\[([^\]]+)\]", s):
             content = m.group(1)
@@ -1570,7 +1796,6 @@ def parse_macro_seq(s: str) -> list:
                 result.append({"buttons": buttons, "delay_after": delay})
         return result
 
-    # ── Старый формат: [A,B], 50, [X], 80 → конвертируем мс→сек ──────────
     tokens = [t.strip() for t in s.split("],")]
     next_delay = 0.1
     for tok in tokens:
@@ -1606,7 +1831,7 @@ def serialize_macro_seq(steps: list) -> str:
     return ",".join(parts)
 
 
-# ─── MacroRowWidget — строка макроса с таймлайном ───────────────────────────
+# Виджет одной строки макроса: имя, кнопка бинда, таймлайн шагов, кнопки CLEAR и DELETE. Поддерживает DnD-добавление кнопок из палитры.
 class MacroRowWidget(QFrame):
     """Строка макроса: [Icon] + [Name] + [Bind Slot] + [Timeline] + [Delete]."""
     selected = Signal(int)
@@ -1626,83 +1851,101 @@ class MacroRowWidget(QFrame):
         self._p_color = p_color
         self._s_color = s_color
         
-        # 1. Базовые настройки фрейма
         self.setObjectName("MacroRowFrame")
         self.setFocusPolicy(Qt.NoFocus)
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setAcceptDrops(True)
-        
-        # БАЗА: Минимум 108px (одна строка). Растёт только вниз (MinimumExpanding).
         self.setMinimumHeight(108)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
 
-        # Главный лейаут
         self.main_lay = QHBoxLayout(self)
-        self.main_lay.setContentsMargins(15, 8, 15, 8) 
-        self.main_lay.setSpacing(12)
+        self.main_lay.setContentsMargins(10, 8, 10, 8)
+        self.main_lay.setSpacing(8)
 
-        # 2. Имя макроса
+        left_widget = QWidget()
+        left_widget.setFixedWidth(160)
+        left_widget.setFocusPolicy(Qt.NoFocus)
+        left_lay = QVBoxLayout(left_widget)
+        left_lay.setContentsMargins(12, 10, 8, 10)
+        left_lay.setSpacing(6)
+        left_lay.setAlignment(Qt.AlignVCenter)
+
         self.name_input = QLineEdit(name)
         self.name_input.setObjectName("MacroNameInput")
-        self.name_input.setFixedWidth(130)
+        self.name_input.setFocusPolicy(Qt.ClickFocus)
         self.name_input.editingFinished.connect(self._on_rename)
-        self.main_lay.addWidget(self.name_input)
+        left_lay.addWidget(self.name_input)
 
-        # 3. Кнопка Бинда
         self.bind_btn = QPushButton(bind or "NONE")
+        self.bind_btn.setObjectName("MacroBindBtn")
         self.bind_btn.setFocusPolicy(Qt.NoFocus)
-        self.bind_btn.setFixedSize(94, 34)
+        self.bind_btn.setFixedHeight(30)
         self.bind_btn.clicked.connect(lambda: self.bind_requested.emit(self.idx))
         self.bind_btn.installEventFilter(self)
-        self.main_lay.addWidget(self.bind_btn)
+        left_lay.addWidget(self.bind_btn)
 
-        # 4. Таймлайн (Scroll Area)
-        self.tl_container = QFrame()
-        self.tl_container.setObjectName("TimelineContainer")
-        self.tl_container.setMinimumWidth(400)
-        
-        tl_container_lay = QVBoxLayout(self.tl_container)
-        tl_container_lay.setContentsMargins(0, 0, 0, 0)
-        
+        self.main_lay.addWidget(left_widget)
+
+        self.tl_frame = QFrame()
+        self.tl_frame.setObjectName("TimelineFrame")
+        self.tl_frame.setFocusPolicy(Qt.NoFocus)
+        self.tl_frame.setAttribute(Qt.WA_StyledBackground, True)
+        self.tl_frame.setMinimumWidth(400)
+        self.tl_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+        tl_frame_lay = QVBoxLayout(self.tl_frame)
+        tl_frame_lay.setContentsMargins(5, 5, 5, 5)
+        tl_frame_lay.setSpacing(0)
+
         self.tl_scroll = QScrollArea()
+        self.tl_scroll.setObjectName("TimelineScroll")
         self.tl_scroll.setWidgetResizable(True)
         self.tl_scroll.setFocusPolicy(Qt.NoFocus)
         self.tl_scroll.setFrameShape(QFrame.NoFrame)
         self.tl_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        
-        # КЛЮЧЕВОЙ МОМЕНТ: отключаем его нахер, так как макрос растёт сам
         self.tl_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.tl_scroll.setAttribute(Qt.WA_StyledBackground, True)
+        self.tl_scroll.viewport().setAutoFillBackground(False)
+        self.tl_scroll.viewport().setObjectName("TimelineViewport")
 
         self.tl_content = QWidget()
-        # Политика Fixed заставляет виджет быть ровно такой высоты, сколько просит Grid
+        self.tl_content.setObjectName("TimelineContent")
+        self.tl_content.setAttribute(Qt.WA_StyledBackground, True)
         self.tl_content.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
-        
-        self.tl_layout = QGridLayout(self.tl_content)
-        self.tl_layout.setContentsMargins(5, 5, 5, 5)
-        self.tl_layout.setSpacing(10)
-        self.tl_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-        
-        self.tl_scroll.setWidget(self.tl_content)
-        tl_container_lay.addWidget(self.tl_scroll)
-        self.main_lay.addWidget(self.tl_container)
 
-        # 5. Кнопки управления (ПРАВАЯ ПАНЕЛЬ)
-        control_lay = QVBoxLayout()
-        control_lay.setSpacing(6)
-        
+        self.tl_layout = QGridLayout(self.tl_content)
+        self.tl_layout.setContentsMargins(4, 4, 4, 4)
+        self.tl_layout.setHorizontalSpacing(6)
+        self.tl_layout.setVerticalSpacing(8)
+        self.tl_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+
+        self.tl_scroll.setWidget(self.tl_content)
+        tl_frame_lay.addWidget(self.tl_scroll)
+        self.main_lay.addWidget(self.tl_frame)
+
+        right_widget = QWidget()
+        right_widget.setFixedWidth(88)
+        right_widget.setFocusPolicy(Qt.NoFocus)
+        right_lay = QVBoxLayout(right_widget)
+        right_lay.setContentsMargins(8, 10, 12, 10)
+        right_lay.setSpacing(6)
+        right_lay.setAlignment(Qt.AlignTop)
+
         self.clear_all_btn = QPushButton("CLEAR")
-        self.clear_all_btn.setFixedSize(76, 30)
+        self.clear_all_btn.setObjectName("MacroClearAllBtn")
+        self.clear_all_btn.setFixedHeight(28)
         self.clear_all_btn.clicked.connect(self._clear_all_steps)
-        
+
         self.del_btn = QPushButton("DELETE")
-        self.del_btn.setFixedSize(76, 30)
+        self.del_btn.setObjectName("MacroDelBtn")
+        self.del_btn.setFixedHeight(28)
         self.del_btn.clicked.connect(lambda: self.delete_requested.emit(self.idx))
-        
-        control_lay.addWidget(self.clear_all_btn)
-        control_lay.addWidget(self.del_btn)
-        control_lay.addStretch() # Кнопки всегда вверху
-        
-        self.main_lay.addLayout(control_lay)
+
+        right_lay.addWidget(self.clear_all_btn)
+        right_lay.addWidget(self.del_btn)
+        right_lay.addStretch()
+
+        self.main_lay.addWidget(right_widget)
 
         self._load_steps()
         self.update_style()
@@ -1710,16 +1953,12 @@ class MacroRowWidget(QFrame):
     def eventFilter(self, obj, event):
         if obj == self.bind_btn and event.type() == QEvent.Type.MouseButtonPress:
             if event.button() == Qt.MouseButton.RightButton:
-                # 1. Меняем текст визуально мгновенно
                 self.bind_btn.setText("NONE")
                 
-                # 2. Эмитим сигнал для родителя (MacrosEditorWidget), чтобы он очистил словарь
                 self.bind_cleared.emit(self.idx)
                 
-                # Возвращаем True, чтобы событие считалось обработанным и не пошло дальше
                 return True
                 
-        # Прокидываем все остальные события стандарту
         return super().eventFilter(obj, event)
 
     def _clear_all_steps(self):
@@ -1734,132 +1973,35 @@ class MacroRowWidget(QFrame):
 
         self.macro_steps.clear()
 
-        # Жёсткий сброс высоты до минимума
         self.setFixedHeight(108)
 
-        # Ядерная очистка UI + пересборка (пустой список = пустой layout)
         self._load_steps()
 
-        # Возвращаем "резиновость" после перерисовки
         QTimer.singleShot(200, lambda: self.setMinimumHeight(108))
         QTimer.singleShot(200, lambda: self.setMaximumHeight(118))
 
-        # Уведомляем MacrosEditorWidget об изменении
         self.steps_changed.emit(self.idx, self.macro_steps)
         self.changed.emit()
         self.updateGeometry()
     
     def update_style(self, new_primary=None, new_secondary=None):
         """
-        v2.5 Stable: Динамическое обновление визуала.
-        Исправлено: объединение стилей контейнера для предотвращения перезаписи.
+        Обновление цветов. Стили берутся из глобального _QSS_TEMPLATE,
+        здесь только сохраняем цвета и перерисовываем виджет.
         """
-        # 1. Обновляем цвета
         if new_primary is not None:
             self._p_color = new_primary
         if new_secondary is not None:
             self._s_color = new_secondary
 
-        p_color = getattr(self, '_p_color', "#0078d7")
-        s_color = getattr(self, '_s_color', "#e74c3c")
-
-        p_h = QColor(p_color).lighter(130).name()
-        s_h = QColor(s_color).lighter(130).name()
-
-        # ── 1. Контейнер ряда: ОБЪЕДИНЕННЫЙ СТИЛЬ ─────────────────────────────
-        p_color = self._p_color
-        self.setStyleSheet(f"""
-            /* Основной контейнер ряда */
-            #MacroRowFrame {{
-                background-color: #121212; /* Тёмный графит из маппера */
-                border: 1px solid #252525;
-                border-radius: 6px;
-                margin-bottom: 4px;
-            }}
-            #MacroRowFrame:hover {{
-                background-color: #1c1c1c;
-                border: 1px solid {p_color};
-            }}
-
-            /* Поле ввода имени (QLineEdit) */
-            #MacroNameInput {{
-                background: transparent;
-                color: #cccccc;
-                font-weight: bold;
-                border: none;
-                padding-left: 10px;
-            }}
-            #MacroNameInput:focus {{
-                color: #c2c2c2;
-                background: #000000;
-                border-radius: 4px;
-            }}
-
-            /* Контейнер таймлайна (внутренняя часть) */
-            #TimelineContainer {{
-                background-color: #0f0f0f; /* Глубокий фон для контраста шагов */
-                border: 1px solid #222222;
-                border-radius: 4px;
-            }}
-        """)
-
-        # ── 2. Кнопка бинда ────────────────────────────────────────────────────
-        if hasattr(self, 'bind_btn'):
-            self.bind_btn.setStyleSheet(f"""
-                QPushButton {{
-                    background-color: #1A1A1A;
-                    color: #FFF;
-                    border: 1px solid #333;
-                    border-radius: 4px;
-                    font-size: 12px;
-                    min-height: 30px;
-                    outline: none;
-                }}
-                QPushButton:hover {{
-                    border: 2px solid {p_color};
-                    background-color: #252525;
-                    color: {p_color};
-                }}
-                QPushButton:pressed {{
-                    background-color: {p_color};
-                    color: #c2c2c2;
-                }}
-                QPushButton[capturing="true"] {{
-                    background-color: {p_color};
-                    color: #c2c2c2;
-                    border: 1px solid #c2c2c2;
-                }}
-            """)
-
-        # ── 3. Кнопка CLEAR ───────────────────────────────────────────────────
-        if hasattr(self, 'clear_all_btn'):
-            self.clear_all_btn.setStyleSheet(f"""
-                QPushButton {{
-                    background-color: #121212; color: {p_color};
-                    border: 1px solid {p_color}; border-radius: 4px;
-                    font-size: 11px; font-weight: bold; outline: none;
-                }}
-                QPushButton:hover {{
-                    background-color: rgba(0,0,0,0.5);
-                    border: 2px solid {p_h}; color: {p_h};
-                }}
-                QPushButton:pressed {{ background-color: #000000; color: #c2c2c2; }}
-            """)
-
-        # ── 4. Кнопка DELETE ──────────────────────────────────────────────────
-        if hasattr(self, 'del_btn'):
-            self.del_btn.setStyleSheet(f"""
-                QPushButton {{
-                    background-color: #121212; color: {s_color};
-                    border: 1px solid {s_color}; border-radius: 4px;
-                    font-size: 11px; font-weight: bold; outline: none;
-                }}
-                QPushButton:hover {{
-                    background-color: rgba(0,0,0,0.5);
-                    border: 2px solid {s_h}; color: {s_h};
-                }}
-                QPushButton:pressed {{ background-color: #000000; color: #c2c2c2; }}
-            """)
+        self.style().unpolish(self)
+        self.style().polish(self)
+        
+        for child in self.findChildren(QPushButton):
+            child.style().unpolish(child)
+            child.style().polish(child)
+            
+        self.update()
 
     def _on_rename(self):
         """Переименование макроса через сигнал — без прямого self.mw."""
@@ -1879,7 +2021,6 @@ class MacroRowWidget(QFrame):
         self.tl_layout.activate()
         content_h = self.tl_layout.sizeHint().height()
         
-        # Увеличиваем запас до 45px, чтобы контенту внутри ScrollArea было свободно
         base_h = max(108, content_h + 45)
         
         self.setMinimumHeight(base_h)
@@ -1890,68 +2031,75 @@ class MacroRowWidget(QFrame):
 
     def _load_steps(self):
         """ Ядерная очистка + перерисовка таймлайна с нуля. """
-        # ── 1. Ядерная очистка layout ─────────────────────────────────────
+        self._rebuilding = True
+        try:
+            self._load_steps_inner()
+        finally:
+            self._rebuilding = False
+
+    def _load_steps_inner(self):
+        for di in getattr(self, '_delay_refs', []):
+            if di is not None:
+                di.blockSignals(True)
+
         while self.tl_layout.count():
             item = self.tl_layout.takeAt(0)
             w = item.widget()
             if w is not None:
-                w.setParent(None)   # ← ключевой шаг: отрываем от tl_content
+                w.hide()
+                w.setParent(None)
                 w.deleteLater()
-            # Spacer-items (QSpacerItem) widget() == None, просто удаляем item
 
-        # ── 2. Сброс реестра живых ссылок ─────────────────────────────────────
-        self._step_refs:  list = []   # MacroStepWidget по порядку
-        self._delay_refs: list = []   # StepDelayInput | None по порядку
+        self._step_refs:  list = []
+        self._delay_refs: list = []
 
-        max_cols = 5
+        max_cols = 6
+        total    = len(self.macro_steps)
 
-        # ── 3. Отрисовка шагов ─────────────────────────────────────────────────
         for i, step in enumerate(self.macro_steps):
             grid_row = i // max_cols
             grid_col = i % max_cols
 
-            # Контейнер ячейки: DelayInput (опционально) + MacroStepWidget
             step_container = QWidget()
             step_container.setContentsMargins(0, 0, 0, 0)
             step_container.setFocusPolicy(Qt.NoFocus)
 
             container_lay = QHBoxLayout(step_container)
             container_lay.setContentsMargins(0, 0, 0, 0)
-            container_lay.setSpacing(2)
+            container_lay.setSpacing(5)
             container_lay.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
-            # Задержка: первый шаг получает распорку вместо поля ввода
-            if i == 0:
-                container_lay.addSpacing(10)
-                self._delay_refs.append(None)
-            else:
+            sw = MacroStepWidget(i, step.get("buttons", []))
+            sw.setFocusPolicy(Qt.NoFocus)
+            sw.removed.connect(self._on_step_removed)
+            sw.changed.connect(self._sync_steps_to_data)
+            container_lay.addWidget(sw)
+            self._step_refs.append(sw)
+
+            if i < total - 1:
                 raw = step.get("delay_after", 0.1)
                 try:
                     delay_sec = float(raw)
                 except (TypeError, ValueError):
                     delay_sec = 0.1
-
                 di = StepDelayInput(delay_sec)
                 di.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-                # textChanged → пересобираем self.macro_steps без перерисовки UI
                 di.textChanged.connect(self._sync_steps_to_data)
                 container_lay.addWidget(di)
                 self._delay_refs.append(di)
+            else:
+                ph = QWidget()
+                ph.setFixedSize(40, 18)
+                ph.setFocusPolicy(Qt.NoFocus)
+                container_lay.addWidget(ph)
+                self._delay_refs.append(None)
 
-            # Сам шаг (иконки кнопок)
-            sw = MacroStepWidget(i, step.get("buttons", []))
-            sw.setFocusPolicy(Qt.NoFocus)
-            # removed → удаляем шаг из данных и перестраиваем UI
-            sw.removed.connect(self._on_step_removed)
-            # changed → только пересинхронизируем данные (delay мог измениться)
-            sw.changed.connect(self._sync_steps_to_data)
-            container_lay.addWidget(sw)
-            self._step_refs.append(sw)
+            self.tl_layout.addWidget(step_container, grid_row, grid_col,
+                                     Qt.AlignLeft | Qt.AlignVCenter)
 
-            # Кладём контейнер в сетку
-            self.tl_layout.addWidget(step_container, grid_row, grid_col)
+        for _c in range(max_cols):
+            self.tl_layout.setColumnStretch(_c, 0)
 
-        # Пересчёт высоты строки после того, как Qt применит layout
         QTimer.singleShot(50, self.adjust_row_height)
 
     def _on_step_removed(self, payload):
@@ -1970,23 +2118,18 @@ class MacroRowWidget(QFrame):
         """
         _action, sw = payload
 
-        # Поиск по идентичности — надёжнее, чем index(), который вызывает __eq__
         target_idx = next(
             (i for i, ref in enumerate(self._step_refs) if ref is sw),
             None,
         )
         if target_idx is None:
-            # Виджет не найден в реестре — уже удалён или не наш
             return
 
-        # Удаляем данные
         if 0 <= target_idx < len(self.macro_steps):
             self.macro_steps.pop(target_idx)
 
-        # Перестраиваем UI полностью (ядерная очистка + новые виджеты с новыми idx)
         self._load_steps()
 
-        # Уведомляем MacrosEditorWidget → он обновит self.macros
         self.steps_changed.emit(self.idx, self.macro_steps)
 
     def _sync_steps_to_data(self):
@@ -1998,10 +2141,15 @@ class MacroRowWidget(QFrame):
         Этот метод вызывается только при изменении значений (delay, кнопки),
         без визуальной перестройки.
         """
+        if getattr(self, '_rebuilding', False):
+            return
         new_steps = []
         for i, sw in enumerate(self._step_refs):
             delay_ref = self._delay_refs[i] if i < len(self._delay_refs) else None
-            delay = delay_ref.get_delay() if isinstance(delay_ref, StepDelayInput) else 0.0
+            if isinstance(delay_ref, StepDelayInput):
+                delay = delay_ref.get_delay()
+            else:
+                delay = self.macro_steps[i]["delay_after"] if i < len(self.macro_steps) else 0.1
             new_steps.append({
                 "buttons":     list(sw.buttons),
                 "delay_after": delay,
@@ -2017,10 +2165,8 @@ class MacroRowWidget(QFrame):
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasText():
-            txt = event.mimeData().text()
-            if not txt.startswith("MacroStep:"):
-                event.acceptProposedAction()
-                self.update_appearance(True)
+            event.acceptProposedAction()
+            self.update_appearance(True)
 
     def dragLeaveEvent(self, event):
         self.update_appearance(False)
@@ -2028,26 +2174,44 @@ class MacroRowWidget(QFrame):
 
     def dropEvent(self, event):
         """
-        Принимаем кнопку из палитры (plain text, не "MacroStep:…") — создаём новый шаг.
-        MacroStep-переносы (перестановка внутри таймлайна) обрабатываются в MacroStepWidget.
+        Дроп на пустую область таймлайна (мимо шагов):
+        - plain text (палитра) → сразу новый шаг
+        - "MacroStep:BTN" (из другого шага) → откладываем добавление до тех пор,
+          пока источник не удалит кнопку из своего шага (_finalize_move),
+          иначе кнопка дублируется в обоих шагах.
         """
         self.update_appearance(False)
         txt = event.mimeData().text()
 
-        if not txt.startswith("MacroStep:"):
-            # Новый шаг из палитры
-            new_step = {"buttons": [txt], "delay_after": 0.1}
-            self.macro_steps.append(new_step)
+        is_step_move = txt.startswith("MacroStep:")
+        btn_key = txt[len("MacroStep:"):] if is_step_move else txt
 
-            # Перерисовка; ядерная очистка внутри _load_steps гарантирует отсутствие зомби
+        if is_step_move:
+            self._pending_drop_btn = btn_key
+            event.setDropAction(Qt.MoveAction)
+            event.accept()
+            QTimer.singleShot(0, self._reload_after_move)
+        else:
+            self.macro_steps.append({"buttons": [btn_key], "delay_after": 0.1})
             self._load_steps()
-
-            # Уведомляем родителя — он обновит self.macros без прямого доступа отсюда
             self.steps_changed.emit(self.idx, self.macro_steps)
             self.changed.emit()
             event.acceptProposedAction()
-        else:
-            event.ignore()
+
+    def _reload_after_move(self):
+        """
+        Вызывается через QTimer после MoveAction-дропа.
+        К этому моменту _finalize_move уже отработал и удалил кнопку
+        из исходного шага (или весь шаг, если он опустел).
+        Теперь безопасно добавляем новый шаг и перерисовываем.
+        """
+        btn_key = getattr(self, "_pending_drop_btn", None)
+        self._pending_drop_btn = None
+        if btn_key:
+            self.macro_steps.append({"buttons": [btn_key], "delay_after": 0.1})
+        self._load_steps()
+        self.steps_changed.emit(self.idx, self.macro_steps)
+        self.changed.emit()
 
     def focusInEvent(self, event):
         """Перехватываем получение фокуса — не даём Qt рисовать системную рамку."""
@@ -2058,6 +2222,8 @@ class MacroRowWidget(QFrame):
             self.selected.emit(self.idx)
         super().mousePressEvent(event)
 
+
+# Кнопка добавления нового макроса. Располагается в конце списка и эмитит сигнал в MacrosEditorWidget.
 class AddMacroRow(QFrame):
     """Строка-кнопка 'ADD MACROS'."""
     clicked = Signal()
@@ -2069,20 +2235,10 @@ class AddMacroRow(QFrame):
         self.setFocusPolicy(Qt.NoFocus)
         self.setAttribute(Qt.WA_MacShowFocusRect, False)
         self.setAttribute(Qt.WA_StyledBackground, True)
-        self.setStyleSheet("""
-            QFrame {
-                background: #0d0d0d;
-                border: 2px dashed #222;
-                border-radius: 8px;
-                outline: none;
-            }
-            QFrame:hover { border-color: #444; background: #0f0f0f; outline: none; }
-            QFrame:focus { outline: none; border: 2px dashed #222; }
-        """)
+        self.setObjectName("AddMacroRow")
         lay = QVBoxLayout(self)
         lbl = QLabel("ADD MACROS")
         lbl.setAlignment(Qt.AlignCenter)
-        lbl.setStyleSheet("color:#333; font-weight:bold; font-size:15px; letter-spacing:1px;")
         lay.addWidget(lbl)
 
     def mousePressEvent(self, event):
@@ -2090,7 +2246,8 @@ class AddMacroRow(QFrame):
             self.clicked.emit()
         super().mousePressEvent(event)
 
-# ─── PaletteBtn — источник DnD ───────────────────────────────────────────────
+
+# Кнопка палитры с поддержкой DnD на таймлайн. Отображает иконку кнопки геймпада и визуальный pressed-эффект.
 class PaletteBtn(QPushButton):
     """Кнопка палитры. Поддерживает перетаскивание на таймлайн."""
 
@@ -2103,7 +2260,6 @@ class PaletteBtn(QPushButton):
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setCursor(Qt.OpenHandCursor)
         
-        # Установка иконки
         icon_subpath = BUTTON_ICONS.get(gp_key)
         if icon_subpath:
             full_icon_path = os.path.join(ICONS_PATH, icon_subpath)
@@ -2118,16 +2274,33 @@ class PaletteBtn(QPushButton):
         self.clearFocus()
         event.ignore()
 
+    def _set_pressed(self, val: bool):
+        if val:
+            mw = self.window()
+            p = getattr(mw, 'primary_color', '#0078D7')
+            self.setStyleSheet(
+                f'QPushButton {{ background-color: {p}; color: #000; }}'
+            )
+        else:
+            self.setStyleSheet("")
+
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self._drag_start_pos = event.position().toPoint()
+            self._set_pressed(True)
         super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        self._set_pressed(False)
+        super().mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event):
         if not (event.buttons() & Qt.LeftButton):
             return
         if (event.position().toPoint() - self._drag_start_pos).manhattanLength() < QApplication.startDragDistance():
             return
+
+        self._set_pressed(False)
 
         drag = QDrag(self)
         mime = QMimeData()
@@ -2138,17 +2311,15 @@ class PaletteBtn(QPushButton):
         drag.setPixmap(pix)
         drag.setHotSpot(event.position().toPoint())
 
-        # ГАСИМ СРАЗУ (на опережение)
         self.setDown(False)
         self.update()
 
-        # ЗАПУСК (Тут код стоит на паузе, пока ты тащишь кнопку)
         drag.exec(Qt.MoveAction | Qt.CopyAction)
 
-        # --- ТАЙМЕР-СПАСИТЕЛЬ ---
         QTimer.singleShot(50, lambda: (self.setDown(False), self.update()))
 
-# ─── StepDelayInput — компактный QLineEdit между шагами ─────────────────────
+
+# Поле задержки между шагами таймлайна (в секундах). Поддерживает ввод, валидацию и изменение колесом мыши.
 class StepDelayInput(QLineEdit):
     """Поле задержки между шагами таймлайна.
 
@@ -2162,9 +2333,6 @@ class StepDelayInput(QLineEdit):
         super().__init__(parent)
         self.setObjectName("StepDelayInput")
         self.setAlignment(Qt.AlignCenter)
-        # StrongFocus — поле принимает ввод по клику и Tab.
-        # WA_MacShowFocusRect=False + QSS border-bottom — вместо системного outline
-        # рисуем свою неоновую нижнюю линию (описана в get_stylesheet).
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAttribute(Qt.WA_MacShowFocusRect, False)
         self.setFixedWidth(46)
@@ -2181,14 +2349,12 @@ class StepDelayInput(QLineEdit):
         self.setFixedWidth(40)  # Сделаем чуть уже для плотности
         self.setFixedHeight(18) # Фиксируем высоту, чтобы не раздувало ряд
         self.setContentsMargins(0, 0, 0, 0)
-        self.setStyleSheet("background: transparent; border: none; border-bottom: 1px solid #0078D7; color: #0078D7; font-size: 10px;")
 
     def _on_editing_finished(self):
         """Очистка текста и приведение к красивому виду при потере фокуса."""
         text = self.text().replace(',', '.')
         try:
             val = float(text)
-            # Ограничиваем ввод (0.001 - минимально разумная задержка для системы)
             val = max(0.0, min(val, 10.0))
             self.setText(f"{val:.3g}")
         except ValueError:
@@ -2209,13 +2375,12 @@ class StepDelayInput(QLineEdit):
             return 0.1
         try:
             val = float(text)
-            # Диапазон 0.0–10.0. Нижний порог 0.0, НЕ 0.1.
             return max(0.0, min(val, 10.0))
         except ValueError:
             return 0.1
 
 
-# ─── MacroStepWidget — шаг на таймлайне ────────────────────────────────────
+# Один шаг таймлайна — контейнер для набора кнопок геймпада. Поддерживает DnD-слияние и удаление.
 class MacroStepWidget(QFrame):
     """Один шаг в таймлайне макроса. Принимает кнопки через DnD."""
 
@@ -2249,13 +2414,8 @@ class MacroStepWidget(QFrame):
 
         self._rebuild_labels()
 
-        # QPropertyAnimation — пульсация при входе
-        self._anim = QPropertyAnimation(self, QByteArray(b"minimumHeight"))
-        self._anim.setDuration(180)
-        self._anim.setEasingCurve(QEasingCurve.InOutSine)
 
     def _rebuild_labels(self):
-        # 1. Зачистка (уже проверена, работает)
         while self._grid_layout.count():
             item = self._grid_layout.takeAt(0)
             w = item.widget()
@@ -2267,7 +2427,6 @@ class MacroStepWidget(QFrame):
         if not self.buttons:
             return
 
-        # 2. Отрисовка
         for i, b_key in enumerate(self.buttons):
             row = i % 2
             col = i // 2
@@ -2277,12 +2436,10 @@ class MacroStepWidget(QFrame):
             lbl.setAlignment(Qt.AlignCenter)
             lbl.setFixedSize(32, 32)
             
-            # ТУТ ВНИМАТЕЛЬНО:
             icon_subpath = BUTTON_ICONS.get(b_key)
             icon_loaded = False
             
             if icon_subpath:
-                # ПРОВЕРЬ: ICONS_PATH у тебя определён глобально?
                 full_icon_path = os.path.join(ICONS_PATH, icon_subpath)
                 
                 if os.path.exists(full_icon_path):
@@ -2297,21 +2454,18 @@ class MacroStepWidget(QFrame):
                 else:
                     print(f"!!! ОШИБКА: Путь не найден: {full_icon_path}")
 
-            # Если иконка не загрузилась — пишем текст, чтобы не было пустоты!
             if not icon_loaded:
                 lbl.setText(b_key)
-                lbl.setStyleSheet("color: #00ffcc; font-size: 10px; font-weight: bold; background: #1a1a1a; border-radius: 4px;")
+                lbl.setObjectName("BtnKeyFallback")  # стиль в _QSS_TEMPLATE QLabel#BtnKeyFallback
             else:
-                lbl.setStyleSheet("background: #1a1a1a; border: 1px solid #333; border-radius: 4px;")
+                lbl.setObjectName("BtnKeyIcon")       # стиль в _QSS_TEMPLATE QLabel#BtnKeyIcon
 
             self._grid_layout.addWidget(lbl, row, col)
 
-        # Адаптивная ширина
         cols = (len(self.buttons) + 1) // 2
         new_width = max(72, cols * 38 + 12)
         self.setFixedWidth(new_width)
 
-    # ── DnD Source for MacroStepWidget (Reorder/Delete) ──────────────────────
 
     def _is_out_of_bounds(self, global_pos) -> bool:
         """
@@ -2326,16 +2480,13 @@ class MacroStepWidget(QFrame):
         Это позволяет пользователю «вытащить» шаг из макроса, потянув
         его далеко вверх или вниз, без использования контекстного меню.
         """
-        # Поднимаемся по parent-цепочке до MacroRowWidget
         row_widget = self.parent()
         while row_widget is not None and not isinstance(row_widget, MacroRowWidget):
             row_widget = row_widget.parent()
 
         if row_widget is None:
-            # Не нашли родительскую строку — консервативно считаем «в пределах»
             return False
 
-        # Глобальный прямоугольник всей строки макроса
         row_rect = row_widget.rect()
         top    = row_widget.mapToGlobal(row_rect.topLeft()).y()
         bottom = row_widget.mapToGlobal(row_rect.bottomLeft()).y()
@@ -2357,10 +2508,8 @@ class MacroStepWidget(QFrame):
             self.buttons.remove(removed_btn)
 
         if not self.buttons:
-            # Шаг стал пустым — сигнализируем родителю об удалении
             self.removed.emit(("delete", self))
         else:
-            # Шаг ещё содержит кнопки — перерисовываем иконки
             self._rebuild_labels()
             self.changed.emit()
 
@@ -2374,19 +2523,16 @@ class MacroStepWidget(QFrame):
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self._drag_start_pos = event.position().toPoint()
-        # ОБЯЗАТЕЛЬНО пробрасываем наверх
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         if not (event.buttons() & Qt.LeftButton):
             return
         
-        # Проверка дистанции, чтобы не дергалось при микро-клике
         if (event.position().toPoint() - self._drag_start_pos).manhattanLength() < QApplication.startDragDistance():
             return
 
         p = event.position().toPoint()
-        # Безопасный поиск дочернего элемента
         child = self._grid_widget.childAt(self._grid_widget.mapFrom(self, p))
         
         if not (child and child.property("btn_key")):
@@ -2405,47 +2551,26 @@ class MacroStepWidget(QFrame):
 
         child.hide() # Эффект фантома
 
-        # ВЫПОЛНЯЕМ ДРАГ
         res = drag.exec(Qt.MoveAction | Qt.CopyAction)
-        
-        # --- ЛОГИКА ПОСЛЕ БРОСКА ---
-        if res == Qt.MoveAction:
-            # Успешно перенесено (слияние с другим шагом или перестановка)
-            self._finalize_move(targeted_btn)
-        
-        elif res == Qt.IgnoreAction:
-            # ВОТ ТУТ МАГИЯ УДАЛЕНИЯ:
-            # Если бросили "в никуда" (не в DropZone), проверяем координаты.
-            # Если курсор далеко от таймлайна — удаляем.
-            global_pos = QCursor.pos()
-            if self._is_out_of_bounds(global_pos):
-                print(f"Выбросили {targeted_btn} за борт")
-                self._finalize_move(targeted_btn)
-            else:
-                # Просто сорвался драг в пределах макроса — возвращаем
-                child.show()
-        else:
-            # Любой другой случай (например, Copy) — возвращаем видимость
-            child.show()
 
-    # ── Визуальное обновление (Рентген и стили) ──────────────────────────────
+        if res == Qt.MoveAction:
+            self._finalize_move(targeted_btn)
+        else:
+            self._finalize_move(targeted_btn)
+
     def update_appearance(self, is_dragging: bool):
         """Управляет подсветкой рамки шага при Drag-and-Drop."""
         self.setProperty("drag_over", "true" if is_dragging else "false")
-        # Перерисовываем виджет, чтобы применились стили из CSS (QSS)
         self.style().unpolish(self)
         self.style().polish(self)
 
-    # ── DnD Handling (Добавление кнопок в шаг) ──────────────────────────────
     def dragEnterEvent(self, event):
         if event.mimeData().hasText():
             txt = event.mimeData().text()
-            # Убираем проверку "not txt.startswith", если хотим разрешить перенос кнопок между шагами (слияние)
             event.acceptProposedAction()
             self.update_appearance(True)
 
     def dragLeaveEvent(self, event):
-        # Сбрасываем подсветку, когда уводим курсор
         self.update_appearance(False)
         super().dragLeaveEvent(event)
 
@@ -2453,7 +2578,6 @@ class MacroStepWidget(QFrame):
         self.update_appearance(False)
         txt = event.mimeData().text()
         
-        # Если тащим из другого шага — отрезаем префикс
         is_move = txt.startswith("MacroStep:")
         clean_btn = txt.replace("MacroStep:", "") if is_move else txt
 
@@ -2462,12 +2586,10 @@ class MacroStepWidget(QFrame):
             self._rebuild_labels()
             self.changed.emit()
             
-            # Важно: если это был перенос, ставим MoveAction
             if is_move:
                 event.setDropAction(Qt.MoveAction)
             event.accept()
     
-    # ── Context Menu ─────────────────────────────────────────────────────────
     def contextMenuEvent(self, event):
         """Полностью отключаем контекстное меню для этого виджета."""
         event.accept()
@@ -2476,138 +2598,73 @@ class MacroStepWidget(QFrame):
         """Перехватываем фокус — не даём Qt рисовать системную рамку."""
         event.accept()
 
-    # ── Hover pulse ──────────────────────────────────────────────────────────
 
     def enterEvent(self, event):
-        self._anim.stop()
-        self._anim.setStartValue(self.height())
-        self._anim.setEndValue(self.base_h + 4) # Пульс на 4 пикселя вверх
-        self._anim.start()
         super().enterEvent(event)
 
     def leaveEvent(self, event):
-        self._anim.stop()
-        self._anim.setStartValue(self.height())
-        self._anim.setEndValue(self.base_h)     # Возврат к базе
-        self._anim.start()
         super().leaveEvent(event)
 
-# ─── MacroRunner — накопительное зажатие в фоновом потоке ────────────────────
-class MacroRunner(QObject):
-    sig_step = Signal(int)   # текущий шаг (для подсветки)
-    sig_done = Signal()      # выполнение завершено / остановлено
 
-    # Карта кнопок — создаётся один раз при первом вызове
+# Исполнитель макроса в фоновом потоке. Нажимает кнопки с заданными задержками, удерживает финальное состояние до KeyUp и не конфликтует с маппером.
+class MacroRunner(QObject):
+    sig_step = Signal(int)
+    sig_done = Signal()
+
     _BTN_MAP: dict = None
 
-    def __init__(self, steps: list, gamepad, lock, parent=None):
+    def __init__(self, steps: list, gamepad, lock, ithread=None, parent=None):
         super().__init__(parent)
-        self.steps   = steps
-        self.gamepad = gamepad
-        self.lock    = lock
+        self.steps    = steps
+        self.gamepad  = gamepad
+        self.lock     = lock
+        self._ithread = ithread   # InterceptionThread: даёт доступ к pressed_keys/bindings
 
         self._stop_event = threading.Event()
-        self._thread: threading.Thread = None
-
-    # ── Public API ────────────────────────────────────────────────────────────
+        self._worker: threading.Thread = None
 
     def start(self):
         if not self.steps:
             self.sig_done.emit()
             return
         self._stop_event.clear()
-        self._thread = threading.Thread(target=self._run, daemon=True)
-        self._thread.start()
+        self._worker = threading.Thread(target=self._run, daemon=True)
+        self._worker.start()
 
     def isRunning(self) -> bool:
-        return self._thread is not None and self._thread.is_alive()
+        return self._worker is not None and self._worker.is_alive()
 
     def stop(self):
-        """Вызывается при KeyUp — немедленно прерывает ожидание и отпускает всё."""
-        self._is_running = False  # Флаг для цикла в run()
-        self._stop_event.set()     # Прерываем текущий delay (time.sleep или wait)
-        
-        # ФИКС ЗАЛИПАНИЯ: Сбрасываем геймпад немедленно
-        if self.gamepad:
-            try:
-                self.gamepad.reset()
-                self.gamepad.update()
-                print("[MacroRunner] Gamepad state reset successfully.")
-            except Exception as e:
-                print(f"[MacroRunner] Error resetting gamepad: {e}")
-
-    # ── Внутренняя логика ─────────────────────────────────────────────────────
+        """Прерывает ожидание между шагами. Отпускание кнопок — в _run через _release_set."""
+        self._stop_event.set()
 
     def _run(self):
         active_buttons: set = set()
         btn_map = self._get_btn_map()
         total = len(self.steps)
 
-        print(f"[MacroRunner] Starting. Steps: {total}")
         for i, step in enumerate(self.steps):
-
-            # 1. Накапливаем кнопки
-            active_buttons.update(step.get("buttons", []))
-            self.sig_step.emit(i) 
-
-            # 2. Нажимаем. УБРАЛИ is_last из аргументов, чтобы не было ошибки
-            self._press_set(active_buttons, btn_map)
-            
-            if self.gamepad:
-                with self.lock:
-                    self.gamepad.update()
-
-            # --- ПРАВКА ТУТ: Финальная микро-задержка для драйвера ---
-            is_last = (i == total - 1)
-            if is_last:
-                import time
-                time.sleep(0.05) # Даём системе "прожевать" последний нажатый стэк
-
-            # 3. Задержка перед СЛЕДУЮЩИМ шагом
-            if not is_last:
-                raw_delay = self.steps[i + 1].get("delay_after", 0.1)
-                try:
-                    next_delay = float(raw_delay)
-                except (TypeError, ValueError):
-                    next_delay = 0.1
-                
-                next_delay = max(0.0, min(next_delay, 10.0))
-                
-                # Ожидание с проверкой прерывания
-                interrupted = self._stop_event.wait(timeout=next_delay)
-                if interrupted:
-                    break
-
-            # 4. Проверка стопа
             if self._stop_event.is_set():
                 break
 
-        else:
-            # 5. Удержание до KeyUp
-            if not self._stop_event.is_set():
-                self._stop_event.wait() 
+            active_buttons.update(step.get("buttons", []))
+            self.sig_step.emit(i)
+            self._press_set(active_buttons, btn_map)
 
-        # 6. Отпускаем всё
+            if i < total - 1:
+                raw = self.steps[i].get("delay_after", 0.1)
+                try:
+                    delay = max(0.0, min(float(raw), 10.0))
+                except (TypeError, ValueError):
+                    delay = 0.1
+                if self._stop_event.wait(timeout=delay):
+                    break
+
+        else:
+            self._stop_event.wait()
+
         self._release_set(active_buttons, btn_map)
         self.sig_done.emit()
-
-    def _get_delay(step: dict) -> float:
-        """Возвращает delay_after в секундах. 0.1 только если данные повреждены/пусты."""
-        raw = step.get("delay_after", 0.1)
-        try:
-            val = float(raw)
-        except (TypeError, ValueError):
-            return 0.1
-        # Нижний порог — 0.0 (не 0.1!). Верхний — 10 сек.
-        return max(0.0, min(val, 10.0))
-
-    def _reset_gamepad(self):
-        if self.gamepad:
-            with self.lock:
-                self.gamepad.reset()
-                self.gamepad.update()
-    
-    # ── Геймпад ───────────────────────────────────────────────────────────────
 
     @classmethod
     def _get_btn_map(cls) -> dict:
@@ -2632,61 +2689,72 @@ class MacroRunner(QObject):
             }
         return cls._BTN_MAP
 
-    def _press_set(self, buttons: set, btn_map: dict, is_last: bool = False):
-        """Нажимает весь набор накопленных кнопок и устанавливает оси."""
+    def _press_set(self, buttons: set, btn_map: dict):
+        """Нажимает кнопки текущего шага макроса.
+        Не вызывает reset() — состояние маппера не трогается."""
         if not self.gamepad:
             return
-            
-        # Локальные переменные для осей (всегда начинаем с центра)
         ls_x = ls_y = rs_x = rs_y = 0
         lt_val = rt_val = 0
         v = 32767
-
         with self.lock:
-            self.gamepad.reset()
-            # Сначала сбрасываем кнопки в драйвере, чтобы press_button не дублировался? 
-            # Нет, vgamepad умный, но для осей важна актуальность.
-            
             for btn in buttons:
                 if btn in btn_map:
                     self.gamepad.press_button(button=btn_map[btn])
-                elif btn == "LT":  lt_val = 255
-                elif btn == "RT":  rt_val = 255
-                elif btn == "LS_UP":    ls_y = v
-                elif btn == "LS_DOWN":  ls_y = -v
-                elif btn == "LS_LEFT":  ls_x = -v
-                elif btn == "LS_RIGHT": ls_x = v
-                elif btn == "RS_UP":    rs_y = v
-                elif btn == "RS_DOWN":  rs_y = -v
-                elif btn == "RS_LEFT":  rs_x = -v
-                elif btn == "RS_RIGHT": rs_x = v
-
-            # Применяем значения триггеров и стиков (даже если они 0)
-            self.gamepad.left_trigger(value=lt_val)
-            self.gamepad.right_trigger(value=rt_val)
-            self.gamepad.left_joystick(x_value=ls_x, y_value=ls_y)
-            self.gamepad.right_joystick(x_value=rs_x, y_value=rs_y)
-            
+                elif btn == "LT":       lt_val =  255
+                elif btn == "RT":       rt_val =  255
+                elif btn == "LS_UP":    ls_y   =  v
+                elif btn == "LS_DOWN":  ls_y   = -v
+                elif btn == "LS_LEFT":  ls_x   = -v
+                elif btn == "LS_RIGHT": ls_x   =  v
+                elif btn == "RS_UP":    rs_y   =  v
+                elif btn == "RS_DOWN":  rs_y   = -v
+                elif btn == "RS_LEFT":  rs_x   = -v
+                elif btn == "RS_RIGHT": rs_x   =  v
+            if lt_val:          self.gamepad.left_trigger(value=lt_val)
+            if rt_val:          self.gamepad.right_trigger(value=rt_val)
+            if ls_x or ls_y:    self.gamepad.left_joystick(x_value=ls_x, y_value=ls_y)
+            if rs_x or rs_y:    self.gamepad.right_joystick(x_value=rs_x, y_value=rs_y)
             self.gamepad.update()
 
     def _release_set(self, buttons: set, btn_map: dict):
-        """Мгновенно отпускает все кнопки, накопленные в процессе выполнения."""
+        """Отпускает кнопки макроса после завершения/прерывания.
+        Кнопки, для которых физическая клавиша маппера всё ещё зажата, не трогаем."""
         if not self.gamepad or not buttons:
             return
+
+        mapper_still_held: set = set()
+        if self._ithread:
+            pressed = getattr(self._ithread, 'pressed_keys', set())
+            bindings = getattr(self._ithread, 'bindings', {})
+            for gp_btn, keys in bindings.items():
+                for k in keys:
+                    if k != "NONE" and k in pressed:
+                        mapper_still_held.add(gp_btn)
+                        break
+
         need_ls = need_rs = False
+        ls_axes = {"LS_UP", "LS_DOWN", "LS_LEFT", "LS_RIGHT"}
+        rs_axes = {"RS_UP", "RS_DOWN", "RS_LEFT", "RS_RIGHT"}
+
         with self.lock:
             for btn in buttons:
+                if btn in mapper_still_held:
+                    continue
                 if btn in btn_map:
                     self.gamepad.release_button(button=btn_map[btn])
-                elif btn == "LT":  self.gamepad.left_trigger(value=0)
-                elif btn == "RT":  self.gamepad.right_trigger(value=0)
-                elif btn.startswith("LS_"): need_ls = True
-                elif btn.startswith("RS_"): need_rs = True
-            if need_ls: self.gamepad.left_joystick(x_value=0, y_value=0)
-            if need_rs: self.gamepad.right_joystick(x_value=0, y_value=0)
+                elif btn == "LT":              self.gamepad.left_trigger(value=0)
+                elif btn == "RT":              self.gamepad.right_trigger(value=0)
+                elif btn in ls_axes:           need_ls = True
+                elif btn in rs_axes:           need_rs = True
+            if need_ls and not mapper_still_held.intersection(ls_axes):
+                self.gamepad.left_joystick(x_value=0, y_value=0)
+            if need_rs and not mapper_still_held.intersection(rs_axes):
+                self.gamepad.right_joystick(x_value=0, y_value=0)
             self.gamepad.update()
 
-# ─── MacrosEditorWidget — главный виджет редактора ───────────────────────────
+
+# Главный виджет вкладки MACROS: список строк макросов, палитра кнопок, захват бинда и управление MacroRunner.
 class MacrosEditorWidget(QWidget):
     """Редактор макросов. Интегрируется как вкладка MACROS."""
 
@@ -2699,58 +2767,28 @@ class MacrosEditorWidget(QWidget):
         self.runner = None # MacroRunner инициализируется позже
 
         self.setAcceptDrops(True)
-        # Принудительно отключаем фокус самому виджету, чтобы не ловить рамку
         self.setFocusPolicy(Qt.NoFocus) 
         
         self._build_ui()
 
-    # ── UI ───────────────────────────────────────────────────────────────────
 
     def _build_ui(self):
         root = QVBoxLayout(self)
-        # УВЕЛИЧИВАЕМ ОТСТУП СНИЗУ (15), чтобы палитра "взлетела"
         root.setContentsMargins(10, 10, 10, 15) 
         root.setSpacing(10)
 
-        # ── Верхняя часть: Список макросов (Full Width) ──────────────────────
         self.macro_scroll = QScrollArea()
         self.macro_scroll.setWidgetResizable(True)
         self.macro_scroll.setFocusPolicy(Qt.NoFocus)
         self.macro_scroll.setAttribute(Qt.WA_MacShowFocusRect, False)
         self.macro_scroll.setContextMenuPolicy(Qt.NoContextMenu)
-        
-        # УБИРАЕМ МАТРЁШКУ: ставим border: none и transparent
-        self.macro_scroll.setStyleSheet("""
-            QScrollArea { 
-                background: transparent; 
-                border: none; 
-                border-radius: 0px; /* Принудительно убираем закругление */
-                outline: none;
-                padding: 0px;
-            }
-            QScrollArea QWidget { 
-                background: transparent; 
-                border: none; 
-                border-radius: 0px; 
-                outline: none; 
-            }
-        """)
+        self.macro_scroll.setObjectName("MacroListScroll")
         
         self.macro_scroll_content = QWidget()
         self.macro_scroll_content.setObjectName("MacroScrollContent")
         self.macro_scroll_content.setFocusPolicy(Qt.NoFocus)
         
-        # Дополнительно чистим вьюпорт
-        self.macro_scroll.viewport().setStyleSheet("background: transparent; border: none;")
         self.macro_scroll.viewport().setFocusPolicy(Qt.NoFocus)
-        
-        self.macro_scroll_content.setStyleSheet("""
-            QWidget#MacroScrollContent {
-                background: #0d0d0d; /* Оставляем только основной фон контента */
-                border: none;
-                outline: none;
-            }
-        """)
         
         self.macro_vbox = QVBoxLayout(self.macro_scroll_content)
         self.macro_vbox.setContentsMargins(5, 5, 5, 5)
@@ -2759,52 +2797,33 @@ class MacrosEditorWidget(QWidget):
         self.macro_scroll.setWidget(self.macro_scroll_content)
         root.addWidget(self.macro_scroll, stretch=1)
 
-        # ── Нижняя часть: Палитра (Full Width) ──────────────────────────────
         pal_frame = QFrame()
         pal_frame.setObjectName("PalettePanel")
         pal_frame.setFocusPolicy(Qt.NoFocus)
-        # Отключаем контекстное меню
         pal_frame.setContextMenuPolicy(Qt.NoContextMenu)
         
-        pal_frame.setStyleSheet(
-            "QFrame#PalettePanel {"
-            " background: #161616; border: 1px solid #252525; border-radius: 8px; }"
-        )
-        
         pal_lay = QVBoxLayout(pal_frame)
-        # Равномерные отступы 10px со всех сторон
         pal_lay.setContentsMargins(10, 10, 10, 10) 
         pal_lay.setSpacing(8)
 
         pal_title = QLabel("PALETTE")
-        pal_title.setStyleSheet(
-            "color:#666; font-size:10px; font-weight:bold; letter-spacing:3px; margin-left:2px;"
-        )
+        pal_title.setObjectName("PaletteTitle")
         pal_lay.addWidget(pal_title)
 
         self.palette_scroll = QScrollArea()
         self.palette_scroll.setObjectName("PaletteScroll")
         
-        # Высота 90px — кнопки больше не зажаты
-        self.palette_scroll.setFixedHeight(90) 
+        self.palette_scroll.setFixedHeight(110) 
         self.palette_scroll.setWidgetResizable(True)
         self.palette_scroll.setFocusPolicy(Qt.NoFocus)
         self.palette_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.palette_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        
-        self.palette_scroll.setStyleSheet(
-            "QScrollArea#PaletteScroll { background: transparent; border: none; }"
-            "QWidget#PaletteContent { background: transparent; }"
-            "QScrollBar:horizontal { height: 6px; background: transparent; margin-top: 4px; }"
-            "QScrollBar::handle:horizontal { background: #333; border-radius: 3px; }"
-            "QScrollBar::handle:horizontal:hover { background: #444; }"
-        )
 
         pal_content = QWidget()
         pal_content.setObjectName("PaletteContent")
         pal_content.setFocusPolicy(Qt.NoFocus)
         
-        self.pal_flow = FlowLayout(pal_content, margin=0, spacing=6)
+        self.pal_flow = FlowLayout(pal_content, margin=0, spacing=4)
         self.palette_scroll.setWidget(pal_content)
         pal_lay.addWidget(self.palette_scroll)
 
@@ -2815,7 +2834,6 @@ class MacrosEditorWidget(QWidget):
         self._refresh_macro_list()
         self.fill_palette(GP_MAP_KEYS)
 
-        # Финальная тотальная зачистка фокусов
         for child in self.findChildren(QWidget):
             if isinstance(child, (QFrame, QScrollArea, QAbstractScrollArea)):
                 allowed = (QLineEdit, QPushButton)
@@ -2830,11 +2848,9 @@ class MacrosEditorWidget(QWidget):
                 vp.setFocusPolicy(Qt.NoFocus)
                 vp.setContextMenuPolicy(Qt.NoContextMenu)
 
-    # ── Palette key source fix ────────────────────────────────────────────────
 
     def fill_palette(self, all_keys):
         """Заполняет палитру кнопками через FlowLayout с иммунитетом к фокусу."""
-        # Очищаем FlowLayout
         while self.pal_flow.count():
             item = self.pal_flow.takeAt(0)
             if item.widget():
@@ -2842,26 +2858,19 @@ class MacrosEditorWidget(QWidget):
 
         for key in all_keys:
             btn = PaletteBtn(key)
-            # --- ФИКС ВЫДЕЛЕНИЯ ---
-            # Кнопка больше не будет "залипать" в синем цвете после клика или драга
             btn.setFocusPolicy(Qt.NoFocus)
-            # На всякий случай убиваем системную рамку фокуса (Mac/Windows)
             btn.setAttribute(Qt.WA_MacShowFocusRect, False)
-            # ----------------------
             self.pal_flow.addWidget(btn)
 
-    # ── Macro list management ────────────────────────────────────────────────
 
     def _refresh_macro_list(self):
         """Перестраивает вертикальный список строк макросов с передачей цветов."""
-        # Очистка старых виджетов
         while self.macro_vbox.count():
             item = self.macro_vbox.takeAt(0)
             if item.widget():
                 item.widget().deleteLater()
         self.macro_widgets.clear()
         
-        # 1. Заранее готовим цвета, чтобы не дергать mw в цикле
         p_col = self.mw.primary_color if self.mw else "#0078D7"
         s_col = self.mw.secondary_color if self.mw else "#E74C3C"
         
@@ -2872,7 +2881,6 @@ class MacrosEditorWidget(QWidget):
                 is_active, p_color=p_col, s_color=s_col
             )
             
-            # Связываем сигналы
             row.selected.connect(self._on_macro_selected)
             row.delete_requested.connect(self._del_macro)
             row.name_changed.connect(self._on_macro_name_changed)
@@ -2882,7 +2890,6 @@ class MacrosEditorWidget(QWidget):
             self.macro_vbox.addWidget(row)
             self.macro_widgets.append(row)
 
-        # Добавляем кнопку + ADD MACRO
         add_row = AddMacroRow()
         add_row.clicked.connect(self._add_macro)
         self.macro_vbox.addWidget(add_row)
@@ -2900,11 +2907,9 @@ class MacrosEditorWidget(QWidget):
 
         Безопасен при пустом списке макросов.
         """
-        # Сохраняем для будущих _refresh_macro_list
         self._p_color = p_color
         self._s_color = s_color
 
-        # Прокидываем в каждую строку
         for row in self.macro_widgets:
             if hasattr(row, 'update_style'):
                 row.update_style(p_color, s_color)
@@ -2933,16 +2938,13 @@ class MacrosEditorWidget(QWidget):
 
     def _add_macro(self):
         name = f"Macro_{len(self.macros) + 1}"
-        # Используем list(), чтобы гарантировать НОВЫЙ объект списка в памяти
         new_data = {"name": name, "bind": "", "steps": list()} 
         self.macros.append(new_data)
         idx = len(self.macros) - 1
         self.current_macro_idx = idx
 
-        # Замораживаем UI на мгновение
         self.setUpdatesEnabled(False)
         
-        # Создаём ТОЛЬКО один новый виджет
         p_col = self.mw.primary_color if self.mw else "#0078D7"
         s_col = self.mw.secondary_color if self.mw else "#E74C3C"
         
@@ -2951,7 +2953,6 @@ class MacrosEditorWidget(QWidget):
             True, p_color=p_col, s_color=s_col
         )
         
-        # Подключаем сигналы (как в твоём цикле)
         row.selected.connect(self._on_macro_selected)
         row.delete_requested.connect(self._del_macro)
         row.name_changed.connect(self._on_macro_name_changed)
@@ -2959,12 +2960,10 @@ class MacrosEditorWidget(QWidget):
         row.steps_changed.connect(self._on_macro_steps_changed)
         row.bind_cleared.connect(self._clear_macro_bind)
 
-        # Вставляем его в лейаут ПЕРЕД кнопкой ADD (она последняя, индекс count-1)
         insert_pos = self.macro_vbox.count() - 1
         self.macro_vbox.insertWidget(insert_pos, row)
         self.macro_widgets.append(row)
         
-        # Сразу задаём ему базовую высоту, чтобы не ждал таймера
         row.setFixedHeight(108) 
         
         self.setUpdatesEnabled(True)
@@ -2973,13 +2972,11 @@ class MacrosEditorWidget(QWidget):
     def _del_macro(self, idx):
         """Удаление макроса с хирургической точностью."""
         if 0 <= idx < len(self.macros):
-            # Отключаем захват, если он был активен на удаляемом макросе
             if getattr(self, "_capturing_bind", False) and self.current_macro_idx == idx:
                 self._cancel_capture_bind()
 
             self.macros.pop(idx)
             
-            # Корректируем current_macro_idx только если нужно
             if self.current_macro_idx == idx:
                 self.current_macro_idx = min(idx, len(self.macros) - 1)
             elif self.current_macro_idx > idx:
@@ -2988,7 +2985,6 @@ class MacrosEditorWidget(QWidget):
             self._refresh_macro_list()
             self._sync_header_combo()
             
-            # КРИТИЧЕСКИ ВАЖНО: Обновляем триггеры перехвата в драйвере!
             if hasattr(self, "mw") and hasattr(self.mw, "update_macro_triggers"):
                 self.mw.update_macro_triggers()
 
@@ -2997,7 +2993,6 @@ class MacrosEditorWidget(QWidget):
         if 0 <= idx < len(self.macros):
             self.macros[idx]["bind"] = ""
             
-            # Сохраняем и обновляем драйвер через MainWindow
             if hasattr(self, "mw"):
                 if hasattr(self.mw, "update_macro_triggers"):
                     self.mw.update_macro_triggers()
@@ -3017,12 +3012,10 @@ class MacrosEditorWidget(QWidget):
         if self.runner and self.runner.isRunning():
             print("[_stop_macro] Stopping runner...")
             self.runner.stop()
-            # Обнуляем ссылку, чтобы следующий запуск был "чистым"
             self.runner = None
 
     def _play_macro(self, idx=None):
         """Запускает воспроизведение макроса по индексу или текущему."""
-        # 1. Определяем, какой макрос запускать
         if idx is not None:
             self.current_macro_idx = idx
             
@@ -3030,7 +3023,6 @@ class MacrosEditorWidget(QWidget):
             print("[_play_macro] ОШИБКА: Макрос не выбран")
             return
 
-        # 2. Синхронизируем данные из полей ввода (чтобы макрос был актуальным)
         for i in range(self.macro_vbox.count()):
             item = self.macro_vbox.itemAt(i)
             if not item: continue
@@ -3039,14 +3031,12 @@ class MacrosEditorWidget(QWidget):
                 w._sync_steps_to_data()
                 break
 
-        # 3. Достаем шаги макроса
         macro = self.macros[self.current_macro_idx]
         steps = macro.get("steps", [])
         if not steps:
             print(f"[_play_macro] В макросе '{macro.get('name')}' нет шагов!")
             return
 
-        # 4. Получаем доступ к геймпаду через подтвержденный self.mw.thread
         gamepad = None
         lock = None
         
@@ -3058,10 +3048,11 @@ class MacrosEditorWidget(QWidget):
             print("[_play_macro] КРИТИЧЕСКАЯ ОШИБКА: Геймпад в self.mw.thread не найден!")
             return
 
-        # 5. Перезапуск раннера
+        _ithread = self.mw.thread if hasattr(self.mw, "thread") else None
+
         self._stop_macro()
         
-        self.runner = MacroRunner(steps, gamepad, lock)
+        self.runner = MacroRunner(steps, gamepad, lock, ithread=_ithread)
         self.runner.sig_step.connect(self._highlight_step)
         self.runner.sig_done.connect(self._on_runner_done)
         self.runner.start()
@@ -3078,11 +3069,6 @@ class MacrosEditorWidget(QWidget):
         for i in range(row_w.tl_layout.count()):
             w = row_w.tl_layout.itemAt(i).widget()
             if isinstance(w, MacroStepWidget):
-                # Используем QDynamicProperty вместо setStyleSheet.
-                # setStyleSheet создаёт inline-стиль, который перебивает глобальный
-                # QSS и позволяет Qt нарисовать нативный focus rect.
-                # QDynamicProperty + unpolish/polish — правильный Qt-способ
-                # менять стиль виджета без побочных эффектов.
                 value = "true" if count == step_idx else "false"
                 w.setProperty("highlighted", value)
                 w.style().unpolish(w)
@@ -3090,16 +3076,21 @@ class MacrosEditorWidget(QWidget):
                 w.update()
                 count += 1
 
-    # ── Bind capture ─────────────────────────────────────────────────────────
     def _start_capture_bind(self, idx=None):
         """Запускает режим захвата клавиши для бинда."""
+        if self._capturing_bind and (idx is None or idx == self.current_macro_idx):
+            self._cancel_capture_bind()
+            return
+
+        if self._capturing_bind:
+            self._cancel_capture_bind()
+
         if idx is not None:
             self.current_macro_idx = idx
             self._on_macro_selected(idx)
 
         self._capturing_bind = True
         
-        # Находим кнопку в строке
         row_w = self._get_row_by_idx(self.current_macro_idx)
         if row_w:
             btn = row_w.bind_btn
@@ -3124,7 +3115,7 @@ class MacrosEditorWidget(QWidget):
         row_w = self._get_row_by_idx(self.current_macro_idx)
         if row_w:
             btn = row_w.bind_btn
-            val = self.macros[self.current_macro_idx].get("bind", "NONE")
+            val = self.macros[self.current_macro_idx].get("bind", "") or "NONE"
             btn.setText(val)
             btn.setProperty("capturing", "false")
             btn.style().unpolish(btn)
@@ -3140,11 +3131,9 @@ class MacrosEditorWidget(QWidget):
         self.macros[self.current_macro_idx]["bind"] = key_name
         self._cancel_capture_bind()
         
-        # КРИТИЧЕСКИ ВАЖНО: Обновляем триггеры перехвата в драйвере!
         if hasattr(self, "mw") and hasattr(self.mw, "update_macro_triggers"):
             self.mw.update_macro_triggers()
 
-    # ── Load / Save (вызывается из MainWindow.load_config / save_config) ─────
 
     def load_from_config(self, config: "configparser.ConfigParser"):
         self.macros.clear()
@@ -3154,7 +3143,6 @@ class MacrosEditorWidget(QWidget):
             name = sec.get("name", sname)
             bind = sec.get("bind", "")
             seq_str = sec.get("seq", "")
-            # Используем parse_macro_seq для десериализации (v7.0)
             steps = parse_macro_seq(seq_str) if seq_str else []
             self.macros.append({"name": name, "bind": bind, "steps": steps})
         
@@ -3166,12 +3154,10 @@ class MacrosEditorWidget(QWidget):
         self._refresh_macro_list()
         self._sync_header_combo()
         
-        # КРИТИЧЕСКИ ВАЖНО: Обновляем триггеры перехвата в драйвере!
         if hasattr(self, "mw") and hasattr(self.mw, "update_macro_triggers"):
             self.mw.update_macro_triggers()
 
     def save_to_config(self, config: "configparser.ConfigParser"):
-        # Удаляем старые секции
         for s in list(config.sections()):
             if s.startswith("Macros_"):
                 config.remove_section(s)
@@ -3184,23 +3170,21 @@ class MacrosEditorWidget(QWidget):
             }
     
     def mouseReleaseEvent(self, event):
-        # Принудительно забираем фокус у любого активного элемента
         self.setFocus(Qt.OtherFocusReason)
         super().mouseReleaseEvent(event)
     
     def mousePressEvent(self, event):
-        # Сбрасываем фокус, если кликнули мимо
         focused_widget = QApplication.focusWidget()
         if focused_widget:
             focused_widget.clearFocus()
         super().mousePressEvent(event)
 
+
+# Фоновый поток на базе Interception: перехватывает клавиатуру, маппит в геймпад и эмитит сигналы для макросов.
 class InterceptionThread(QThread):
-    # ОБЯЗАТЕЛЬНО: Объявляем сигналы в начале класса
     key_signal = Signal(str, int, bool)
     sig_turbo_active = Signal(str, bool, int)
     sig_delay_request = Signal(str, int, bool)
-    # НОВЫЙ СИГНАЛ: передаёт скан-код макроса в MainWindow
     macro_activated = Signal(int, bool) 
 
     def __init__(self):
@@ -3209,6 +3193,7 @@ class InterceptionThread(QThread):
         self.is_capturing = False
         self.is_typing = False
         self.gamepad = None
+        self.pressed_keys: set = set()  # физически зажатые клавиши (upper-case имена)
         self.bindings = {k: ["NONE"] * 6 for k in GP_MAP_KEYS}
         self.toggles = {k: [False] * 6 for k in GP_MAP_KEYS}
         self.turbos = {k: [False] * 6 for k in GP_MAP_KEYS}
@@ -3310,15 +3295,32 @@ class InterceptionThread(QThread):
             if self.gamepad:
                 self.gamepad.update()
 
-    def run(self):
-        if not self.context: return
-        stroke = Stroke()
+    def connect_gamepad(self):
+        """Подключает виртуальный геймпад. Вызывается при START EMULATION."""
+        if self.gamepad:
+            return
         try:
             self.gamepad = vg.VX360Gamepad()
             print("[SYSTEM] Virtual Xbox 360 Controller connected.")
         except Exception as e:
-            print(f"[ERROR] Gamepad initialization failed: {e}")
+            print(f"[ERROR] Gamepad init failed: {e}")
+
+    def disconnect_gamepad(self):
+        """Отключает виртуальный геймпад. Вызывается при STOP EMULATION."""
+        if not self.gamepad:
             return
+        try:
+            with self.lock:
+                self.gamepad.reset()
+                self.gamepad.update()
+            self.gamepad = None
+            print("[SYSTEM] Virtual Xbox 360 Controller disconnected.")
+        except Exception as e:
+            print(f"[ERROR] Gamepad disconnect failed: {e}")
+
+    def run(self):
+        if not self.context: return
+        stroke = Stroke()
 
         self.axes = {k: 0 for k in ["LS_UP", "LS_DOWN", "LS_LEFT", "LS_RIGHT", "RS_UP", "RS_DOWN", "RS_LEFT", "RS_RIGHT"]}
 
@@ -3331,30 +3333,24 @@ class InterceptionThread(QThread):
                 is_down = not (st & 1)
                 is_extended = bool(st & 2)
 
-                # Определяем имя (нужно и для логов, и для маппера)
                 if is_extended and sc in EXTENDED_KEYS:
                     name = EXTENDED_KEYS[sc]
                 else:
                     name = CODE_TO_NAME.get(sc, f"KEY_{sc}")
 
-                # Сигнал для UI мониторинга
                 self.key_signal.emit(name, sc, is_down)
 
-                # Флаг: блокировать ли нажатие для Windows (чтобы не печатало в чат)
+                if is_down:
+                    self.pressed_keys.add(name)
+                else:
+                    self.pressed_keys.discard(name)
+
                 should_block_windows = False
 
-                # --- 1. ПРОВЕРКА МАКРОСОВ ---
-                if self.enabled and not self.is_typing and not self.is_capturing:
-                    # v7.5 FIX: Используем имя клавиши для проверки макросов (поддерживает обычные и E0 клавиши)
-                    if name in self.macro_triggers:
-                        self.macro_activated.emit(sc, is_down)
-                        should_block_windows = True # Поглощаем клавишу
-
-                # --- 2. МАППИНГ В ГЕЙМПАД (МАППЕР) ---
                 if self.enabled and not self.is_typing and not self.is_capturing:
                     for gp_btn, keys in self.bindings.items():
                         if name in keys:
-                            should_block_windows = True # Поглощаем клавишу
+                            should_block_windows = True
                             try:
                                 slot_idx = keys.index(name)
                                 if self.delays[gp_btn][slot_idx]:
@@ -3364,21 +3360,17 @@ class InterceptionThread(QThread):
                             except ValueError:
                                 continue
 
-                # --- 3. ОБРАБОТКА ЗАХВАТА (BINDING) ---
+                    if name in self.macro_triggers:
+                        self.macro_activated.emit(sc, is_down)
+                        should_block_windows = True
+
                 if self.is_capturing:
                     self.lib.interception_send(self.context, device, ctypes.byref(stroke), 1)
                     continue
 
-                # --- 4. ФИНАЛЬНЫЙ ПРОБРОС В СИСТЕМУ ---
                 if should_block_windows:
-                    # v7.6 FIX: Полностью поглощаем и DOWN, и UP события.
-                    # Раньше мы пропускали UP-событие в систему, чтобы избежать залипания,
-                    # но такие клавиши как APPS, LWIN, RWIN срабатывают именно на UP.
-                    # Так как мы поглотили DOWN, система не знает о нажатии,
-                    # поэтому залипания не будет, даже если мы удалим UP-событие.
                     continue 
                 else:
-                    # Обычная клавиша, не макрос и не маппер — просто шлём в Windows
                     self.lib.interception_send(self.context, device, ctypes.byref(stroke), 1)
 
     def inject_turbo(self, active_keys, turbo_state):
@@ -3409,27 +3401,25 @@ class InterceptionThread(QThread):
         self.is_running = False
         self.enabled = False
         if self.context:
-            # Это «выбивает» блокировку interception_wait
             self.lib.interception_destroy_context(self.context)
             self.context = None
 
+
+# Главное окно приложения. Собирает все виджеты, управляет профилями, темой, трей-иконкой и глобальными событиями.
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        # Официальное название в заголовке
         self.setWindowTitle(PROJECT_NAME)
         if os.path.exists(APP_ICON):
             self.setWindowIcon(QIcon(APP_ICON))
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
-        # ПЕРЕМЕННЫЕ ДЛЯ ПЕРЕМЕЩЕНИЯ ОКНА
         self.resizing = False
         self.drag_allowed = True
         self.offset = None
         self.active_slot = None
 
-        # Глобальный трекинг мыши
         self.setMouseTracking(True)
         self.installEventFilter(self)
 
@@ -3445,7 +3435,6 @@ class MainWindow(QMainWindow):
         self.delays = {k: [False] * 6 for k in GP_MAP_KEYS}
         self.delay_intervals_map = {k: [0.1] * 6 for k in GP_MAP_KEYS}
 
-        # --- ЦВЕТОВАЯ СХЕМА (v2.0) ---
         self.primary_color = "#0078D7"
         self.secondary_color = "#E74C3C"
 
@@ -3462,7 +3451,6 @@ class MainWindow(QMainWindow):
         self.turbo_timer = QTimer(self)
         self.turbo_timer.timeout.connect(self.on_turbo_tick)
 
-        # Таймер для сглаживания предпросмотра цветов (убираем лаги)
         self.preview_timer = QTimer(self)
         self.preview_timer.setSingleShot(True)
         self.preview_timer.setInterval(30)  # 30мс достаточно для плавности без лагов
@@ -3470,7 +3458,6 @@ class MainWindow(QMainWindow):
         self.active_turbo_keys = set()
         self.pressed_phys_keys = set()
         
-        # Множество активных сейчас турбо-кнопок (физически зажатых)
         self.thread = InterceptionThread()
         self.thread.key_signal.connect(self.on_key)
         self.thread.sig_turbo_active.connect(self.on_turbo_active)
@@ -3484,7 +3471,6 @@ class MainWindow(QMainWindow):
         self.enable_child_tracking(self.centralWidget())
         atexit.register(self._cleanup_on_exit)
 
-        # ЗАГРУЗКА СИСТЕМНОГО КОНФИГА
         config = configparser.ConfigParser()
         last_p = "Default"
 
@@ -3492,7 +3478,6 @@ class MainWindow(QMainWindow):
             config.read(GLOBAL_CONFIG, encoding="utf-8")
             last_p = config.get("Settings", "last_profile", fallback="Default")
 
-        # Очищаем имя профиля от расширения для загрузки
         last_p = last_p.replace(".ini", "")
 
         self.scan_profiles(last_p)
@@ -3507,7 +3492,6 @@ class MainWindow(QMainWindow):
         is_autostart = config.getboolean("Settings", "autostart", fallback=False)
         self.autostart_cb.setChecked(is_autostart)
 
-        # Загружаем настройку сворачивания
         if os.path.exists(GLOBAL_CONFIG):
             app_cfg = configparser.ConfigParser()
             app_cfg.read(GLOBAL_CONFIG, encoding="utf-8")
@@ -3520,18 +3504,14 @@ class MainWindow(QMainWindow):
 
         self.thread.start()
 
-        # --- ОТСЛЕЖИВАНИЕ ФОКУСА (для корректной печати в полях ввода) ---
         QApplication.instance().focusChanged.connect(self.on_focus_changed)
 
-        # --- НАСТРОЙКА ТРЕЯ ---
         self.tray_icon = QSystemTrayIcon(self)
 
-        # Сначала пробуем иконку окна, если она пустая — лезем за файлом напрямую
         current_icon = self.windowIcon()
         if current_icon.isNull() and os.path.exists(APP_ICON):
             current_icon = QIcon(APP_ICON)
 
-        # Если и файл не помог (например, его нет), ставим системную заглушку
         if current_icon.isNull():
             from PySide6.QtWidgets import QStyle
 
@@ -3539,61 +3519,38 @@ class MainWindow(QMainWindow):
         else:
             self.tray_icon.setIcon(current_icon)
 
-        tray_menu = QMenu()
-        tray_menu.setStyleSheet(
-            """
-            QMenu {
-                background-color: #1a1a1a;
-                color: white;
-                border: 1px solid #0078d7;
-                padding: 5px;
-            }
-            QMenu::item {
-                padding: 8px 25px;
-                background-color: transparent;
-            }
-            QMenu::item:selected {
-                background-color: #0078d7;
-                color: white;
-            }
-            QMenu::separator {
-                height: 1px;
-                background: #333333;
-                margin: 5px 10px;
-            }
-        """
-        )
+        self.tray_menu = QMenu()
+        self.tray_menu.setObjectName("TrayMenu")
         
         self.tray_action_toggle = QWidgetAction(self)
         self.tray_btn_toggle = QPushButton("START EMULATION")
         self.tray_btn_toggle.setObjectName("run_btn_inactive")
         self.tray_btn_toggle.setCursor(Qt.PointingHandCursor)
         self.tray_btn_toggle.setMinimumSize(140, 40)
-        # Применяем общий стиль + отступы, чтобы кнопка реагировала на темы
-        self.tray_btn_toggle.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color) + "\nQPushButton { margin: 4px 10px; padding: 0 10px; }")
         
         def on_tray_btn_click():
             if self.toggle_btn:
                 self.toggle_btn.click()
-            tray_menu.hide()
+            self.tray_menu.hide()
             
         self.tray_btn_toggle.clicked.connect(on_tray_btn_click)
         self.tray_action_toggle.setDefaultWidget(self.tray_btn_toggle)
-        tray_menu.addAction(self.tray_action_toggle)
+        self.tray_menu.addAction(self.tray_action_toggle)
 
-        tray_menu.addSeparator()
+        self.tray_menu.addSeparator()
 
-        show_action = tray_menu.addAction("Show app")
+        show_action = self.tray_menu.addAction("Show app")
         show_action.triggered.connect(self.showNormal)
 
-        tray_menu.addSeparator()  # Можно добавить разделитель для красоты
+        self.tray_menu.addSeparator()  # Можно добавить разделитель для красоты
 
-        quit_action = tray_menu.addAction("Exit")
+        quit_action = self.tray_menu.addAction("Exit")
         quit_action.triggered.connect(self.manual_exit)
 
-        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.setContextMenu(self.tray_menu)
         self.tray_icon.show()
         self.tray_icon.activated.connect(self.on_tray_icon_activated)
+        self.update_tray_menu_style()
 
     def enable_child_tracking(self, widget):
         """Рекурсивно заставляем всех детей сообщать о движении мыши"""
@@ -3606,7 +3563,6 @@ class MainWindow(QMainWindow):
     def eventFilter(self, obj, event):
         """Перехватываем всё: Ресайз + Фокус + Копирование крипты"""
         
-        # --- ЛОГИКА ДВИЖЕНИЯ МЫШИ ---
         if event.type() == QEvent.Type.MouseMove:
             global_pos = event.globalPosition().toPoint()
             local_pos = self.mapFromGlobal(global_pos)
@@ -3615,11 +3571,13 @@ class MainWindow(QMainWindow):
                 return True
             self.update_cursor_appearance(local_pos)
 
-        # --- ЛОГИКА НАЖАТИЯ МЫШИ (Самое важное) ---
         elif event.type() == QEvent.Type.MouseButtonPress:
             global_pos = event.globalPosition().toPoint()
-            
-            # Проверяем, существует ли диалог и попал ли клик по кошелькам
+
+            if hasattr(self, 'macros_editor') and self.macros_editor._capturing_bind:
+                row_w = self.macros_editor._get_row_by_idx(self.macros_editor.current_macro_idx)
+                self.macros_editor._cancel_capture_bind()
+
             if hasattr(self, 'wallet_ton') and obj is self.wallet_ton:
                 QApplication.clipboard().setText(obj.text())
                 print(f"TON скопирован: {obj.text()}")
@@ -3630,20 +3588,17 @@ class MainWindow(QMainWindow):
                 print(f"USDT скопирован: {obj.text()}")
                 return True
 
-            # 2. Твоя логика сброса фокуса
             target = self.childAt(self.mapFromGlobal(global_pos))
             if not isinstance(target, QLineEdit):
                 focused_widget = QApplication.focusWidget()
                 if isinstance(focused_widget, QLineEdit):
                     focused_widget.clearFocus()
 
-            # 3. Твоя логика ресайза
             local_pos = self.mapFromGlobal(global_pos)
             if self._check_resize_zone(local_pos):
                 self._handle_press(global_pos)
                 return True
 
-        # --- ЛОГИКА ОТПУСКАНИЯ МЫШИ ---
         elif event.type() == QEvent.Type.MouseButtonRelease:
             if self.resizing:
                 self.resizing = False
@@ -3655,7 +3610,6 @@ class MainWindow(QMainWindow):
     def _start_macro(self, sc):
         idx = self.macro_scancodes.get(sc)
         macro_data = self.macros[idx]
-        # ПРОВЕРКА: Что мы реально скармливаем движку?
         print(f"DEBUG: Data sent to runner: {macro_data['steps']}") 
     
         self.macro_runner = MacroRunner(macro_data, self.interceptor.gamepad)
@@ -3673,14 +3627,10 @@ class MainWindow(QMainWindow):
             if isinstance(bind, list):
                 bind = bind[0] if bind else ""
             
-            # Проверяем скан-код
             if not bind or NAME_TO_CODE.get(bind.upper()) != scan_code:
                 continue
 
-            # ЛОГИКА СТОП/СТАРТ:
             if is_down:
-                # --- ЗАЩИТА ОТ ПОВТОРНОГО ЗАПУСКА ---
-                # Если раннер существует, он запущен и это ТОТ ЖЕ макрос — выходим.
                 runner = self.macros_editor.runner
                 if runner and runner.isRunning() and self.macros_editor.current_macro_idx == i:
                     return 
@@ -3689,19 +3639,15 @@ class MainWindow(QMainWindow):
                 self.macros_editor.current_macro_idx = i
                 self.macros_editor._play_macro(i)
             else:
-                # При отпускании (is_down == False) — всегда гасим макрос
                 print(f"[on_macro_activated] STOP: {bind} (index {i})")
                 self.macros_editor._stop_macro()
             break
     
     def mousePressEvent(self, event):
-        # Если в момент клика по фону шёл захват клавиши — сбрасываем его
         if hasattr(self, 'active_slot') and self.active_slot:
             self.stop_active_capture()
         
-        # Твоя стандартная логика для перетаскивания безрамочного окна
         if event.button() == Qt.MouseButton.LeftButton:
-            # globalPosition().toPoint() для совместимости с новыми версиями Qt
             self._handle_press(event.globalPosition().toPoint())
             
         super().mousePressEvent(event)
@@ -3835,7 +3781,6 @@ class MainWindow(QMainWindow):
         """Пересчёт позиции уголка ресайза при изменении размеров"""
         super().resizeEvent(event)
         if hasattr(self, "sizegrip"):
-            # Всегда держим уголок в самом низу справа
             self.sizegrip.move(
                 self.width() - self.sizegrip.width() - 5,
                 self.height() - self.sizegrip.height() - 5,
@@ -3868,17 +3813,15 @@ class MainWindow(QMainWindow):
         self.main_layout = QVBoxLayout(central)
         self.centralWidget().setMouseTracking(True)
 
-        # Убираем лишние отступы
         self.main_layout.setContentsMargins(3, 3, 3, 3)
         self.main_layout.setSpacing(0)
 
-        # --- 0. ВЕРХНЯЯ ПОЛОСА (Title Bar) ---
         title_container = QWidget()
         title_layout = QHBoxLayout(title_container)
         title_layout.setContentsMargins(0, 5, 0, 5)
 
         self.title_label = QLabel(PROJECT_NAME)
-        self.title_label.setStyleSheet("color: #B7C0C9; font-family: 'Segoe UI'; font-size: 18px; font-weight: bold; letter-spacing: 2px;")
+        self.title_label.setObjectName("TitleLabel")  # стиль в _QSS_TEMPLATE QLabel#TitleLabel
         
         title_layout.addStretch()
         title_layout.addWidget(self.title_label)
@@ -3886,13 +3829,11 @@ class MainWindow(QMainWindow):
 
         self.main_layout.addWidget(title_container)
 
-        # --- 1. ВЕРХНЯЯ ПАНЕЛЬ УПРАВЛЕНИЯ (Header) ---
         header = QFrame()
         header.setObjectName("Header")
         h_layout = QHBoxLayout(header)
         h_layout.setContentsMargins(10, 0, 5, 0)
 
-        # Кнопка СТАРТ
         self.toggle_btn = QPushButton("START EMULATION")
         self.toggle_btn.setObjectName("run_btn_inactive")
         self.toggle_btn.setCheckable(True)
@@ -3901,7 +3842,6 @@ class MainWindow(QMainWindow):
         self.toggle_btn.setFocusPolicy(Qt.NoFocus)
         h_layout.addWidget(self.toggle_btn)
 
-        # Секция профилей
         prof_section = QFrame()
         prof_section.setObjectName("ProfSection")
         p_layout = QHBoxLayout(prof_section)
@@ -3929,7 +3869,6 @@ class MainWindow(QMainWindow):
 
         h_layout.addWidget(prof_section, stretch=1)
 
-        # Блок AUTO-START + HIDE TO TRAY — вертикально
         checks_frame = QFrame()
         checks_layout = QVBoxLayout(checks_frame)
         checks_layout.setContentsMargins(0, 0, 0, 0)
@@ -3940,7 +3879,6 @@ class MainWindow(QMainWindow):
         self.autostart_cb.setFocusPolicy(Qt.NoFocus)
         checks_layout.addWidget(self.autostart_cb)
 
-        # Сворачивать в трей или в таскбар
         self.hide_to_tray_cb = QCheckBox("HIDE TO TRAY")
         self.hide_to_tray_cb.setObjectName("HideToTrayCheck")
         self.hide_to_tray_cb.setFocusPolicy(Qt.NoFocus)
@@ -3950,7 +3888,6 @@ class MainWindow(QMainWindow):
 
         h_layout.addWidget(checks_frame)
         
-        # Кнопка НАСТРОЙКИ (Settings)
         self.settings_btn = QPushButton("SETTINGS")
         self.settings_btn.setObjectName("SettingsBtn")
         self.settings_btn.setFixedSize(90, 30)
@@ -3958,29 +3895,19 @@ class MainWindow(QMainWindow):
         self.settings_btn.clicked.connect(self.show_settings)
         h_layout.addWidget(self.settings_btn)
         
-        # --- Управление окном (Сюда внедряем донат) ---
         window_controls = QFrame()
         wc_layout = QHBoxLayout(window_controls)
         wc_layout.setContentsMargins(5, 0, 0, 0)
         wc_layout.setSpacing(8)
         
-        # 3. Блок управления (Донат + Системные кнопки)
         self.donate_btn = QPushButton("🍜 Support")
+        self.donate_btn.setObjectName("DonateBtn")
         self.donate_btn.setFixedSize(95, 35) # Высота вровень с кнопками управления
         self.donate_btn.setCursor(Qt.PointingHandCursor)
         self.donate_btn.setFocusPolicy(Qt.NoFocus)
-        self.donate_btn.setStyleSheet(f"""
-            QPushButton {{
-                background-color: transparent; color: {self.secondary_color};
-                border: 1px solid {self.secondary_color}; border-radius: 4px;
-                font-size: 11px; font-weight: bold;
-            }}
-            QPushButton:hover {{ background-color: {self.secondary_color}; color: white; }}
-        """)
         self.donate_btn.clicked.connect(self._show_donate_dialog)
         wc_layout.addWidget(self.donate_btn)
 
-        # Системные кнопки
         self.min_btn = QPushButton("—")
         self.close_btn = QPushButton("X")
         for btn, name in [(self.min_btn, "min_btn"), (self.close_btn, "close_btn")]:
@@ -3992,18 +3919,15 @@ class MainWindow(QMainWindow):
         self.min_btn.clicked.connect(self.force_minimize)
         self.close_btn.clicked.connect(self.manual_exit)
 
-        # Добавляем весь блок в Header справа
         h_layout.addWidget(window_controls, alignment=Qt.AlignRight | Qt.AlignTop)
         
         self.main_layout.addWidget(header)
         self.main_layout.addSpacing(10)
 
-        # --- 2. ОБЛАСТЬ ТАБОВ (v3.0) ---
         self.tabs = QTabWidget()
         self.tabs.setObjectName("MainTabs")
         self.tabs.setFocusPolicy(Qt.NoFocus)
 
-        # Tab "MAPPER"
         self.scroll = QScrollArea()
         self.scroll.setObjectName("ScrollArea")
 
@@ -4032,13 +3956,11 @@ class MainWindow(QMainWindow):
             row_layout.addWidget(lbl)
 
             for col in range(6):
-                # Создаем контейнер для слота и кнопок режимов
                 slot_container = QWidget()
                 slot_layout = QVBoxLayout(slot_container)
                 slot_layout.setContentsMargins(0, 0, 0, 0)
                 slot_layout.setSpacing(1)
 
-                # 1. Верхняя панель: [ TURBO ] [ INPUT ]
                 turbo_container = QWidget()
                 turbo_layout = QHBoxLayout(turbo_container)
                 turbo_layout.setContentsMargins(0, 0, 0, 0)
@@ -4056,13 +3978,11 @@ class MainWindow(QMainWindow):
                     )
                 )
 
-                # Поле ввода скорости (сек)
                 turbo_input = QLineEdit("0")
                 turbo_input.setObjectName(f"TurboInput_{btn_name}_{col}")
                 turbo_input.setFixedSize(40, 24)
                 turbo_input.setAlignment(Qt.AlignCenter)
                 turbo_input.setEnabled(False)  # Изначально неактивно (вместо скрытия)
-                # Стили применяются из STYLE_SHEET
                 turbo_input.editingFinished.connect(
                     lambda b=btn_name, i=col: self.update_turbo_interval(b, i)
                 )
@@ -4070,7 +3990,6 @@ class MainWindow(QMainWindow):
                 turbo_layout.addWidget(turbo_btn)
                 turbo_layout.addWidget(turbo_input)
 
-                # DELAY PANEL
                 delay_container = QWidget()
                 delay_layout = QHBoxLayout(delay_container)
                 delay_layout.setContentsMargins(0, 0, 0, 0)
@@ -4100,7 +4019,6 @@ class MainWindow(QMainWindow):
                 delay_layout.addWidget(delay_btn)
                 delay_layout.addWidget(delay_input)
 
-                # 2. Основная кнопка слота
                 slot_btn = QPushButton("NONE")
                 slot_btn.setObjectName(f"Slot_{btn_name}_{col}")
                 slot_btn.setFixedSize(79, 30)
@@ -4114,7 +4032,6 @@ class MainWindow(QMainWindow):
                     lambda pos, b=btn_name, i=col, o=slot_btn: self.clear_slot(b, i, o)
                 )
 
-                # 3. Кнопка TOGGLE (под слотом)
                 toggle_container = QWidget()
                 toggle_layout = QHBoxLayout(toggle_container)
                 toggle_layout.setContentsMargins(0, 0, 0, 0)
@@ -4136,7 +4053,6 @@ class MainWindow(QMainWindow):
                 )
                 toggle_layout.addWidget(toggle_btn)
 
-                # Добавляем виджеты в вертикальный layout с отступами
                 slot_layout.setSpacing(6)  # Увеличили отступ для четкого разделения
                 slot_layout.addWidget(turbo_container)
                 slot_layout.addWidget(delay_container)
@@ -4156,13 +4072,10 @@ class MainWindow(QMainWindow):
 
         self.scroll.setWidget(self.scroll_content)
 
-        # Явно вешаем трекинг на скроллбар и подавляем фокус у viewport (ядреный метод)
-        # Чтобы полностью убрать ghost borders, отключаем фокус у viewport и ставим WA_StyledBackground
         self.scroll.viewport().setFocusPolicy(Qt.NoFocus)
         self.scroll.viewport().setAttribute(Qt.WA_MacShowFocusRect, False)
         self.scroll.viewport().setAttribute(Qt.WA_StyledBackground, True)
 
-        # Аналогично для macro_scroll и palette_scroll, если они существуют
         if hasattr(self, "macro_scroll"):
             self.macro_scroll.viewport().setFocusPolicy(Qt.NoFocus)
             self.macro_scroll.viewport().setAttribute(Qt.WA_MacShowFocusRect, False)
@@ -4173,41 +4086,23 @@ class MainWindow(QMainWindow):
             self.palette_scroll.viewport().setAttribute(Qt.WA_MacShowFocusRect, False)
             self.palette_scroll.viewport().setAttribute(Qt.WA_StyledBackground, True)
 
-        # Трекинг скроллбаров (если нужно реагировать на движение)
         for sb in (self.scroll.verticalScrollBar(), self.scroll.horizontalScrollBar()):
             if sb:
                 sb.setMouseTracking(True)
 
         self.tabs.addTab(self.scroll, "MAPPER")
         
-        # Tab "MACROS" (используем виджет редактора)
         self.tabs.addTab(self.macros_editor, "MACROS")
 
-        # Делаем табы видимыми по умолчанию (v7.4)
-        self.tabs.setStyleSheet("""
-            QTabWidget::pane { border: none; }
-            QTabBar::tab {
-                background: #1a1a1a; color: #bababa;
-                padding: 8px 20px; border-radius: 4px;
-                margin-right: 2px;
-                font-size: 11px; font-weight: bold;
-            }
-            QTabBar::tab:selected {
-                background: #0078d7; color: white;
-            }
-            QTabBar::tab:hover:!selected { background: #252525; }
-        """)
 
         self.main_layout.addWidget(self.tabs, stretch=1)
 
     def changeEvent(self, event):
         """Отслеживание состояний окна: сворачивание и потеря фокуса"""
-        # 1. Сброс захвата клавиши при потере фокуса (клик вне окна / Alt+Tab)
         if event.type() == QEvent.Type.ActivationChange:
             if not self.isActiveWindow():
                 self.stop_active_capture()
 
-        # 2. Логика сворачивания в трей (твой старый код)
         if event.type() == QEvent.Type.WindowStateChange:
             if self.windowState() & Qt.WindowState.WindowMinimized:
                 hide_to_tray = hasattr(self, "hide_to_tray_cb") and self.hide_to_tray_cb.isChecked()
@@ -4231,31 +4126,25 @@ class MainWindow(QMainWindow):
             
         gp_btn, idx, obj = self.active_slot
         
-        # Возвращаем старый текст из конфига (снимаем ???)
         if gp_btn in self.bindings and idx < len(self.bindings[gp_btn]):
             obj.setText(self.bindings[gp_btn][idx])
             
-        # Сбрасываем визуальный стиль
         obj.setProperty("capturing", "false")
         obj.style().unpolish(obj)
         obj.style().polish(obj)
         
-        # Глобальные флаги
         self.thread.is_capturing = False
         self.active_slot = None
         self.setFocus() # Снимаем фокус с кнопки
 
     def start_cap(self, gp_btn, idx, obj):
-        # 1. Если кликнули по той же кнопке, которая уже ждёт бинда — отменяем
         if self.active_slot and self.active_slot[2] == obj:
             self.stop_active_capture()
             return
 
-        # 2. Если был активен другой слот — корректно закрываем его
         if self.active_slot:
             self.stop_active_capture()
 
-        # 3. Запускаем новый захват
         self.active_slot = (gp_btn, idx, obj)
         self.thread.is_capturing = True
         obj.setText("???")
@@ -4264,17 +4153,14 @@ class MainWindow(QMainWindow):
         obj.style().polish(obj)
 
     def on_key(self, name, sc, is_down):
-        # Stage 9: Macro bind capture
         if self.macros_editor._capturing_bind:
             if is_down:  # Только по нажатию
                 self.macros_editor.on_bind_captured(name.upper())
             return
 
-        # Stage 9: Execute macro if bound and emulation is ON
         if self.thread.enabled:
             name_up = name.upper()
             
-            # Фильтрация автоповтора
             is_repeat = is_down and (name_up in self.pressed_phys_keys)
             if is_down:
                 self.pressed_phys_keys.add(name_up)
@@ -4301,7 +4187,6 @@ class MainWindow(QMainWindow):
             self.bindings[gp_btn][idx] = name_up
             obj.setText(name_up)
 
-            # Сбрасываем выделение через свойство
             obj.setProperty("capturing", "false")
             obj.style().unpolish(obj)
             obj.style().polish(obj)
@@ -4314,12 +4199,17 @@ class MainWindow(QMainWindow):
     def toggle(self):
         is_active = self.toggle_btn.isChecked()
         self.thread.enabled = is_active
-        # Меняем ID для смены стиля (подхват из QSS)
+
+        if is_active:
+            self.thread.connect_gamepad()
+        else:
+            self.thread.disconnect_gamepad()
+
         self.toggle_btn.setObjectName(
             "run_btn_active" if is_active else "run_btn_inactive"
         )
         self.toggle_btn.setText("STOP EMULATION" if is_active else "START EMULATION")
-        
+
         if hasattr(self, "tray_btn_toggle"):
             self.tray_btn_toggle.setObjectName(
                 "run_btn_active" if is_active else "run_btn_inactive"
@@ -4327,9 +4217,12 @@ class MainWindow(QMainWindow):
             self.tray_btn_toggle.setText("STOP EMULATION" if is_active else "START EMULATION")
             self.tray_btn_toggle.style().unpolish(self.tray_btn_toggle)
             self.tray_btn_toggle.style().polish(self.tray_btn_toggle)
-            
-        self.toggle_btn.style().unpolish(self.toggle_btn)  # Форсим перерисовку стиля
+
+        self.toggle_btn.style().unpolish(self.toggle_btn)
         self.toggle_btn.style().polish(self.toggle_btn)
+
+        self.toggle_btn.setEnabled(False)
+        QTimer.singleShot(300, lambda: self.toggle_btn.setEnabled(True))
 
         if is_active:
             self.turbo_timer.start(10)
@@ -4340,7 +4233,6 @@ class MainWindow(QMainWindow):
 
     def scan_profiles(self, target_profile=None):
         """Сканирует папку Profiles на наличие .ini файлов (без расширений)"""
-        # Гарантируем наличие папки
         if not os.path.exists(PROFILES_DIR):
             os.makedirs(PROFILES_DIR)
             print(f"[SYSTEM] Created directory: {PROFILES_DIR}")
@@ -4348,21 +4240,15 @@ class MainWindow(QMainWindow):
         self.profile_combo.blockSignals(True)
         self.profile_combo.clear()
 
-        # Получаем имена файлов из папки Profiles без расширения .ini
-        # Используем f.stem для чистого имени без расширения
         profiles = [f.stem for f in Path(PROFILES_DIR).glob("*.ini")]
 
         if not profiles:
-            # Если папка пуста, создаём там стартовый профиль через системный путь
             profiles = ["Default"]
-            # ВАЖНО: save_config должен уметь работать с PROFILES_DIR
             self.save_config("Default")
 
         self.profile_combo.addItems(profiles)
 
-        # Если передан профиль для автовыбора
         if target_profile:
-            # Очищаем имя от путей и расширений на случай, если в конфиге записан полный путь
             clean_name = os.path.basename(target_profile).replace(".ini", "")
             if clean_name in profiles:
                 self.profile_combo.setCurrentText(clean_name)
@@ -4379,7 +4265,6 @@ class MainWindow(QMainWindow):
             
         names = set()
         for macro in self.macros_editor.macros:
-            # ЗАЩИТА: Игнорируем всё, что не является словарем макроса
             if not isinstance(macro, dict):
                 continue
 
@@ -4393,19 +4278,14 @@ class MainWindow(QMainWindow):
             if not bind:
                 continue
             
-            # Добавляем в список триггеров именно ИМЯ кнопки, так как сканкоды
-            # могут быть общими для расширенных и обычных кнопок.
             if bind.upper() != "NONE":
                 names.add(bind.upper())
 
-        # Передаем в подтвержденный self.thread
         if hasattr(self, "thread"):
             self.thread.macro_triggers = names
     
     def load_config(self, profile_name=None):
         """Загрузка биндов из папки Profiles и системных настроек из корня"""
-        # 0. ОПРЕДЕЛЯЕМ ПУТИ
-        # Глобальный конфиг для геометрии окна (в корне)
         GLOBAL_CONFIG = "System_Config.ini"
 
         if profile_name is None or not isinstance(profile_name, str):
@@ -4414,22 +4294,19 @@ class MainWindow(QMainWindow):
         if not profile_name.lower().endswith(".ini"):
             profile_name += ".ini"
 
-        # Путь к игровому профилю в папке Profiles
         full_path = os.path.join(PROFILES_DIR, profile_name)
 
-        # 1. RESET PHASE (Сброс перед загрузкой нового профиля)
         for gp_btn in GP_MAP_KEYS:
             for i in range(6):
-                # Сброс внутренних данных
                 self.bindings[gp_btn][i] = "NONE"
                 self.toggles[gp_btn][i] = False
                 self.turbos[gp_btn][i] = False
                 self.turbo_intervals_map[gp_btn][i] = 0.1
 
-                # Сброс UI
                 btn = self.ui_buttons[gp_btn][i]
                 btn.setText("NONE")
-                btn.setStyleSheet("")
+                btn.style().unpolish(btn)
+                btn.style().polish(btn)
 
                 toggle = self.ui_toggles[gp_btn][i]
                 toggle.blockSignals(True)
@@ -4456,7 +4333,8 @@ class MainWindow(QMainWindow):
                 d_btn = self.ui_delays[gp_btn][i]
                 d_btn.blockSignals(True)
                 d_btn.setChecked(False)
-                d_btn.setStyleSheet("")
+                d_btn.style().unpolish(d_btn)
+                d_btn.style().polish(d_btn)
                 d_btn.blockSignals(False)
 
                 d_input = self.ui_delay_inputs[gp_btn][i]
@@ -4466,7 +4344,6 @@ class MainWindow(QMainWindow):
                 d_input.style().unpolish(d_input)
                 d_input.style().polish(d_input)
 
-        # 1. Сначала подгружаем геометрию окна из GLOBAL_CONFIG (config.ini)
         if os.path.exists(GLOBAL_CONFIG):
             sys_config = configparser.ConfigParser()
             sys_config.read(GLOBAL_CONFIG, encoding="utf-8")
@@ -4476,7 +4353,6 @@ class MainWindow(QMainWindow):
                     self.restoreGeometry(bytes.fromhex(geometry))
                     print(f"[SYSTEM] Window geometry restored from {GLOBAL_CONFIG}")
 
-            # --- ЗАГРУЗКА ЦВЕТОВОЙ СХЕМЫ (v2.0) ---
             if "Appearance" in sys_config:
                 self.primary_color = sys_config.get(
                     "Appearance", "primary_color", fallback="#0078D7"
@@ -4486,7 +4362,6 @@ class MainWindow(QMainWindow):
                 )
                 self.apply_theme()
 
-        # 2. Теперь загружаем бинды из файла в папке Profiles
         if os.path.exists(full_path):
             config = configparser.ConfigParser()
             config.read(full_path, encoding="utf-8")
@@ -4503,11 +4378,9 @@ class MainWindow(QMainWindow):
                 for gp_btn, val in config["Toggles"].items():
                     gp_btn_up = gp_btn.upper()
                     if gp_btn_up in self.toggles:
-                        # Преобразуем строку "1,0,1..." в список булевых значений
                         states = [bool(int(x)) for x in val.split(",")]
                         for i in range(min(len(states), 6)):
                             self.toggles[gp_btn_up][i] = states[i]
-                            # Блокируем сигналы, чтобы не триггерить сохранение при загрузке
                             self.ui_toggles[gp_btn_up][i].blockSignals(True)
                             self.ui_toggles[gp_btn_up][i].setChecked(states[i])
                             self.ui_toggles[gp_btn_up][i].blockSignals(False)
@@ -4523,7 +4396,6 @@ class MainWindow(QMainWindow):
                             self.ui_turbos[gp_btn_up][i].setChecked(states[i])
                             self.ui_turbos[gp_btn_up][i].blockSignals(False)
 
-            # Загрузка интервалов
             if "TurboIntervals" in config:
                 for gp_btn, val in config["TurboIntervals"].items():
                     gp_btn_up = gp_btn.upper()
@@ -4533,7 +4405,6 @@ class MainWindow(QMainWindow):
                             self.turbo_intervals_map[gp_btn_up][i] = vals[i]
                             self.ui_turbo_inputs[gp_btn_up][i].setText(str(vals[i]))
 
-                             # Активируем поле только если турбо активен
                             is_active = self.turbos[gp_btn_up][i]
                             self.ui_turbo_inputs[gp_btn_up][i].setEnabled(is_active)
                             self.ui_turbo_inputs[gp_btn_up][i].setProperty(
@@ -4549,8 +4420,8 @@ class MainWindow(QMainWindow):
                             self.delays[gp_btn_up][i] = states[i]
                             self.ui_delays[gp_btn_up][i].blockSignals(True)
                             self.ui_delays[gp_btn_up][i].setChecked(states[i])
-                            if states[i]:
-                                self.ui_delays[gp_btn_up][i].setStyleSheet(f"background-color: {self.primary_color}; color: white;")
+                            self.ui_delays[gp_btn_up][i].style().unpolish(self.ui_delays[gp_btn_up][i])
+                            self.ui_delays[gp_btn_up][i].style().polish(self.ui_delays[gp_btn_up][i])
                             self.ui_delays[gp_btn_up][i].blockSignals(False)
 
             if "DelayIntervals" in config:
@@ -4570,7 +4441,6 @@ class MainWindow(QMainWindow):
             self.thread.turbos = {k: v[:] for k, v in self.turbos.items()}
             self.thread.delays = {k: v[:] for k, v in self.delays.items()}
 
-            # Обновляем состояние блокировок
             for gp_btn in GP_MAP_KEYS:
                 for i in range(6):
                     is_toggle = self.toggles[gp_btn][i]
@@ -4581,7 +4451,6 @@ class MainWindow(QMainWindow):
                     self.ui_delays[gp_btn][i].setEnabled(not is_toggle and not is_turbo)
             print(f"[SYSTEM] Profile loaded: {full_path}")
             
-            # Stage 7: Load Macros
             self.macros_editor.load_from_config(config)
             self.update_macro_triggers()
 
@@ -4596,36 +4465,29 @@ class MainWindow(QMainWindow):
         if not filename.lower().endswith(".ini"):
             filename += ".ini"
 
-        # Имя файла может прийти как с путём, так и без — берём только хвост
         base_name = os.path.basename(filename)
         full_path = os.path.join(PROFILES_DIR, base_name)
 
         config = configparser.ConfigParser()
         config["Bindings"] = {k: ",".join(v) for k, v in self.bindings.items()}
-        # Сохраняем состояние тогглов как 1/0
         config["Toggles"] = {
             k: ",".join(["1" if x else "0" for x in v]) for k, v in self.toggles.items()
         }
-        # Сохраняем Turbo
         config["Turbo"] = {
             k: ",".join(["1" if x else "0" for x in v]) for k, v in self.turbos.items()
         }
-        # Сохраняем Интервалы
         config["TurboIntervals"] = {
             k: ",".join([str(x) for x in v])
             for k, v in self.turbo_intervals_map.items()
         }
-        # Сохраняем Delay
         config["Delay"] = {
             k: ",".join(["1" if x else "0" for x in v]) for k, v in self.delays.items()
         }
-        # Сохраняем интервалы Delay
         config["DelayIntervals"] = {
             k: ",".join([str(x) for x in v])
             for k, v in self.delay_intervals_map.items()
         }
         
-        # Stage 7: Save Macros
         self.macros_editor.save_to_config(config)
 
         try:
@@ -4642,10 +4504,8 @@ class MainWindow(QMainWindow):
         if dialog.exec() == QDialog.Accepted:
             name = dialog.get_value()
             if name:
-                # Имя файла может прийти как с путём, так и без
                 filename = f"{name}.ini" if not name.endswith(".ini") else name
 
-                # Полный путь к файлу в папке Profiles
                 full_path = os.path.join(PROFILES_DIR, filename)
 
                 if not os.path.exists(full_path):
@@ -4665,7 +4525,7 @@ class MainWindow(QMainWindow):
             return
 
         confirm = QMessageBox(self)
-        # УБИРАЕМ СИСТЕМНУЮ РАМКУ (Заголовок Windows)
+        confirm.setObjectName("WarningDialog")
         confirm.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
 
         confirm.setWindowTitle("Подтверждение")
@@ -4673,47 +4533,7 @@ class MainWindow(QMainWindow):
         confirm.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         confirm.setIcon(QMessageBox.NoIcon)
 
-        # Расчет вспомогательных оттенков для QMessageBox
-        s_color = QColor(self.secondary_color)
-        s_hover = s_color.lighter(130).name()
-        s_active_bg = s_color.darker(300).name()
-
-        # Используем динамический стиль, настроенный на вторичный цвет
-        # Передаем secondary_color как основной, чтобы все рамки и ховеры в диалоге стали "опасного" цвета
-        confirm.setStyleSheet(
-            get_stylesheet(self.secondary_color, self.secondary_color)
-            + f"""
-            QMessageBox {{
-                background-color: #121212;
-                border: 2px solid {self.secondary_color};
-                border-radius: 10px;
-            }}
-            QLabel {{
-                color: {self.secondary_color};
-                font-weight: bold;
-                font-size: 15px;
-                padding: 20px;
-            }}
-            QPushButton {{
-                background-color: #1A1A1A;
-                color: #BBB;
-                border: 1px solid #333;
-                border-radius: 4px;
-                padding: 8px 20px;
-                margin-bottom: 10px;
-                min-width: 80px;
-                font-weight: bold;
-            }}
-            QPushButton:hover {{
-                border-color: {self.secondary_color};
-                color: {self.secondary_color};
-                background-color: #252525;
-            }}
-            QPushButton:focus {{
-                border: 1px solid #333;
-            }}
-        """
-        )
+        confirm.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
 
         if confirm.exec() == QMessageBox.Yes:
             try:
@@ -4737,7 +4557,6 @@ class MainWindow(QMainWindow):
             self, "Select profile", "", "INI Files (*.ini)"
         )
         if file_path:
-            # Копируем файл ВНУТРЬ папки Profiles
             try:
                 shutil.copy(file_path, PROFILES_DIR)
                 print(f"[SYSTEM] Imported profile from {file_path}")
@@ -4753,16 +4572,13 @@ class MainWindow(QMainWindow):
         if not current:
             return
 
-        # Убеждаемся, что расширение .ini присутствует для поиска файла
         filename = current if current.lower().endswith(".ini") else f"{current}.ini"
         source_path = os.path.join(PROFILES_DIR, filename)
 
-        # Проверяем, существует ли файл в папке Profiles
         if not os.path.exists(source_path):
             print(f"[ERROR] Source profile not found: {source_path}")
             return
 
-        # Открываем диалог сохранения
         save_path, _ = QFileDialog.getSaveFileName(
             self, "Export profile", filename, "INI Files (*.ini)"
         )
@@ -4779,7 +4595,6 @@ class MainWindow(QMainWindow):
         self.toggles[gp_btn][idx] = checked
         self.thread.toggles = {k: v[:] for k, v in self.toggles.items()}
 
-        # Блокируем Turbo и Delay если Toggle активен
         self.ui_turbos[gp_btn][idx].setEnabled(not checked)
         self.ui_delays[gp_btn][idx].setEnabled(not checked)
 
@@ -4790,11 +4605,9 @@ class MainWindow(QMainWindow):
         self.turbos[gp_btn][idx] = checked
         self.thread.turbos = {k: v[:] for k, v in self.turbos.items()}
 
-        # Блокируем Toggle и Delay если Turbo активен
         self.ui_toggles[gp_btn][idx].setEnabled(not checked)
         self.ui_delays[gp_btn][idx].setEnabled(not checked)
 
-        # Включаем/выключаем текстовое поле (всегда видимо)
         turbo_input = self.ui_turbo_inputs[gp_btn][idx]
         turbo_input.setEnabled(checked)
         if checked:
@@ -4824,7 +4637,6 @@ class MainWindow(QMainWindow):
         self.delays[gp_btn][idx] = checked
         self.thread.delays = {k: v[:] for k, v in self.delays.items()}
         
-        # Блокируем Toggle и Turbo если Delay активен
         self.ui_toggles[gp_btn][idx].setEnabled(not checked)
         self.ui_turbos[gp_btn][idx].setEnabled(not checked)
         
@@ -4838,10 +4650,8 @@ class MainWindow(QMainWindow):
         delay_input.style().polish(delay_input)
         
         btn = self.ui_delays[gp_btn][idx]
-        if checked:
-            btn.setStyleSheet(f"background-color: {self.primary_color}; color: white;")
-        else:
-            btn.setStyleSheet("")
+        btn.style().unpolish(btn)
+        btn.style().polish(btn)
 
         self.save_config()
 
@@ -4863,7 +4673,6 @@ class MainWindow(QMainWindow):
         key = (gp_btn, slot_idx)
         if is_down:
             if key in self.delay_timers:
-                # Игнорируем автоповторы нажатия от системы, если таймер уже запущен
                 return
             delay_sec = self.delay_intervals_map[gp_btn][slot_idx]
             timer = QTimer(self)
@@ -4878,7 +4687,6 @@ class MainWindow(QMainWindow):
                 timer.stop()
                 has_fired = self.delay_fired_state.get(key, False)
                 if has_fired:
-                    # Раз запущен, нужно его корректно "отпустить"
                     self.thread.trigger_logical_action(gp_btn, slot_idx, False)
 
     def on_delay_fired(self, gp_btn, slot_idx):
@@ -4896,9 +4704,7 @@ class MainWindow(QMainWindow):
                 "state": False,
             }
         else:
-            # Перед удалением сессии убеждаемся, что кнопка отпущена
             if gp_btn in self.active_t_session:
-                # Принудительно отпускаем кнопку
                 with self.thread.lock:
                     if gp_btn in GP_BUTTON_MAP:
                         self.thread.gamepad.release_button(button=GP_BUTTON_MAP[gp_btn])
@@ -4929,9 +4735,7 @@ class MainWindow(QMainWindow):
                 last_time = params["last_time"]
                 state = params["state"]
 
-                # Если пора делать новое нажатие
                 if not state and (now - last_time >= interval):
-                    # Нажимаем кнопку
                     if gp_btn in GP_BUTTON_MAP:
                         self.thread.gamepad.press_button(button=GP_BUTTON_MAP[gp_btn])
                     elif gp_btn == "LT":
@@ -4943,9 +4747,7 @@ class MainWindow(QMainWindow):
                     params["last_time"] = now
                     need_update = True
 
-                # Если кнопка нажата и пора отпустить (прошло 50мс)
                 elif state and (now - last_time >= PRESS_DURATION):
-                    # Отпускаем кнопку
                     if gp_btn in GP_BUTTON_MAP:
                         self.thread.gamepad.release_button(button=GP_BUTTON_MAP[gp_btn])
                     elif gp_btn == "LT":
@@ -4964,7 +4766,6 @@ class MainWindow(QMainWindow):
         self.bindings[gp_btn][idx] = "NONE"
         obj.setText("NONE")
         
-        # Делаем копию для потока
         self.thread.bindings = {k: v[:] for k, v in self.bindings.items()}
         self.save_config()
         
@@ -4973,65 +4774,34 @@ class MainWindow(QMainWindow):
             self.active_slot = None
 
     def get_macro_engine_style(self):
-        """Использует штатную систему генерации стилей проекта."""
-        style = get_stylesheet(primary=self.primary_color, secondary=self.secondary_color)
-        
-        # Применяем ко всему окну
+        """Возвращает сгенерированный стиль. Также обновляет глобальный QSS."""
+        style = get_stylesheet(self.primary_color, self.secondary_color)
         self.setStyleSheet(style)
         return style
     
     def show_styled_message(self, title, text, is_warning=False):
         """Вспомогательный метод для показа стилизованных уведомлений"""
         msg = QMessageBox(self)
-        msg.setWindowTitle(title)
-        msg.setText(text)
+        if is_warning:
+             msg.setObjectName("WarningDialog")
         msg.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-
-        color = self.secondary_color if is_warning else self.primary_color
-        p_color = QColor(color)
-        hover = p_color.lighter(130).name()
-        bg = p_color.darker(300).name()
-
-        style = (
-            get_stylesheet(self.primary_color, self.secondary_color)
-            + f"""
-            QMessageBox {{
-                background-color: #121212;
-                border: 2px solid {color};
-                border-radius: 10px;
-            }}
-            QLabel {{ color: white; padding: 20px; font-size: 14px; }}
-            QPushButton {{
-                background-color: #1A1A1A;
-                color: white;
-                border: 1px solid #333;
-                border-radius: 4px;
-                padding: 8px 20px;
-                min-width: 80px;
-            }}
-            QPushButton:hover {{
-                border-color: {color};
-                background-color: {bg};
-                color: {hover};
-            }}
-        """
-        )
-        msg.setStyleSheet(style)
+        msg.setIcon(QMessageBox.NoIcon)
+        msg.setText(text)
+        msg.setWindowTitle(title)
+        
+        msg.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
         msg.exec()
 
-    # 2. А вот этот метод мы вызываем ИЗ ТРЕЯ
     def manual_exit(self):
         """Метод 'Ядерная кнопка' — просто запускает стандартное закрытие"""
         self.close()
 
-    # --- COLOR CUSTOMIZATION METHODS (v2.0) ---
     def show_settings(self):
         """Открывает диалог настроек цветов"""
         dialog = QDialog(self)
         dialog.setWindowTitle("UI COLOR SETTINGS")
         dialog.setFixedWidth(300)
         dialog.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-        # Применяем текущую тему к самому диалогу
         dialog.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
 
         layout = QVBoxLayout(dialog)
@@ -5045,11 +4815,10 @@ class MainWindow(QMainWindow):
         info = QLabel(
             "Pick base colors, highlights\\nwill be calculated automatically."
         )
-        info.setStyleSheet("color: #888; font-size: 11px; background: transparent;")
+        info.setObjectName("SettingsInfo")  # стиль в _QSS_TEMPLATE QLabel#SettingsInfo
         info.setAlignment(Qt.AlignCenter)
         layout.addWidget(info)
 
-        # Кнопки цветов
         p_btn = QPushButton("PRIMARY (REPLACES BLUE)")
         p_btn.setObjectName("PrimaryPickBtn")
         p_btn.setMinimumHeight(45)
@@ -5066,7 +4835,6 @@ class MainWindow(QMainWindow):
 
         layout.addSpacing(10)
 
-        # Кнопка закрытия
         close_btn = QPushButton("SAVE and CLOSE")
         close_btn.setObjectName("SaveCloseBtn")
         close_btn.setMinimumHeight(40)
@@ -5080,7 +4848,6 @@ class MainWindow(QMainWindow):
         """Вызов кастомного диалога выбора цвета с предпросмотром в реальном времени (v2.0)"""
         from PySide6.QtWidgets import QColorDialog
 
-        # Сохраняем исходные цвета на случай отмены
         original_primary = self.primary_color
         original_secondary = self.secondary_color
         current = self.primary_color if target == "primary" else self.secondary_color
@@ -5099,7 +4866,6 @@ class MainWindow(QMainWindow):
                 else:
                     self.secondary_color = color.name()
 
-                # Используем таймер для троттлинга (сглаживания)
                 if not self.preview_timer.isActive():
                     self.preview_timer.start()
 
@@ -5112,15 +4878,12 @@ class MainWindow(QMainWindow):
                 get_stylesheet(self.primary_color, self.secondary_color)
             )
 
-        # Подключаем таймер для этого сеанса
         self.preview_timer.timeout.connect(on_preview_timeout)
         color_dialog.currentColorChanged.connect(update_preview)
 
         if color_dialog.exec():
-            # На всякий случай отключаем временные коннекты
             self.preview_timer.timeout.disconnect(on_preview_timeout)
 
-            # Если нажали OK, сохраняем финальный результат
             final_color = color_dialog.selectedColor()
             if final_color.isValid():
                 if target == "primary":
@@ -5131,10 +4894,8 @@ class MainWindow(QMainWindow):
                 self.apply_theme()
                 self.save_appearance()
         else:
-            # Напоследок отключаем наш временный коннект таймера
             self.preview_timer.timeout.disconnect(on_preview_timeout)
 
-            # Если отмена — возвращаем как было
             self.primary_color = original_primary
             self.secondary_color = original_secondary
             self.apply_theme()
@@ -5154,34 +4915,32 @@ class MainWindow(QMainWindow):
              поэтому прямой self.macro_widgets давал AttributeError молча.
           4. Меню трея.
         """
-        # ── 1. Глобальный QSS ─────────────────────────────────────────────────
         self.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
 
-        # ── 2. ComboView (выпадающий список профилей) ─────────────────────────
         if hasattr(self, "profile_combo"):
             view = self.profile_combo.view()
             if view:
-                view.setStyleSheet(f"""
-                    QListView {{
-                        background-color: #121212; color: white;
-                        selection-background-color: {self.primary_color};
-                        selection-color: white; border: 1px solid {self.primary_color};
-                        outline: none;
-                    }}
-                """)
+                view.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
 
-        # ── 3. Строки макросов — через мост, а не напрямую ────────────────────
-        # self.macro_widgets НЕ существует на MainWindow.
-        # Правильный путь: self.macros_editor → update_theme_colors().
         if hasattr(self, "macros_editor") and self.macros_editor is not None:
             self.macros_editor.update_theme_colors(
                 self.primary_color,
                 self.secondary_color
             )
 
-        # ── 4. Меню трея ──────────────────────────────────────────────────────
-        if hasattr(self, 'update_tray_menu_style'):
-            self.update_tray_menu_style()
+        self.update_tray_menu_style()
+
+    def update_tray_menu_style(self):
+        """Синхронизирует стиль меню трея с основной темой через глобальный QSS"""
+        stylesheet = get_stylesheet(self.primary_color, self.secondary_color)
+
+        if hasattr(self, "tray_menu"):
+            self.tray_menu.setStyleSheet(stylesheet)
+
+        if hasattr(self, "tray_btn_toggle"):
+            self.tray_btn_toggle.setStyleSheet(
+                stylesheet + "\nQPushButton { margin: 4px 10px; padding: 0 10px; }"
+            )
 
     def _show_donate_dialog(self):
         dlg = QDialog(self)
@@ -5189,6 +4948,7 @@ class MainWindow(QMainWindow):
         dlg.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
         dlg.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground) 
         dlg.setFixedWidth(480)
+        dlg.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
 
         content_frame = QFrame(dlg)
         content_frame.setObjectName("DonateContentFrame") 
@@ -5201,25 +4961,22 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(25, 20, 25, 20)
         layout.setSpacing(12)
 
-        # --- НОВЫЙ ЗАГОЛОВОК (Смайлик слева + 2 строки текста) ---
         header_layout = QHBoxLayout()
         header_layout.setSpacing(15)
 
-        # 1. Смайлик (центрируется по высоте относительно двух строк текста)
         icon_label = QLabel("🍜")
-        icon_label.setStyleSheet("font-size: 32px; background: transparent; border: none;")
+        icon_label.setObjectName("DonateIcon")  # стиль в _QSS_TEMPLATE QLabel#DonateIcon
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         header_layout.addWidget(icon_label)
 
-        # 2. Текстовый блок
         text_v_layout = QVBoxLayout()
         text_v_layout.setSpacing(0)
 
         label_en = QLabel("BUY ME A RAMEN")
-        label_en.setStyleSheet("font-weight: bold; font-size: 14px; color: #adadad; letter-spacing: 1px; border: none; background: transparent;")
+        label_en.setObjectName("DonateHeaderEn")  # стиль в _QSS_TEMPLATE QLabel#DonateHeaderEn
         
         label_ru = QLabel("КУПИТЬ МНЕ ДОШИК")
-        label_ru.setStyleSheet("font-weight: bold; font-size: 14px; color: #adadad; letter-spacing: 1px; border: none; background: transparent;")
+        label_ru.setObjectName("DonateHeaderRu")  # стиль в _QSS_TEMPLATE QLabel#DonateHeaderRu
 
         text_v_layout.addWidget(label_en)
         text_v_layout.addWidget(label_ru)
@@ -5229,8 +4986,9 @@ class MainWindow(QMainWindow):
         layout.addLayout(header_layout)
         layout.addSpacing(5)
 
-        # --- Кошелёк 1: TON ---
-        layout.addWidget(QLabel("Telegram (TON):"))
+        _lbl_ton = QLabel("Telegram (TON):")
+        _lbl_ton.setObjectName("DonateWalletLabel")
+        layout.addWidget(_lbl_ton)
         self.wallet_ton = QLineEdit("UQCYSQvBMDBqsiWvRpuTK8wpB-wymTWTdD2SR5sWoHOQdCSt")
         self.wallet_ton.setReadOnly(True)
         self.wallet_ton.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -5238,8 +4996,9 @@ class MainWindow(QMainWindow):
         self.wallet_ton.installEventFilter(self)
         layout.addWidget(self.wallet_ton)
 
-        # --- Кошелёк 2: USDT ---
-        layout.addWidget(QLabel("USDT (TRC20):"))
+        _lbl_usdt = QLabel("USDT (TRC20):")
+        _lbl_usdt.setObjectName("DonateWalletLabel")
+        layout.addWidget(_lbl_usdt)
         self.wallet_eth = QLineEdit("TRw215Ck5UTou61FqQRXEKFhLnnoRr2L9U")
         self.wallet_eth.setReadOnly(True)
         self.wallet_eth.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -5249,7 +5008,6 @@ class MainWindow(QMainWindow):
 
         layout.addSpacing(15)
 
-        # Кнопка закрытия
         ton_close = QPushButton("CLOSE")
         ton_close.setObjectName("CloseDonateBtn")
         ton_close.setFixedSize(100, 30)
@@ -5261,7 +5019,6 @@ class MainWindow(QMainWindow):
         ton_layout.addStretch()
         layout.addLayout(ton_layout)
 
-        # --- МАГИЯ ПЕРЕТАСКИВАНИЯ ---
         dlg.drag_pos = None
         def dialogMousePress(event):
             if event.button() == Qt.MouseButton.LeftButton:
@@ -5279,37 +5036,6 @@ class MainWindow(QMainWindow):
         dlg.mouseReleaseEvent = dialogMouseRelease
 
         dlg.exec()
-
-    def update_tray_menu_style(self):
-        """Синхронизирует стиль меню трея с основной темой"""
-        style = f"""
-            QMenu {{
-                background-color: #1a1a1a;
-                color: white;
-                border: 1px solid {self.primary_color};
-                padding: 5px;
-            }}
-            QMenu::item {{
-                padding: 8px 25px;
-                background-color: transparent;
-            }}
-            QMenu::item:selected {{
-                background-color: {self.primary_color};
-                color: white;
-            }}
-            QMenu::separator {{
-                height: 1px;
-                background: #333333;
-                margin: 5px 10px;
-            }}
-        """
-        if hasattr(self, "tray_icon") and self.tray_icon.contextMenu():
-            self.tray_icon.contextMenu().setStyleSheet(style)
-            
-        if hasattr(self, "tray_btn_toggle"):
-            self.tray_btn_toggle.setStyleSheet(
-                get_stylesheet(self.primary_color, self.secondary_color) + "\nQPushButton { margin: 4px 10px; padding: 0 10px; }"
-            )
 
     def save_appearance(self):
         """Сохраняет цвета в System_Config.ini"""
@@ -5338,17 +5064,14 @@ class MainWindow(QMainWindow):
         """Единая точка выхода с сохранением и чисткой драйвера"""
         print("\n[SYSTEM] Closing application...")
 
-        # 1. Сначала скрываем иконку в трее, чтобы не висела
         if hasattr(self, "tray_icon"):
             self.tray_icon.hide()
 
-        # 2. Гасим драйвер и ждем его завершения
         if hasattr(self, "thread"):
             print("[SYSTEM] Stopping driver...")
             self.thread.stop()
-            self.thread.wait(1000)  # Ждем до 1 сек
+            self.thread.wait(300)  # Ждем до 1 сек
 
-        # 3. Сохраняем всё
         try:
             target_config = "System_Config.ini"
             config = configparser.ConfigParser()
@@ -5383,43 +5106,35 @@ class MainWindow(QMainWindow):
             print(f"[ERROR] Save failed: {e}")
 
         print("[SYSTEM] Shutdown complete. Goodbye!")
-        # Игнорируем стандартное закрытие и выходим жестко, чтобы процесс не висел
         event.ignore()
         os._exit(0)
 
 if __name__ == "__main__":
     import multiprocessing
-    # 1. Обязательно для корректной работы PyInstaller (onefile)
     multiprocessing.freeze_support()
 
     app = QApplication(sys.argv)
     
-    # Сбрасываем стиль на стандартный Fusion без всяких прокси-надстроек
     app.setStyle("Fusion")
 
-    # Глобальная иконка приложения
     from PySide6.QtGui import QIcon
     if os.path.exists("Omni-Controller.ico"):
         app.setWindowIcon(QIcon("Omni-Controller.ico"))
 
-    # 2. Single Instance / Window Restore (v2.1 Stable)
     from PySide6.QtNetwork import QLocalSocket, QLocalServer
-    server_name = "XBOX_KEYPAD_V2_INSTANCE"
+    server_name = "Omni-Controller_V3_INSTANCE"
     
     socket = QLocalSocket()
     socket.connectToServer(server_name)
     if socket.waitForConnected(500):
-        # Если приложение уже запущено — будим его и выходим
         socket.write(b"WAKEUP")
         socket.waitForBytesWritten(500)
         sys.exit(0)
 
-    # Мы — первый экземпляр. Слушаем сокет.
     QLocalServer.removeServer(server_name)
     server = QLocalServer()
     server.listen(server_name)
 
-    # ── Создаём MainWindow в try-except ───────────────────────────────────────
     try:
         ex = MainWindow()
     except Exception:
@@ -5450,7 +5165,6 @@ if __name__ == "__main__":
 
     ex.show()
     
-    # 3. Cleanup и выход
     exit_code = app.exec()
     server.close()
     sys.exit(exit_code)
