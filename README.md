@@ -81,11 +81,12 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 
 
 ---
-<img width="1139" height="1186" alt="Omni-Controller v3 0 (Mapper)" src="https://github.com/user-attachments/assets/cfd94f23-bbb9-475a-9958-1f2553e39f29" />
+<img width="1171" height="1175" alt="Omni-Controller v3 1 (Mapper)" src="https://github.com/user-attachments/assets/5297fee7-72f6-4556-955c-9f6a22c6fdba" />
 
-<img width="1139" height="1186" alt="Omni-Controller v3 0 (Macros)" src="https://github.com/user-attachments/assets/aee9c885-7968-49fa-b298-79ea6f93ef29" />
+<img width="1171" height="1176" alt="Omni-Controller v3 1 (Macros)" src="https://github.com/user-attachments/assets/c84a98a6-3e4a-4f81-a6f5-ba05b7647b99" />
 
-<img width="1139" height="1186" alt="Omni-Controller v3 0 (Support)" src="https://github.com/user-attachments/assets/9e82462f-f1fa-489d-9771-a5a8c4ba6dc1" />
+<img width="1171" height="1176" alt="Omni-Controller v3 1 (Support)" src="https://github.com/user-attachments/assets/6867520b-7098-4abd-94e5-e301d0fcff7f" />
+
 
 ---
 
