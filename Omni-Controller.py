@@ -73,6 +73,7 @@ from PySide6.QtWidgets import (
     QStyle,
     QStyleFactory,
     QAbstractScrollArea,
+    QStyledItemDelegate,
 )
 
 
@@ -323,20 +324,25 @@ QComboBox:hover {{
     border-color: {primary};
 }}
 QComboBox QAbstractItemView {{
-    background-color: #0d0d0d;
+    background-color: #0F0F0F;
     color: #c2c2c2;
     selection-background-color: {primary};
-    selection-color: #c2c2c2;
+    selection-color: #ffffff;
     border: 1px solid {primary};
     outline: none;
 }}
 QComboBox QAbstractItemView::item {{
-    padding: 8px;
+    min-height: 30px;
+    padding-left: 10px;
     outline: none;
+}}
+QComboBox QAbstractItemView::item:hover {{
+    background-color: {primary};
+    color: #ffffff;
 }}
 QComboBox QAbstractItemView::item:selected {{
     background-color: {primary};
-    color: #c2c2c2;
+    color: #ffffff;
     outline: none;
 }}
 QComboBox::drop-down {{
@@ -728,16 +734,113 @@ QPushButton#SaveCloseBtn:hover {{
 QMessageBox {{
     background-color: #121212;
     border: 2px solid {secondary};
+    border-radius: 6px;
 }}
 QMessageBox:focus {{
     outline: none;
 }}
 QMessageBox QLabel {{
-    color: white;
+    color: #c2c2c2;
+    font-size: 13px;
+    padding: 12px 18px;
+}}
+QDialog#WarningDialog {{
+    background-color: #121212;
+    border: 2px solid {secondary};
+    border-radius: 6px;
+}}
+QDialog#WarningDialog QLabel {{
+    color: #c2c2c2;
+    font-size: 13px;
+    padding: 8px 4px;
+}}
+QDialog#WarningDialog QPushButton {{
+    background-color: #1a1a1a;
+    color: #c2c2c2;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 7px 22px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 80px;
+    outline: none;
+}}
+QDialog#WarningDialog QPushButton#confirm_no {{
+    color: #ffffff;
+}}
+QDialog#WarningDialog QPushButton#confirm_no:hover {{
+    background-color: {p_active_bg};
+    border-color: {p_hover};
+    color: {p_hover};
+}}
+QDialog#WarningDialog QPushButton#confirm_no:focus {{
+    outline: none;
+}}
+QColorDia
+QDialog#WarningDialog QPushButton#confirm_yes {{
+    color: #ffffff;
+}}
+QDialog#WarningDialog QPushButton#confirm_yes:hover {{
+    background-color: {s_active_bg};
+    border-color: {s_hover};
+    color: {s_hover};
+}}
+QDialog#WarningDialog QPushButton#confirm_yes:focus {{
+    outline: none;
+}}
+QDialog#AddProfileDialog {{
+    background-color: #121212;
+    border: 2px solid {primary};
+    border-radius: 6px;
+}}
+QDialog#AddProfileDialog QLabel#dlg_title {{
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}}
+QDialog#AddProfileDialog QLineEdit {{
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+}}
+QDialog#AddProfileDialog QLineEdit:focus {{
+    border-color: {primary};
+    outline: none;
+}}
+QDialog#AddProfileDialog QPushButton {{
+    background-color: #1a1a1a;
+    color: #c2c2c2;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 7px 22px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 100px;
+    outline: none;
+}}
+QDialog#AddProfileDialog QPushButton:hover {{
+    background-color: {p_active_bg};
+    border-color: {p_hover};
+    color: {p_hover};
+}}
+QDialog#AddProfileDialog QPushButton:focus {{
+    outline: none;
+}}
+QDialog#AddProfileDialog QPushButton#add_confirm {{
+    color: #c2c2c2;
+}}
+QDialog#AddProfileDialog QPushButton#add_confirm:hover {{
+    background-color: {p_active_bg};
+    border-color: {p_hover};
+    color: {p_hover};
 }}
 QColorDialog {{
-    background-color: #121212;
-    color: white;
+    outline: none;
+    border-color: {secondary};
 }}
 QColorDialog QPushButton {{
     background-color: #1A1A1A;
@@ -965,7 +1068,7 @@ QFrame#MacroRowFrame:hover {{
 
 /* Таймлайн — тёмная вставка внутри строки */
 QFrame#TimelineFrame {{
-    background-color: #0d0d0d;
+    background-color: #0F0F0F;
     border: 1px solid #1e1e1e;
     border-radius: 4px;
 }}
@@ -998,9 +1101,6 @@ QFrame#TimelineFrame QWidget {{
     background: #000000;
     border-radius: 4px;
 }}
-
-/* ─── Timeline area — всё прозрачное, фон берётся от MacroRowFrame ─── */
-/* ─── Timeline: полная изоляция слоёв ────────────────────────────────── */
 
 /* ─── MacroBindBtn ──────────────────────────────────────────────────────────── */
 QPushButton#MacroBindBtn {{
@@ -1073,7 +1173,7 @@ QPushButton#MacroDelBtn {{
 QPushButton#MacroDelBtn:hover {{
     background-color: {s_active_bg};
     border-color: {s_hover};
-    color: #c2c2c2;
+    color: {s_hover};
 }}
 QPushButton#MacroDelBtn:pressed {{
     background-color: {secondary};
@@ -2867,8 +2967,20 @@ class MacrosEditorWidget(QWidget):
         """Перестраивает вертикальный список строк макросов с передачей цветов."""
         while self.macro_vbox.count():
             item = self.macro_vbox.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
+            w = item.widget()
+            if w:
+                if isinstance(w, MacroRowWidget):
+                    try:
+                        w.steps_changed.disconnect()
+                        w.name_changed.disconnect()
+                        w.bind_requested.disconnect()
+                        w.selected.disconnect()
+                        w.delete_requested.disconnect()
+                        w.bind_cleared.disconnect()
+                    except RuntimeError:
+                        pass
+                w.hide()
+                w.setParent(None)
         self.macro_widgets.clear()
         
         p_col = self.mw.primary_color if self.mw else "#0078D7"
@@ -2893,6 +3005,7 @@ class MacrosEditorWidget(QWidget):
         add_row = AddMacroRow()
         add_row.clicked.connect(self._add_macro)
         self.macro_vbox.addWidget(add_row)
+        self.macro_scroll_content.adjustSize()
 
     def update_theme_colors(self, p_color: str, s_color: str) -> None:
         """
@@ -3484,9 +3597,18 @@ class MainWindow(QMainWindow):
         self.load_config(last_p)
         self.update_macro_triggers()
 
-        self.resize(
-            860, 900
-        )  # Ширина увеличена с 835 до 860 для корректного отображения скроллбара
+        _w, _h = 860, 900
+        if os.path.exists(GLOBAL_CONFIG):
+            _sc = configparser.ConfigParser()
+            _sc.read(GLOBAL_CONFIG, encoding="utf-8")
+            try:
+                _sw = int(_sc.get("Window", "width",  fallback="0"))
+                _sh = int(_sc.get("Window", "height", fallback="0"))
+                if _sw >= 600 and _sh >= 600:
+                    _w, _h = _sw, _sh
+            except (ValueError, configparser.Error):
+                pass
+        self.resize(_w, _h)
         self.load_window_state()
 
         is_autostart = config.getboolean("Settings", "autostart", fallback=False)
@@ -3850,6 +3972,7 @@ class MainWindow(QMainWindow):
         p_layout.addWidget(QLabel("PROFILE:"))
         self.profile_combo = QComboBox()
         self.profile_combo.setFocusPolicy(Qt.NoFocus)
+        self.profile_combo.setItemDelegate(QStyledItemDelegate(self.profile_combo))
         p_layout.addWidget(self.profile_combo)
 
         self.add_btn = QPushButton("ADD")
@@ -4240,11 +4363,22 @@ class MainWindow(QMainWindow):
         self.profile_combo.blockSignals(True)
         self.profile_combo.clear()
 
-        profiles = [f.stem for f in Path(PROFILES_DIR).glob("*.ini")]
+        ini_files = list(Path(PROFILES_DIR).glob("*.ini"))
 
-        if not profiles:
-            profiles = ["Default"]
+        if not ini_files:
             self.save_config("Default")
+            ini_files = list(Path(PROFILES_DIR).glob("*.ini"))
+
+        def _created_at(p):
+            _c = configparser.ConfigParser()
+            try:
+                _c.read(str(p), encoding="utf-8")
+                return float(_c.get("Meta", "created_at", fallback="0"))
+            except (ValueError, configparser.Error):
+                return 0.0
+
+        ini_files.sort(key=_created_at)
+        profiles = [f.stem for f in ini_files]
 
         self.profile_combo.addItems(profiles)
 
@@ -4450,9 +4584,18 @@ class MainWindow(QMainWindow):
                     self.ui_toggles[gp_btn][i].setEnabled(not is_turbo and not is_delay)
                     self.ui_delays[gp_btn][i].setEnabled(not is_toggle and not is_turbo)
             print(f"[SYSTEM] Profile loaded: {full_path}")
-            
-            self.macros_editor.load_from_config(config)
-            self.update_macro_triggers()
+
+        # Остановить текущий запущенный макрос перед сменой профиля
+        if hasattr(self, "macros_editor") and self.macros_editor:
+            self.macros_editor._stop_macro()
+
+        # Перезагружать макросы всегда — даже если файл профиля не существует.
+        # Это гарантирует очистку при переключении на новый/пустой профиль.
+        if hasattr(self, "macros_editor") and self.macros_editor:
+            _cfg_for_macros = config if os.path.exists(full_path) else configparser.ConfigParser()
+            self.macros_editor.load_from_config(_cfg_for_macros)
+
+        self.update_macro_triggers()
 
     def save_config(self, filename=None):
         """Сохранение биндингов строго в папку Profiles"""
@@ -4468,7 +4611,18 @@ class MainWindow(QMainWindow):
         base_name = os.path.basename(filename)
         full_path = os.path.join(PROFILES_DIR, base_name)
 
+        import time as _time
         config = configparser.ConfigParser()
+
+        existing_created_at = None
+        if os.path.exists(full_path):
+            _existing = configparser.ConfigParser()
+            _existing.read(full_path, encoding="utf-8")
+            existing_created_at = _existing.get("Meta", "created_at", fallback=None)
+
+        config["Meta"] = {
+            "created_at": existing_created_at if existing_created_at else str(_time.time())
+        }
         config["Bindings"] = {k: ",".join(v) for k, v in self.bindings.items()}
         config["Toggles"] = {
             k: ",".join(["1" if x else "0" for x in v]) for k, v in self.toggles.items()
@@ -4499,10 +4653,45 @@ class MainWindow(QMainWindow):
 
     def add_profile(self):
         """Создание профиля через наш личный тёмный диалог"""
-        dialog = CustomInputDialog("New Profile", self)
+        dlg = QDialog(self)
+        dlg.setObjectName("AddProfileDialog")
+        dlg.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
+        dlg.setMinimumSize(460, 200)
+        dlg.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
 
-        if dialog.exec() == QDialog.Accepted:
-            name = dialog.get_value()
+        layout = QVBoxLayout(dlg)
+        layout.setContentsMargins(32, 28, 32, 24)
+        layout.setSpacing(16)
+
+        title_lbl = QLabel("NEW PROFILE")
+        title_lbl.setObjectName("dlg_title")
+        title_lbl.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title_lbl)
+
+        input_field = QLineEdit()
+        input_field.setMinimumHeight(36)
+        input_field.setPlaceholderText("Enter profile name...")
+        layout.addWidget(input_field)
+
+        btn_row = QHBoxLayout()
+        btn_row.setSpacing(20)
+        btn_row.setAlignment(Qt.AlignCenter)
+        btn_ok     = QPushButton("Confirm")
+        btn_ok.setObjectName("add_confirm")
+        btn_ok.setFixedSize(120, 34)
+        btn_cancel = QPushButton("Cancel")
+        btn_cancel.setFixedSize(120, 34)
+        btn_ok.clicked.connect(dlg.accept)
+        btn_cancel.clicked.connect(dlg.reject)
+        btn_row.addWidget(btn_ok)
+        btn_row.addWidget(btn_cancel)
+        layout.addLayout(btn_row)
+
+        input_field.returnPressed.connect(dlg.accept)
+        input_field.setFocus()
+
+        if dlg.exec() == QDialog.Accepted:
+            name = input_field.text().strip()
             if name:
                 filename = f"{name}.ini" if not name.endswith(".ini") else name
 
@@ -4524,18 +4713,38 @@ class MainWindow(QMainWindow):
         if current == DEFAULT_PROFILE:
             return
 
-        confirm = QMessageBox(self)
-        confirm.setObjectName("WarningDialog")
-        confirm.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
+        dlg = QDialog(self)
+        dlg.setObjectName("WarningDialog")
+        dlg.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
+        dlg.setMinimumSize(420, 160)
+        dlg.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
 
-        confirm.setWindowTitle("Подтверждение")
-        confirm.setText(f"Delete profile {current}?")
-        confirm.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        confirm.setIcon(QMessageBox.NoIcon)
+        layout = QVBoxLayout(dlg)
+        layout.setContentsMargins(28, 28, 28, 24)
+        layout.setSpacing(24)
 
-        confirm.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
+        lbl = QLabel(f"Delete profile <b>{current}</b>?")
+        lbl.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        lbl.setWordWrap(True)
+        layout.addWidget(lbl, stretch=1)
 
-        if confirm.exec() == QMessageBox.Yes:
+        btn_row = QHBoxLayout()
+        btn_row.setSpacing(20)
+        btn_row.setAlignment(Qt.AlignCenter)
+        btn_yes = QPushButton("Yes")
+        btn_yes.setObjectName("confirm_yes")
+        btn_yes.setFixedSize(100, 34)
+        btn_no  = QPushButton("No")
+        btn_no.setObjectName("confirm_no")
+        btn_no.setFixedSize(100, 34)
+        btn_no.setDefault(True)
+        btn_yes.clicked.connect(dlg.accept)
+        btn_no.clicked.connect(dlg.reject)
+        btn_row.addWidget(btn_yes)
+        btn_row.addWidget(btn_no)
+        layout.addLayout(btn_row)
+
+        if dlg.exec() == QDialog.Accepted:
             try:
                 filename = (
                     current if current.lower().endswith(".ini") else f"{current}.ini"
@@ -5088,9 +5297,12 @@ class MainWindow(QMainWindow):
             current_prof_name = self.profile_combo.currentText()
             config.set("Settings", "last_profile", f"{current_prof_name}.ini")
             config.set("Settings", "autostart", str(self.autostart_cb.isChecked()))
-            config.set(
-                "Window", "geometry", self.saveGeometry().toHex().data().decode()
-            )
+            if self.isVisible():
+                config.set(
+                    "Window", "geometry", self.saveGeometry().toHex().data().decode()
+                )
+                config.set("Window", "width",  str(self.size().width()))
+                config.set("Window", "height", str(self.size().height()))
             config.set("Appearance", "primary_color", self.primary_color)
             config.set("Appearance", "secondary_color", self.secondary_color)
             config["Bindings"] = {k: ",".join(v) for k, v in self.bindings.items()}
