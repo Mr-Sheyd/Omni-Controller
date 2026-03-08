@@ -34,7 +34,7 @@ Beyond simple mapping, you can assign specialized behaviors to any button:
 
 ---
 
-## 🚀 What's New in v2.5 (Phase 1 Final)
+## 🚀 What's New in v3.0 (Phase 1 Final)
 
 ### 🧠 Advanced Macro Engine
 Create and execute sophisticated input chains with ease.
@@ -127,7 +127,7 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 
 ---
 
-## 🚀 Что нового в v2.5 (Финал Фазы 1)
+## 🚀 Что нового в v3.0 (Финал Фазы 1)
 
 ### 🧠 Продвинутый Macro Engine
 Создавайте и исполняйте сложные цепочки команд с легкостью.
