@@ -3293,7 +3293,7 @@ class MacrosEditorWidget(QWidget):
         super().mousePressEvent(event)
 
 
-# Фоновый поток на базе Interception: перехватывает клавиатуру, маппит в геймпад и эмитит сигналы для макросов.
+# Фоновый поток на базе Interception: перехватывает клавиатуры, маппит в геймпад и эмитит сигналы для макросов.
 class InterceptionThread(QThread):
     key_signal = Signal(str, int, bool)
     sig_turbo_active = Signal(str, bool, int)
@@ -4648,6 +4648,28 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f"[ERROR] Failed to save {full_path}: {e}")
 
+    def _save_blank_profile(self, full_path: str) -> None:
+        """Записывает новый пустой профиль. Не использует текущее состояние UI."""
+        import time as _time
+        none_row = ",".join(["NONE"] * 6)
+        false_row = ",".join(["0"] * 6)
+        interval_row = ",".join(["0.1"] * 6)
+
+        config = configparser.ConfigParser()
+        config["Meta"] = {"created_at": str(_time.time())}
+        config["Bindings"]       = {k: none_row      for k in GP_MAP_KEYS}
+        config["Toggles"]        = {k: false_row     for k in GP_MAP_KEYS}
+        config["Turbo"]          = {k: false_row     for k in GP_MAP_KEYS}
+        config["TurboIntervals"] = {k: interval_row  for k in GP_MAP_KEYS}
+        config["Delay"]          = {k: false_row     for k in GP_MAP_KEYS}
+        config["DelayIntervals"] = {k: interval_row  for k in GP_MAP_KEYS}
+
+        try:
+            with open(full_path, "w", encoding="utf-8") as f:
+                config.write(f)
+        except Exception as e:
+            print(f"[ERROR] Failed to create blank profile: {e}")
+
     def add_profile(self):
         """Создание профиля через наш личный тёмный диалог"""
         dlg = QDialog(self)
@@ -4695,8 +4717,9 @@ class MainWindow(QMainWindow):
                 full_path = os.path.join(PROFILES_DIR, filename)
 
                 if not os.path.exists(full_path):
-                    self.save_config(full_path)
+                    self._save_blank_profile(full_path)
                     self.scan_profiles(filename)
+                    self.load_config(name)
                     print(f"[SYSTEM] Profile '{filename}' created.")
                 else:
                     self.show_styled_message(
@@ -4707,7 +4730,13 @@ class MainWindow(QMainWindow):
 
     def delete_profile(self):
         current = self.profile_combo.currentText()
-        if current == DEFAULT_PROFILE:
+
+        if self.profile_combo.count() <= 1:
+            self.show_styled_message(
+                "Warning",
+                "Cannot delete the last profile.",
+                is_warning=True,
+            )
             return
 
         dlg = QDialog(self)
@@ -4751,9 +4780,13 @@ class MainWindow(QMainWindow):
                 if os.path.exists(full_path):
                     os.remove(full_path)
                     print(f"[SYSTEM] Profile {filename} deleted.")
-                    self.scan_profiles()
                 else:
                     print(f"[ERROR] File not found for deletion: {full_path}")
+
+                self.scan_profiles()
+                self.profile_combo.setCurrentIndex(0)
+                self.load_config(self.profile_combo.currentText())
+
             except Exception as e:
                 print(f"[ERROR] {e}")
 
@@ -4987,16 +5020,33 @@ class MainWindow(QMainWindow):
     
     def show_styled_message(self, title, text, is_warning=False):
         """Вспомогательный метод для показа стилизованных уведомлений"""
-        msg = QMessageBox(self)
-        if is_warning:
-             msg.setObjectName("WarningDialog")
-        msg.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
-        msg.setIcon(QMessageBox.NoIcon)
-        msg.setText(text)
-        msg.setWindowTitle(title)
-        
-        msg.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
-        msg.exec()
+        dlg = QDialog(self)
+        dlg.setObjectName("WarningDialog")
+        dlg.setWindowFlags(Qt.FramelessWindowHint | Qt.Dialog)
+        dlg.setWindowModality(Qt.ApplicationModal)
+        dlg.setMinimumSize(380, 140)
+        dlg.setStyleSheet(get_stylesheet(self.primary_color, self.secondary_color))
+
+        layout = QVBoxLayout(dlg)
+        layout.setContentsMargins(28, 28, 28, 24)
+        layout.setSpacing(20)
+
+        lbl = QLabel(text)
+        lbl.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        lbl.setWordWrap(True)
+        layout.addWidget(lbl, stretch=1)
+
+        btn_row = QHBoxLayout()
+        btn_row.setAlignment(Qt.AlignCenter)
+        ok_btn = QPushButton("OK")
+        ok_btn.setObjectName("confirm_no")
+        ok_btn.setFixedSize(100, 34)
+        ok_btn.setDefault(True)
+        ok_btn.clicked.connect(dlg.accept)
+        btn_row.addWidget(ok_btn)
+        layout.addLayout(btn_row)
+
+        dlg.exec()
 
     def manual_exit(self):
         """Метод 'Ядерная кнопка' — просто запускает стандартное закрытие"""
