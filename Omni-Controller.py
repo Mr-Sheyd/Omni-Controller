@@ -1733,7 +1733,7 @@ KEYBOARD_FILTER = (
 )
 
 
-# Стилизованный диалог ввода текста. Принимает цвета темы от родителя и применяет к себе глобальный QSS.
+# Стилизованный диалог ввода текста. Принимает цвета темы от родителя и применяет глобальный QSS.
 class CustomInputDialog(QDialog):
     def __init__(self, title, label_text, parent=None):
         super().__init__(parent)
@@ -4585,12 +4585,9 @@ class MainWindow(QMainWindow):
                     self.ui_delays[gp_btn][i].setEnabled(not is_toggle and not is_turbo)
             print(f"[SYSTEM] Profile loaded: {full_path}")
 
-        # Остановить текущий запущенный макрос перед сменой профиля
         if hasattr(self, "macros_editor") and self.macros_editor:
             self.macros_editor._stop_macro()
 
-        # Перезагружать макросы всегда — даже если файл профиля не существует.
-        # Это гарантирует очистку при переключении на новый/пустой профиль.
         if hasattr(self, "macros_editor") and self.macros_editor:
             _cfg_for_macros = config if os.path.exists(full_path) else configparser.ConfigParser()
             self.macros_editor.load_from_config(_cfg_for_macros)
