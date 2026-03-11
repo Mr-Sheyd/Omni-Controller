@@ -325,7 +325,7 @@ QComboBox:hover {{
 }}
 QComboBox QAbstractItemView {{
     background-color: #0F0F0F;
-    color: #c2c2c2;
+    color: #EBEBEB;
     selection-background-color: {primary};
     selection-color: #ffffff;
     border: 1px solid {primary};
@@ -552,16 +552,16 @@ QPushButton[objectName^="Slot_"]:hover {{
 }}
 QPushButton[objectName^="Slot_"]:pressed {{
     background-color: {primary};
-    color: #c2c2c2;
+    color: #EBEBEB;
 }}
 QPushButton[objectName^="Slot_"][capturing="true"] {{
     background-color: {primary};
-    color: #c2c2c2;
-    border: 1px solid #c2c2c2;
+    color: #EBEBEB;
+    border: 1px solid #EBEBEB;
 }}
 QPushButton[objectName^="Slot_"][capturing="true"]:focus {{
     outline: none;
-    border: 1px solid #c2c2c2;
+    border: 1px solid #EBEBEB;
 }}
 
 /* ─── Toggle / Turbo / Delay buttons ──────────────────────────────────────── */
@@ -602,7 +602,7 @@ QPushButton[objectName^="TurboBtn_"]:hover:checked,
 QPushButton[objectName^="DelayBtn_"]:hover:checked {{
     background-color: {p_checked_hover};
     border-color: {p_hover};
-    color: #c2c2c2;
+    color: #EBEBEB;
 }}
 QPushButton[objectName^="ToggleBtn_"]:checked,
 QPushButton[objectName^="TurboBtn_"]:checked,
@@ -639,7 +639,7 @@ QLineEdit[objectName^="TurboInput_"]:focus,
 QLineEdit[objectName^="DelayInput_"]:focus {{
     outline: none;
     border: 1px solid {p_hover};
-    color: #c2c2c2;
+    color: #EBEBEB;
 }}
 QLineEdit[objectName^="TurboInput_"][active="true"], QLineEdit[objectName^="DelayInput_"][active="true"] {{
     background-color: {p_active_bg};
@@ -658,7 +658,7 @@ QDialog:focus {{
     outline: none;
 }}
 QDialog QLabel {{
-    color: #c2c2c2;
+    color: #EBEBEB;
     background: transparent;
 }}
 QDialog QLabel#SettingsTitle {{
@@ -740,7 +740,7 @@ QMessageBox:focus {{
     outline: none;
 }}
 QMessageBox QLabel {{
-    color: #c2c2c2;
+    color: #EBEBEB;
     font-size: 13px;
     padding: 12px 18px;
 }}
@@ -750,13 +750,13 @@ QDialog#WarningDialog {{
     border-radius: 6px;
 }}
 QDialog#WarningDialog QLabel {{
-    color: #c2c2c2;
+    color: #EBEBEB;
     font-size: 13px;
     padding: 8px 4px;
 }}
 QDialog#WarningDialog QPushButton {{
     background-color: #1a1a1a;
-    color: #c2c2c2;
+    color: #EBEBEB;
     border: 1px solid #444;
     border-radius: 4px;
     padding: 7px 22px;
@@ -813,7 +813,7 @@ QDialog#AddProfileDialog QLineEdit:focus {{
 }}
 QDialog#AddProfileDialog QPushButton {{
     background-color: #1a1a1a;
-    color: #c2c2c2;
+    color: #EBEBEB;
     border: 1px solid #444;
     border-radius: 4px;
     padding: 7px 22px;
@@ -831,7 +831,7 @@ QDialog#AddProfileDialog QPushButton:focus {{
     outline: none;
 }}
 QDialog#AddProfileDialog QPushButton#add_confirm {{
-    color: #c2c2c2;
+    color: #EBEBEB;
 }}
 QDialog#AddProfileDialog QPushButton#add_confirm:hover {{
     background-color: {p_active_bg};
@@ -1097,7 +1097,7 @@ QFrame#TimelineFrame QWidget {{
     padding-left: 10px;
 }}
 #MacroNameInput:focus {{
-    color: #c2c2c2;
+    color: #EBEBEB;
     background: #000000;
     border-radius: 4px;
 }}
@@ -1123,16 +1123,16 @@ QPushButton#MacroBindBtn:hover {{
 }}
 QPushButton#MacroBindBtn:pressed {{
     background-color: {primary};
-    color: #c2c2c2;
+    color: #EBEBEB;
 }}
 QPushButton#MacroBindBtn[capturing="true"] {{
     background-color: {primary};
-    border: 1px solid #c2c2c2;
-    color: #c2c2c2;
+    border: 1px solid #EBEBEB;
+    color: #EBEBEB;
 }}
 QPushButton#MacroBindBtn[capturing="true"]:focus {{
     outline: none;
-    border: 1px solid #c2c2c2;
+    border: 1px solid #EBEBEB;
 }}
 
 /* ─── MacroClearAllBtn ──────────────────────────────────────────────────────── */
@@ -1154,7 +1154,7 @@ QPushButton#MacroClearAllBtn:hover {{
 }}
 QPushButton#MacroClearAllBtn:pressed {{
     background-color: {primary};
-    color: #c2c2c2;
+    color: #EBEBEB;
 }}
 
 /* ─── MacroDelBtn ───────────────────────────────────────────────────────────── */
@@ -1177,7 +1177,7 @@ QPushButton#MacroDelBtn:hover {{
 }}
 QPushButton#MacroDelBtn:pressed {{
     background-color: {secondary};
-    color: #c2c2c2;
+    color: #EBEBEB;
 }}
 
 /* ─── Иконки кнопок в MacroStepWidget ──────────────────────────────────────── */
@@ -1228,8 +1228,8 @@ QPushButton[objectName^="Slot_Macro_"]:hover {{
 }}
 QPushButton[objectName^="Slot_Macro_"][capturing="true"] {{
     background-color: {primary};
-    color: #c2c2c2;
-    border: 2px solid #c2c2c2;
+    color: #EBEBEB;
+    border: 2px solid #EBEBEB;
 }}
 QPushButton#Slot_Macro_0, QPushButton#Slot_Macro_1,
 QPushButton#Slot_Macro_2, QPushButton#Slot_Macro_3,
@@ -1494,7 +1494,7 @@ class Stroke(ctypes.Structure):
 INTERCEPTION_PREDICATE = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int)
 
 # --- KEYBOARD DATABASE ---
-NAME_TO_CODE = {
+MAIN_KEYS = {
     # Основные буквы
     "A": 0x1E,
     "B": 0x30,
@@ -1549,6 +1549,15 @@ NAME_TO_CODE = {
     "F13": 0x64,
     "F14": 0x65,
     "F15": 0x66,
+    "F16": 0x67,
+    "F17": 0x68,
+    "F18": 0x69,
+    "F19": 0x6A,
+    "F20": 0x6B,
+    "F21": 0x6C,
+    "F22": 0x6D,
+    "F23": 0x6E,
+    "F24": 0x76,
     # Управление
     "ESC": 0x01,
     "ENTER": 0x1C,
@@ -1559,34 +1568,27 @@ NAME_TO_CODE = {
     "PRINTSCREEN": 0x37,
     "SCROLLLOCK": 0x46,
     "PAUSE": 0x45,
-    # Модификаторы
+    # Модификаторы (L-клавиши — основные коды; R-клавиши и Win — в EXTENDED_KEYS)
     "LSHIFT": 0x2A,
     "RSHIFT": 0x36,
     "LCTRL": 0x1D,
-    "RCTRL": 0x9D,
     "LALT": 0x38,
-    "RALT": 0xB8,
-    "LWIN": 0xDB,
-    "RWIN": 0xDC,
-    "APPS": 0x5D,
-    # NumPad (Цифровая клавиатура)
-    "NUM0": 0x52,
-    "NUM1": 0x4F,
-    "NUM2": 0x50,
-    "NUM3": 0x51,
-    "NUM4": 0x4B,
-    "NUM5": 0x4C,
-    "NUM6": 0x4D,
-    "NUM7": 0x47,
-    "NUM8": 0x48,
-    "NUM9": 0x49,
-    "NUM_ENTER": 0x9C,
-    "NUM_PLUS": 0x4E,
-    "NUM_MINUS": 0x4A,
-    "NUM_MULTIPLY": 0x37,
-    "NUM_DIVIDE": 0xB5,
-    "NUM_PERIOD": 0x53,
-    "NUMLOCK": 0x45,
+    # NUMPAD (Цифровая клавиатура)
+    "NUMPAD_0": 0x52,
+    "NUMPAD_1": 0x4F,
+    "NUMPAD_2": 0x50,
+    "NUMPAD_3": 0x51,
+    "NUMPAD_4": 0x4B,
+    "NUMPAD_5": 0x4C,
+    "NUMPAD_6": 0x4D,
+    "NUMPAD_7": 0x47,
+    "NUMPAD_8": 0x48,
+    "NUMPAD_9": 0x49,
+    "NUMPAD_PLUS": 0x4E,
+    "NUMPAD_MINUS": 0x4A,
+    "NUMPAD_MULTIPLY": 0x37,
+    "NUMPAD_DECIMAL": 0x53,
+    "NUM_LOCK": 0x45,
     # Символы
     "MINUS": 0x0C,
     "EQUALS": 0x0D,
@@ -1612,22 +1614,12 @@ NAME_TO_CODE = {
     "OEM_6": 0x1B,  # ] }
     "OEM_7": 0x28,  # ' "
     "OEM_102": 0x56,  # Дополнительная клавиша на ISO-клавиатурах (возле Shift)
-    # Мультимедиа (могут работать не на всех клавиатурах)
-    "MUTE": 0xA0,
-    "VOL_DOWN": 0xAE,
-    "VOL_UP": 0xB0,
-    "MEDIA_PLAY": 0xA2,
-    "MEDIA_STOP": 0xA4,
-    "MEDIA_PREV": 0x90,
-    "MEDIA_NEXT": 0x99,
-    "BROWSER_HOME": 0xB2,
-    "MAIL": 0x6C,
-    "CALCULATOR": 0xA1,
+
 }
 
 # Инвертируем для быстрого поиска
 # ВАЖНО: Коды стрелок и т.д. в Interception приходят как 0x48 + INTERCEPTION_KEY_E0
-CODE_TO_NAME = {v: k for k, v in NAME_TO_CODE.items()}
+CODE_TO_NAME = {v: k for k, v in MAIN_KEYS.items()}
 
 # Список клавиш, которые драйвер помечает как E0 (Extended)
 EXTENDED_KEYS = {
@@ -1637,18 +1629,32 @@ EXTENDED_KEYS = {
     0x4D: "RIGHT",
     0x47: "HOME",
     0x4F: "END",
+    0x52: "INSERT",
     0x53: "DELETE",
     0x49: "PAGEUP",
     0x51: "PAGEDOWN",
-    0xD2: "INSERT",
-    0xD3: "DELETE",
     0x1D: "RCTRL",
     0x38: "RALT",
-    0x1C: "NUM_ENTER",
-    0x35: "NUM_DIVIDE",
+    0x1C: "NUMPAD_ENTER",
+    0x35: "NUMPAD_DIVIDE",
     0x5B: "LWIN",
     0x5C: "RWIN",
     0x5D: "APPS",
+    # Мультимедиа (E0 + код)
+    0x10: "MEDIA_PREV",
+    0x19: "MEDIA_NEXT",
+    0x20: "MUTE",
+    0x22: "MEDIA_PLAY",
+    0x24: "MEDIA_STOP",
+    0x2E: "VOL_DOWN",
+    0x30: "VOL_UP",
+    0x6D: "MEDIA_SELECT",
+    0x6C: "MAIL",
+    0xA1: "CALCULATOR",
+    # Питание
+    0x5E: "POWER",
+    0x5F: "SLEEP",
+    0x63: "WAKE",
 }
 
 # --- GAMEPAD MAPPING DATABASE ---
@@ -3298,7 +3304,7 @@ class InterceptionThread(QThread):
     key_signal = Signal(str, int, bool)
     sig_turbo_active = Signal(str, bool, int)
     sig_delay_request = Signal(str, int, bool)
-    macro_activated = Signal(int, bool) 
+    macro_activated = Signal(str, bool) 
 
     def __init__(self):
         super().__init__()
@@ -3474,7 +3480,7 @@ class InterceptionThread(QThread):
                                 continue
 
                     if name in self.macro_triggers:
-                        self.macro_activated.emit(sc, is_down)
+                        self.macro_activated.emit(name, is_down)
                         should_block_windows = True
 
                 if self.is_capturing:
@@ -3736,7 +3742,7 @@ class MainWindow(QMainWindow):
     
         self.macro_runner = MacroRunner(macro_data, self.interceptor.gamepad)
     
-    def on_macro_activated(self, scan_code: int, is_down: bool):
+    def on_macro_activated(self, key_name: str, is_down: bool):
         """Вызывается драйвером. Теперь с защитой от 'дребезга' и автоповтора."""
         if not hasattr(self, "macros_editor") or not self.macros_editor:
             return
@@ -3749,7 +3755,7 @@ class MainWindow(QMainWindow):
             if isinstance(bind, list):
                 bind = bind[0] if bind else ""
             
-            if not bind or NAME_TO_CODE.get(bind.upper()) != scan_code:
+            if not bind or bind.upper() != key_name.upper():
                 continue
 
             if is_down:
@@ -4094,7 +4100,7 @@ class MainWindow(QMainWindow):
                 turbo_btn.setObjectName(f"TurboBtn_{btn_name}_{col}")
                 turbo_btn.setCheckable(True)
                 turbo_btn.setFocusPolicy(Qt.NoFocus)
-                turbo_btn.setFixedSize(79, 24)
+                turbo_btn.setFixedSize(115, 24)
                 turbo_btn.clicked.connect(
                     lambda checked, b=btn_name, i=col: self.update_turbo_state(
                         b, i, checked
@@ -4123,7 +4129,7 @@ class MainWindow(QMainWindow):
                 delay_btn.setObjectName(f"DelayBtn_{btn_name}_{col}")
                 delay_btn.setCheckable(True)
                 delay_btn.setFocusPolicy(Qt.NoFocus)
-                delay_btn.setFixedSize(79, 24)
+                delay_btn.setFixedSize(115, 24)
                 delay_btn.clicked.connect(
                     lambda checked, b=btn_name, i=col: self.update_delay_state(
                         b, i, checked
@@ -4144,7 +4150,7 @@ class MainWindow(QMainWindow):
 
                 slot_btn = QPushButton("NONE")
                 slot_btn.setObjectName(f"Slot_{btn_name}_{col}")
-                slot_btn.setFixedSize(79, 30)
+                slot_btn.setFixedSize(115, 30)
                 slot_btn.setFocusPolicy(Qt.NoFocus)
 
                 slot_btn.clicked.connect(
@@ -4165,7 +4171,7 @@ class MainWindow(QMainWindow):
                 toggle_btn.setObjectName(f"ToggleBtn_{btn_name}_{col}")
                 toggle_btn.setCheckable(True)
                 toggle_btn.setFocusPolicy(Qt.NoFocus)
-                toggle_btn.setFixedSize(79, 24)  # Высота 24px (по просьбе пользователя)
+                toggle_btn.setFixedSize(115, 24)  # Высота 24px (по просьбе пользователя)
                 toggle_container.setFixedHeight(
                     30
                 )  # Фиксируем высоту для симметрии с TURBO-панелью
@@ -4270,7 +4276,7 @@ class MainWindow(QMainWindow):
 
         self.active_slot = (gp_btn, idx, obj)
         self.thread.is_capturing = True
-        obj.setText("???")
+        obj.setText("WAITING...")
         obj.setProperty("capturing", "true")
         obj.style().unpolish(obj)
         obj.style().polish(obj)
