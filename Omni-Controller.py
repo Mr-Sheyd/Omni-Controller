@@ -4500,6 +4500,9 @@ class MainWindow(QMainWindow):
                 self.secondary_color = sys_config.get(
                     "Appearance", "secondary_color", fallback="#E74C3C"
                 )
+                raw_custom = sys_config.get("Appearance", "custom_colors", fallback="")
+                if raw_custom:
+                    self._custom_colors = [c.strip() for c in raw_custom.split(",") if c.strip()]
                 self.apply_theme()
 
         if os.path.exists(full_path):
@@ -5143,6 +5146,9 @@ class MainWindow(QMainWindow):
         self.preview_timer.timeout.connect(on_preview_timeout)
         color_dialog.currentColorChanged.connect(update_preview)
 
+        self._load_custom_colors_to_dialog()
+        self._wire_custom_color_dialog(color_dialog)
+
         if color_dialog.exec():
             self.preview_timer.timeout.disconnect(on_preview_timeout)
 
@@ -5154,6 +5160,7 @@ class MainWindow(QMainWindow):
                     self.secondary_color = final_color.name()
 
                 self.apply_theme()
+                self._save_custom_colors_from_dialog()
                 self.save_appearance()
         else:
             self.preview_timer.timeout.disconnect(on_preview_timeout)
@@ -5299,6 +5306,101 @@ class MainWindow(QMainWindow):
 
         dlg.exec()
 
+    def _load_custom_colors_to_dialog(self):
+        """Заполняет слоты Custom Colors в QColorDialog из сохранённого списка."""
+        from PySide6.QtWidgets import QColorDialog
+        colors = getattr(self, "_custom_colors", ["#000000"] * 16)
+        for i, hex_color in enumerate(colors[:16]):
+            try:
+                QColorDialog.setCustomColor(i, QColor(hex_color))
+            except Exception:
+                pass
+
+    def _save_custom_colors_from_dialog(self):
+        """Считывает все 16 слотов Custom Colors и сохраняет в self._custom_colors."""
+        from PySide6.QtWidgets import QColorDialog
+        self._custom_colors = [
+            QColorDialog.customColor(i).name()
+            for i in range(QColorDialog.customCount())
+        ]
+
+    def _wire_custom_color_dialog(self, color_dialog):
+        """
+        Подключает два поведения к открытому QColorDialog:
+        1. Перехват кнопки 'Add to Custom Colors' — запись в следующий свободный слот.
+        2. Правый клик по ячейке Custom Colors — очистка слота (→ #000000).
+        Работает без subclassing: через поиск дочерних виджетов и eventFilter.
+        """
+        from PySide6.QtWidgets import QColorDialog, QPushButton, QAbstractButton
+        from PySide6.QtCore import QObject, QEvent
+
+        slot_idx = getattr(self, "_custom_color_slot", 0)
+
+        # ── найти кнопку "Add to Custom Colors" ──────────────────────────────
+        add_btn = None
+        for btn in color_dialog.findChildren(QPushButton):
+            if "custom" in btn.text().lower() or "add" in btn.text().lower():
+                add_btn = btn
+                break
+
+        if add_btn:
+            def on_add_clicked():
+                idx = getattr(self, "_custom_color_slot", 0) % 16
+                color = color_dialog.currentColor()
+                if color.isValid():
+                    QColorDialog.setCustomColor(idx, color)
+                    self._custom_color_slot = (idx + 1) % 16
+                    # обновить self._custom_colors немедленно
+                    self._custom_colors = [
+                        QColorDialog.customColor(i).name()
+                        for i in range(QColorDialog.customCount())
+                    ]
+
+            # перехватываем после нативного обработчика
+            add_btn.clicked.connect(on_add_clicked)
+
+        # ── правый клик → очистить ячейку ─────────────────────────────────
+        # QWellArray (Custom Colors grid) — первый QAbstractButton-контейнер
+        # у которого есть 16 дочерних кнопок, или сам является рисующим виджетом.
+        # Проще: ставим фильтр на все дочерние виджеты под меткой "Custom colors".
+        # Находим QWidget, у которого tooltip/objectName содержит "custom" —
+        # или просто ставим фильтр на весь dialog и делаем hit-test по координатам.
+
+        WELL_SIZE = 20   # типичный размер одной ячейки в px (Qt default)
+        COLS = 8
+
+        class RightClickFilter(QObject):
+            def __init__(self_, parent_widget):
+                super().__init__(color_dialog)
+                self_._widget = parent_widget
+
+            def eventFilter(self_, obj, event):
+                if event.type() == QEvent.MouseButtonPress:
+                    if event.button() == Qt.RightButton:
+                        # найти все "цветные" кнопки Custom Colors
+                        buttons = [
+                            w for w in color_dialog.findChildren(QAbstractButton)
+                            if w.width() <= 24 and w.height() <= 24
+                        ]
+                        if buttons:
+                            pos = obj.mapTo(color_dialog, event.pos())
+                            for i, btn in enumerate(buttons[:16]):
+                                btn_pos = btn.mapTo(color_dialog, btn.rect().center())
+                                if (abs(btn_pos.x() - pos.x()) < WELL_SIZE and
+                                        abs(btn_pos.y() - pos.y()) < WELL_SIZE):
+                                    QColorDialog.setCustomColor(i, QColor("#000000"))
+                                    if hasattr(self, "_custom_colors"):
+                                        self._custom_colors[i] = "#000000"
+                                    self._save_custom_colors_from_dialog()
+                                    self.save_appearance()
+                                    break
+                return False
+
+        filt = RightClickFilter(color_dialog)
+        color_dialog.installEventFilter(filt)
+        for child in color_dialog.findChildren(QAbstractButton):
+            child.installEventFilter(filt)
+
     def save_appearance(self):
         """Сохраняет цвета в System_Config.ini"""
         config = configparser.ConfigParser()
@@ -5312,6 +5414,10 @@ class MainWindow(QMainWindow):
         config["Appearance"]["secondary_color"] = self.secondary_color
         if hasattr(self, "hide_to_tray_cb"):
             config["Appearance"]["hide_to_tray"] = "true" if self.hide_to_tray_cb.isChecked() else "false"
+
+        custom = getattr(self, "_custom_colors", [])
+        if custom:
+            config["Appearance"]["custom_colors"] = ",".join(custom)
 
         with open(GLOBAL_CONFIG, "w", encoding="utf-8") as f:
             config.write(f)
