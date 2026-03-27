@@ -1,4 +1,4 @@
-# Contributing to XBOX-Keypad
+# Contributing to Omni-Controller
 
 First of all, thank you for considering contributing to this project! 
 
